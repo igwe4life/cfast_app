@@ -1,0 +1,69 @@
+{
+    "strippedData": [
+			{
+				"id": 449,
+				"country_code": "NG",
+				"name": "Abakaliki",
+				"latitude": "6.32",
+				"longitude": "8.11",
+				"subadmin1_code": "NG.53",
+				"subadmin2_code": "NG.53.11004",
+				"population": 134102,
+				"time_zone": "Africa\/Lagos",
+				"active": 1,
+				"posts_count": 0
+			},
+			{
+				"id": 440,
+				"country_code": "NG",
+				"name": "Afikpo",
+				"latitude": "5.89",
+				"longitude": "7.94",
+				"subadmin1_code": "NG.53",
+				"subadmin2_code": "NG.53.11002",
+				"population": 71866,
+				"time_zone": "Africa\/Lagos",
+				"active": 1,
+				"posts_count": 0
+			},
+			{
+				"id": 326,
+				"country_code": "NG",
+				"name": "Effium",
+				"latitude": "6.63",
+				"longitude": "8.06",
+				"subadmin1_code": "NG.53",
+				"subadmin2_code": "NG.53.11012",
+				"population": 86945,
+				"time_zone": "Africa\/Lagos",
+				"active": 1,
+				"posts_count": 0
+			},
+			{
+				"id": 309,
+				"country_code": "NG",
+				"name": "Ezza-Ohu",
+				"latitude": "6.44",
+				"longitude": "8.08",
+				"subadmin1_code": "NG.53",
+				"subadmin2_code": "NG.53.11004",
+				"population": 67414,
+				"time_zone": "Africa\/Lagos",
+				"active": 1,
+				"posts_count": 0
+			},
+			{
+				"id": 221,
+				"country_code": "NG",
+				"name": "Isieke",
+				"latitude": "6.38",
+				"longitude": "8.04",
+				"subadmin1_code": "NG.53",
+				"subadmin2_code": "NG.53.11012",
+				"population": 89990,
+				"time_zone": "Africa\/Lagos",
+				"active": 1,
+				"posts_count": 0
+			}
+		]
+}

@@ -1,0 +1,64 @@
+{
+    "strippedData": [
+      {
+        "id": 1,
+        "name": "Automobiles",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-df08f8bf7905f5b3b82c36057c42659e.png"
+      },
+      {
+        "id": 9,
+        "name": "Phones & Tablets",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-69a8f58ac9930fc25a4806d93788e697.png"
+      },
+      {
+        "id": 14,
+        "name": "Electronics",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-57b798b930e96dd60e2daaa7a9b49ea7.png"
+      },
+      {
+        "id": 30,
+        "name": "Furniture & Appliances",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-34f3cf2351f41cab7d440540b8a89cae.png"
+      },
+      {
+        "id": 37,
+        "name": "Real estate",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-a6503ea375dd0b6e96fb0d9d3b808ca2.png"
+      },
+      {
+        "id": 46,
+        "name": "Animals & Pets",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-27c9f756564ba1c0486e0a375500304b.png"
+      },
+      {
+        "id": 54,
+        "name": "Fashion",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-a5ed12c495a4e6cf1077bc32e4dd6592.png"
+      },
+      {
+        "id": 62,
+        "name": "Beauty & Well being",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-765e982d041dacb58d5f4b822c4767dc.png"
+      },
+      {
+        "id": 73,
+        "name": "Jobs",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-0dab6e0a549a8b487487298a2a7f9665.png"
+      },
+      {
+        "id": 97,
+        "name": "Services",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-ef87ea744ae1a199a66627ce896e345f.png"
+      },
+      {
+        "id": 114,
+        "name": "Learning",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-735b20c1d919cc57e2e1783585f27bcb.png"
+      },
+      {
+        "id": 122,
+        "name": "Local Events",
+        "picture_url": "https://cfast.ng/storage/app/categories/custom/thumb-70x70-a4aa513e4770ed7e19001243c103edb1.png"
+      }
+    ]
+  }  
