@@ -26,16 +26,16 @@ import 'feedback_screen.dart';
 import 'login_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class ProductScreen extends StatefulWidget {
+class ProductScreenBrief extends StatefulWidget {
   final Product product;
 
-  const ProductScreen({Key? key, required this.product}) : super(key: key);
+  const ProductScreenBrief({Key? key, required this.product}) : super(key: key);
 
   @override
-  _ProductScreenState createState() => _ProductScreenState();
+  _ProductScreenBriefState createState() => _ProductScreenBriefState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenBriefState extends State<ProductScreenBrief> {
   bool _isLoading = false; // Loading indicator flag
   bool isLoading = false; // Add a boolean to track loading state
 
@@ -530,69 +530,13 @@ class _ProductScreenState extends State<ProductScreen> {
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              // expandedHeight: 200.0,
-              // flexibleSpace: FlexibleSpaceBar(
-              //   background: Image.network(
-              //     widget.product.image,
-              //     fit: BoxFit.cover,
-              //   ),
-              // ),
               expandedHeight: 200.0,
-              flexibleSpace: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : CarouselSlider(
-                      options: CarouselOptions(
-                        height: 400.0,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 0.8,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 3),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enlargeCenterPage: true,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            currentImage = index;
-                          });
-                        },
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      items: [
-                        for (var imageUrl in imageUrls)
-                          Builder(
-                            builder: (BuildContext context) {
-                              return GestureDetector(
-                                onTap: () {
-                                  // Open gallery view
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => GalleryView(
-                                          images: imageUrls,
-                                          initialIndex: currentImage),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                  ),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-
+              flexibleSpace: FlexibleSpaceBar(
+                background: Image.network(
+                  widget.product.image,
+                  fit: BoxFit.cover,
+                ),
+              ),
               actions: [
                 // Favorite IconButton
                 // IconButton(
@@ -1100,63 +1044,13 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Similar Ads',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    GridSimilar(
-                      catURL: widget.product.catURL,
-                    ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 60),
                   ],
                 ),
               ),
             ),
           ],
         ),
-        // floatingActionButton: FloatingActionButton.extended(
-        //   elevation: 10,
-        //   backgroundColor: addedToFavourites ? kButtonRemoveColor : kBlueColor,
-        //   label: Center(
-        //     child: addedToFavourites
-        //         ? const Text(
-        //             'Remove from favourites',
-        //             style: TextStyle(
-        //               fontSize: 12,
-        //               fontWeight: FontWeight.bold,
-        //               color: kBlueColor,
-        //             ),
-        //           )
-        //         : const Text(
-        //             'Mark as favourite',
-        //             style: TextStyle(
-        //               fontSize: 13,
-        //               fontWeight: FontWeight.bold,
-        //               color: Colors.white,
-        //             ),
-        //           ),
-        //   ),
-        //   onPressed: () {
-        //     setState(() {
-        //       // addedToFavourites = !addedToFavourites;
-        //       //
-        //       // if (addedToFavourites) {
-        //       //   Provider.of<ProjectData>(context, listen: false).addToFavorites(
-        //       //       FavouritePokemon(widget.pokemon.id, widget.pokemonUrl));
-        //       // } else {
-        //       //   Provider.of<ProjectData>(context, listen: false).deleteFromFavourites(widget.pokemon.id);
-        //       // }
-        //       // String jsonData = jsonEncode(Provider.of<ProjectData>(context, listen: false).favouritePokemonList);
-        //       // //print('==> json: ${jsonData}');
-        //       // saveFavouritePokemonsToSharedPref(jsonData);
-        //     });
-        //   },
-        // ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             toggleFavorite();

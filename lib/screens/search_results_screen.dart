@@ -5,6 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shop_example/models/product.dart'; // Import your Product model
 import 'package:http/http.dart' as http;
 
+///import 'package:shop_example/screens/product_detail_screen.dart';
+///import 'package:shop_example/screens/product_screen.dart';
+import 'package:shop_example/screens/product_screen_brief.dart';
+
 class SearchResultsScreen extends StatefulWidget {
   final List<Product> products;
   final String query;
@@ -185,12 +189,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 elevation: 3,
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   title: Text(
                     product.price,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.blue,
                     ),
                   ),
@@ -199,14 +204,18 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     children: [
                       Text(
                         product.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
+                          fontSize: 14,
                           color: Colors.blueGrey.shade900,
                         ),
                       ),
+                      SizedBox(height: 4), // Added SizedBox for spacing
                       Text(
                         product.location,
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 12,
                           color: Colors.blueGrey.shade700,
                         ),
                       ),
@@ -214,13 +223,23 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   ),
                   leading: Image.network(
                     product.image,
-                    width: 100, // Set the desired width
+                    width: 100, // Reduced the width for better layout
                     height:
                         double.infinity, // Set the height to occupy full height
                     fit: BoxFit.cover, // Cover the container with the image
                     alignment:
                         Alignment.centerLeft, // Align the image to the left
                   ),
+                  onTap: () {
+                    // Add onTap here
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProductScreenBrief(product: product)),
+                    );
+                  },
+                  dense: true, // Reduced the vertical size of the ListTile
                   // Add more details or actions if needed
                 ),
               );

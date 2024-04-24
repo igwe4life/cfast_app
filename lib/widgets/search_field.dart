@@ -60,7 +60,7 @@ class _SearchFieldState extends State<SearchField> {
                   _performSearch(context);
                 },
                 icon: const Icon(
-                  Ionicons.options_outline,
+                  Ionicons.search,
                   color: Colors.grey,
                 ),
               ),
@@ -142,12 +142,12 @@ class _SearchFieldState extends State<SearchField> {
           } else {
             // Handle API error
             print('API Error: Invalid response format');
-            Fluttertoast.showToast(msg: 'API Error: Invalid response format');
+            //Fluttertoast.showToast(msg: 'API Error: Invalid response format');
           }
         } else {
           // Handle API error
           print('API Error: ${response.statusCode}');
-          Fluttertoast.showToast(msg: 'API Error: ${response.statusCode}');
+          //Fluttertoast.showToast(msg: 'API Error: ${response.statusCode}');
         }
       } catch (e) {
         // Hide loading indicator
@@ -155,7 +155,7 @@ class _SearchFieldState extends State<SearchField> {
 
         // Handle other errors
         print('Error: $e');
-        Fluttertoast.showToast(msg: 'API Error 2: ${e}');
+        //Fluttertoast.showToast(msg: 'API Error 2: ${e}');
       }
     }
   }
