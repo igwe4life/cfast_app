@@ -671,29 +671,30 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     ),
                     const SizedBox(height: 5),
-                    CallButtonsBar(
-                      onRequestCallPressed: () {
-                        print('Request Call button pressed');
-                        handleRequestCallPressed(
-                            context); // Call the method to show the alert dialog
-                      },
-                      onMakeCallPressed: () {
-                        print('Make Call button pressed');
-                        String cphoneNumber = productData['Phone'];
-                        launch('tel:$cphoneNumber');
-                      },
-                      onWhatsappPressed: () {
-                        print('Send Whatsapp Message');
-                        String cphoneNumber = productData['Phone'];
-                        String msg =
-                            'I\'m interested in your Ad listing ${productData['Title']} posted on CFAST.NG';
+                    if (productData['Phone'] != phone) // Add condition here
+                      CallButtonsBar(
+                        onRequestCallPressed: () {
+                          print('Request Call button pressed');
+                          handleRequestCallPressed(
+                              context); // Call the method to show the alert dialog
+                        },
+                        onMakeCallPressed: () {
+                          print('Make Call button pressed');
+                          String cphoneNumber = productData['Phone'];
+                          launch('tel:$cphoneNumber');
+                        },
+                        onWhatsappPressed: () {
+                          print('Send Whatsapp Message');
+                          String cphoneNumber = productData['Phone'];
+                          String msg =
+                              'I\'m interested in your Ad listing ${productData['Title']} posted on CFAST.NG';
 
-                        String url =
-                            "https://wa.me/${cphoneNumber}/?text=${msg}";
-                        launch(url);
-                      },
-                    ),
-                    const SizedBox(height: 5),
+                          String url =
+                              "https://wa.me/${cphoneNumber}/?text=${msg}";
+                          launch(url);
+                        },
+                      ),
+                    const SizedBox(height: 10),
                     if (productData['Phone'] != phone) // Add condition here
                       ChatActionsWidget(
                         title: "${productData['Title']}",
