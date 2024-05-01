@@ -776,8 +776,8 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        onPrimary: Colors.white,
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               10), // Border radius set to 10
