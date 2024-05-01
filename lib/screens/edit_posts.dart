@@ -150,8 +150,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
               ElevatedButton(
                 onPressed: addImages,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.orange, // Button background color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.orange, // Text color
                 ),
                 child: Text(
                   'Select Image',
@@ -164,8 +164,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   _submitEditedPost();
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Button background color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue, // Text color
                 ),
                 child: Text('Submit Ad Listing'),
               ),
