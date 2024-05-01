@@ -35,8 +35,8 @@ class CallButtonsBar extends StatelessWidget {
                       checkLoginStatus(context, onRequestCallPressed);
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue, // Background color
-                      onPrimary: Colors.white, // Text color
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
                       side: BorderSide(color: Colors.blue), // Adding border
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -69,8 +69,8 @@ class CallButtonsBar extends StatelessWidget {
                       checkLoginStatus(context, onMakeCallPressed);
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue, // Background color
-                      onPrimary: Colors.white, // Text color
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
                       side: BorderSide(color: Colors.blue), // Adding border
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -103,9 +103,9 @@ class CallButtonsBar extends StatelessWidget {
                       checkLoginStatus(context, onWhatsappPressed);
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors
+                      backgroundColor: Colors
                           .green, // Green background color for WhatsApp button
-                      onPrimary: Colors.white, // Text color
+                      foregroundColor: Colors.white, // Text color
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(10.0), // Adding border radius

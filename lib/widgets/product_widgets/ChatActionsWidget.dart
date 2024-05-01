@@ -497,8 +497,8 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white,
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.blue,
                                     ),
                                     child: _isOfferLoading
                                         ? CircularProgressIndicator() // Show loading indicator if offer is being sent
@@ -513,8 +513,8 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Button background color
-                    onPrimary: Colors.white, // Text color
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue, // Text color
                     side: BorderSide(color: Colors.blue), // Border color
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -533,8 +533,8 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                 SizedBox(width: 5), // Add some spacing between icon and text
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
                     side: BorderSide(color: Colors.blue),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -561,8 +561,8 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                 SizedBox(width: 5), // Add some spacing between icon and text
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
                     side: BorderSide(color: Colors.blue),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
