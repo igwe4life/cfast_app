@@ -286,11 +286,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -347,14 +342,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  flutter_smartlook:
-    dependency: "direct main"
-    description:
-      name: flutter_smartlook
-      sha256: "0ee10c1c79fb9f37e20703e93e911f0eebd62f0c6beb89d59bfbdace036d2f31"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.18"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -1075,5 +1062,5 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
-  dart: ">=3.1.0 <=3.10.100"
+  dart: ">=3.1.0 <4.0.0"
   flutter: ">=3.13.0"
