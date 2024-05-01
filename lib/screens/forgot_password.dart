@@ -146,7 +146,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary:
+                    backgroundColor:
                         Colors.blue, // Set blue background color for button
                   ),
                 ),
