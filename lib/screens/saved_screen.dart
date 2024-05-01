@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shop_example/models/product.dart'; // Import your Product model
+import 'package:shimmer/shimmer.dart'; // Import Shimmer package
+import 'package:shop_example/screens/product_screen_brief.dart';
 
 class SavedScreen extends StatefulWidget {
   @override
@@ -35,9 +38,6 @@ class _SavedScreenState extends State<SavedScreen> {
   @override
   void initState() {
     super.initState();
-    // loadUserProfile();
-    // _fetchData = fetchSavedSearches(token);
-    // _fetchAds = fetchAds(token);
     loadUserProfile().then((_) {
       _fetchData = fetchSavedSearches(token);
       _fetchAds = fetchAds(token);
@@ -80,9 +80,7 @@ class _SavedScreenState extends State<SavedScreen> {
                     future: _fetchAds,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return _buildShimmerList();
                       } else if (snapshot.hasError) {
                         return Center(
                           child: Text('Error loading ads'),
@@ -101,9 +99,7 @@ class _SavedScreenState extends State<SavedScreen> {
                     future: _fetchData,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return _buildShimmerList();
                       } else if (snapshot.hasError) {
                         return Center(
                           child: Text('Error loading data'),
@@ -126,22 +122,45 @@ class _SavedScreenState extends State<SavedScreen> {
       ),
     );
   }
+
+  Widget _buildShimmerList() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 5, // Number of shimmering list items
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            margin: EdgeInsets.all(8.0),
+            child: ListTile(
+              leading: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+              ),
+              title: Container(
+                height: 20,
+                color: Colors.white,
+              ),
+              subtitle: Container(
+                height: 20,
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 List<SavedSearch> savedSearches = [];
 
 Future<List<Ad>> fetchAds(token) async {
   final apiUrl = 'https://cfast.ng/cfastapi/saved_posts.php?token=$token';
-
-  // Fluttertoast.showToast(
-  //   msg: 'Token code is: $token',
-  //   toastLength: Toast.LENGTH_SHORT,
-  //   gravity: ToastGravity.BOTTOM,
-  //   timeInSecForIosWeb: 1,
-  //   backgroundColor: Colors.grey,
-  //   textColor: Colors.white,
-  //   fontSize: 16.0,
-  // );
 
   final response = await http.get(
     Uri.parse(apiUrl),
@@ -249,6 +268,8 @@ class AdsTab extends StatelessWidget {
       itemCount: ads.length,
       itemBuilder: (context, index) {
         final ad = ads[index];
+        final product = ad.toProduct(); // Convert Ad to Product
+
         DateTime date = DateTime.parse(ad.createdAt);
         String formattedDate =
             DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
@@ -261,9 +282,16 @@ class AdsTab extends StatelessWidget {
         return Card(
           margin: EdgeInsets.all(8.0),
           child: ListTile(
-            leading: Image.network(ad.userPhotoUrl),
+            leading: SizedBox(
+              width: 64, // Specify desired width
+              height: 64, // Specify desired height
+              child: Image.network(
+                product.image,
+                fit: BoxFit.cover,
+              ),
+            ),
             title: Text(
-              ad.title,
+              product.title,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
@@ -280,6 +308,14 @@ class AdsTab extends StatelessWidget {
                 Text(formattedDate),
               ],
             ),
+            // onTap: () {
+            //   // Add onTap here
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => ProductScreenBrief(product: product)),
+            //   );
+            // },
           ),
         );
       },
@@ -327,6 +363,25 @@ class Ad {
       createdAt: json['created_at'],
       userPhotoUrl: json['user_photo_url'],
       photoUrl: json['photo_url'],
+    );
+  }
+
+  Product toProduct() {
+    return Product(
+      title: title,
+      description:
+          '', // Add a default value or provide a description if available in Ad
+      image: photoUrl ??
+          '', // Use photoUrl if available, otherwise provide a default value
+      price: price,
+      date: createdAt,
+      time: '', // Add a default value or provide a time if available in Ad
+      itemUrl: '', // Add a default value or provide a URL if available in Ad
+      classID: categoryId
+          .toString(), // Convert categoryId to String and use it as classID
+      location:
+          '', // Add a default value or provide a location if available in Ad
+      catURL: '', // Add a default value or provide a URL if available in Ad
     );
   }
 }

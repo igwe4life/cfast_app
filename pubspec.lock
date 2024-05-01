@@ -286,6 +286,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -342,6 +347,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  flutter_smartlook:
+    dependency: "direct main"
+    description:
+      name: flutter_smartlook
+      sha256: "0ee10c1c79fb9f37e20703e93e911f0eebd62f0c6beb89d59bfbdace036d2f31"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.18"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -812,10 +825,10 @@ packages:
     dependency: "direct main"
     description:
       name: shimmer
-      sha256: "1f1009b5845a1f88f1c5630212279540486f97409e9fc3f63883e71070d107bf"
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1062,5 +1075,5 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
-  dart: ">=3.1.0 <4.0.0"
+  dart: ">=3.1.0 <=3.10.100"
   flutter: ">=3.13.0"

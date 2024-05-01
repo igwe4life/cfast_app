@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart'; // Import Shimmer package
 
 class AdScreen extends StatefulWidget {
   @override
@@ -34,9 +35,6 @@ class _AdScreenState extends State<AdScreen> {
   @override
   void initState() {
     super.initState();
-    // loadUserProfile();
-    // _fetchData = fetchSavedSearches(token);
-    // _fetchAds = fetchAds(token);
     loadUserProfile().then((_) {
       _fetchAds = fetchAds(token);
     });
@@ -60,9 +58,7 @@ class _AdScreenState extends State<AdScreen> {
         future: _fetchAds,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return _buildShimmerList();
           } else if (snapshot.hasError) {
             return Center(
               child: Text('Error loading ads'),
@@ -86,7 +82,14 @@ class _AdScreenState extends State<AdScreen> {
                 return Card(
                   margin: EdgeInsets.all(8.0),
                   child: ListTile(
-                    leading: Image.network(ad.userPhotoUrl),
+                    leading: SizedBox(
+                      width: 64, // Specify desired width
+                      height: 64, // Specify desired height
+                      child: Image.network(
+                        ad.userPhotoUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     title: Text(
                       ad.title,
                       style:
@@ -115,20 +118,39 @@ class _AdScreenState extends State<AdScreen> {
       ),
     );
   }
+
+  Widget _buildShimmerList() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 5, // Number of shimmering list items
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: SizedBox(
+              width: 64, // Specify desired width
+              height: 64, // Specify desired height
+              child: Container(
+                color: Colors.white,
+              ),
+            ),
+            title: Container(
+              height: 20,
+              color: Colors.white,
+            ),
+            subtitle: Container(
+              height: 20,
+              color: Colors.white,
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 Future<List<Ad>> fetchAds(token) async {
   final apiUrl = 'https://cfast.ng/cfastapi/my_ads.php?token=$token';
-
-  // Fluttertoast.showToast(
-  //   msg: 'Token code is: $token',
-  //   toastLength: Toast.LENGTH_SHORT,
-  //   gravity: ToastGravity.BOTTOM,
-  //   timeInSecForIosWeb: 1,
-  //   backgroundColor: Colors.grey,
-  //   textColor: Colors.white,
-  //   fontSize: 16.0,
-  // );
 
   final response = await http.get(
     Uri.parse(apiUrl),

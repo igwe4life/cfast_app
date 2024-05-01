@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,7 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   late List<Map<String, dynamic>> messages;
   late Timer _timer;
+  bool _isLoading = true;
 
   late int uid;
   late String name;
@@ -72,6 +74,7 @@ class _MessageScreenState extends State<MessageScreen> {
       final resultData = jsonData['result']['data'];
       setState(() {
         messages = List<Map<String, dynamic>>.from(resultData);
+        _isLoading = false;
       });
     } else {
       throw Exception('Failed to load messages');
@@ -92,31 +95,77 @@ class _MessageScreenState extends State<MessageScreen> {
         backgroundColor: Colors.blue,
         centerTitle: true,
       ),
-      body: messages == null
-          ? Center(child: CircularProgressIndicator())
+      body: _isLoading
+          ? _buildShimmerEffect()
           : ListView.builder(
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(message["p_creator"]["photo_url"]),
-                  ),
-                  title: Text(message["subject"]),
-                  subtitle: Text(message["latest_message"]["body"]),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ChatScreen(messageId: message['id']),
+                bool isUnread = message["p_is_unread"] ?? false;
+                return Card(
+                  color: isUnread ? Colors.blue : null,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(message["p_creator"]["photo_url"]),
+                    ),
+                    title: Text(
+                      message["subject"],
+                      style: TextStyle(
+                        fontWeight:
+                            isUnread ? FontWeight.bold : FontWeight.normal,
                       ),
-                    );
-                  },
+                      maxLines: 2, // Limit to 2 lines
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      message["latest_message"]["body"],
+                      style: TextStyle(
+                        fontWeight:
+                            isUnread ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      maxLines: 2, // Limit to 2 lines
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ChatScreen(messageId: message['id']),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
+    );
+  }
+
+  Widget _buildShimmerEffect() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 8, // Number of shimmering list items
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 30.0,
+            ),
+            title: Container(
+              height: 15.0,
+              color: Colors.white,
+            ),
+            subtitle: Container(
+              height: 10.0,
+              color: Colors.white,
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -133,6 +182,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late List<Map<String, dynamic>> _messages;
   late Timer _timers;
+  bool _isLoading = true;
 
   late int uid;
   late String name;
@@ -182,6 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final resultData = jsonData['result']['data'];
       setState(() {
         _messages = List<Map<String, dynamic>>.from(resultData);
+        _isLoading = false;
       });
     } else {
       throw Exception('Failed to load messages');
@@ -202,42 +253,44 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: Colors.blue,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              reverse: true,
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return _buildMessageBubble(message, uid);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      body: _isLoading
+          ? _buildShimmerEffect()
+          : Column(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type your message...',
-                    ),
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      final message = _messages[index];
+                      return _buildMessageBubble(message, uid);
+                    },
                   ),
                 ),
-                SizedBox(width: 8.0),
-                ElevatedButton(
-                  onPressed: () {
-                    _sendMessage(_messageController.text);
-                  },
-                  child: Text('Send'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _messageController,
+                          decoration: InputDecoration(
+                            hintText: 'Type your message...',
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          _sendMessage(_messageController.text);
+                        },
+                        child: Text('Send'),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -275,6 +328,35 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerEffect() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 5, // Number of shimmering list items
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 4),
+                Container(
+                  height: 15,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

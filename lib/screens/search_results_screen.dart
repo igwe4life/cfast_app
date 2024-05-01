@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_example/models/product.dart'; // Import your Product model
 import 'package:http/http.dart' as http;
 
@@ -24,6 +25,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   String _selectedLocation = 'Location';
   String _selectedCategory = 'Category';
   String _selectedPrice = 'Price';
+
+  late SharedPreferences sharedPreferences;
+
+  late int uid;
+  late String name;
+  late String email;
+  late String photoUrl;
+  late String phone;
+  late String token;
 
   Future<void> _performSearch(BuildContext context) async {
     // Show loading indicator
@@ -151,6 +161,18 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     );
   }
 
+  Future<void> loadAuthToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      uid = sharedPreferences.getInt("uid") ?? 0;
+      name = sharedPreferences.getString("name") ?? "Name";
+      email = sharedPreferences.getString("email") ?? "Email";
+      photoUrl = sharedPreferences.getString("photo_url") ?? "";
+      phone = sharedPreferences.getString("phone") ?? "Phone";
+      token = sharedPreferences.getString("token") ?? "token";
+    });
+  }
+
   Widget _buildSearchResults() {
     String searchTerm = _searchController.text.trim();
 
@@ -163,10 +185,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Search results for ',
+                  'Found ${widget.products.length} results for ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 15,
                     color: Colors.black,
                   ),
                 ),
@@ -174,9 +196,16 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   '${widget.query}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 15,
                     color: Colors.blue,
                   ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _saveSearchQuery(widget.query, widget.products.length);
+                  },
+                  icon: Icon(Icons.save),
+                  color: Colors.blue,
                 ),
               ],
             )),
@@ -248,6 +277,62 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         ),
       ],
     );
+  }
+
+  void _saveSearchQuery(String query, int searchResultsCount) async {
+    // Make API call to save the search query
+    // Adjust the URL and headers according to your API documentation
+    final url = 'https://cfast.ng/api/savedSearches';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Language': 'en',
+          'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw=',
+          'X-AppType': 'docs',
+        },
+        body: json.encode({
+          'url':
+              'https://cfast.ng/search/?q=$query&l=', // Adjust the URL format as needed
+          'count_posts': searchResultsCount,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Display success message using SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Search query saved successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        print('Search query saved successfully');
+      } else {
+        // Display error message using SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save search query'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        // Handle error response
+        print('Failed to save search query: ${response.body}');
+      }
+    } catch (e) {
+      // Display error message using SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving search query: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      // Handle network or other errors
+      print('Error saving search query: $e');
+    }
   }
 
   void _performFilteredSearch() {

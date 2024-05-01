@@ -169,15 +169,14 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       final decodedResponse = json.decode(responseBody);
 
       // Extract the thread ID from the response
-      ///final threadId = decodedResponse['thread_id'];
-      final threadId = decodedResponse['thread_id'] as int?;
+      final threadId = decodedResponse['thread_id'];
       final resMsg = decodedResponse['message'];
 
       // Display toast message with response
-      // Fluttertoast.showToast(msg: 'Chat Thread response: $resMsg $responseBody');
+      ///Fluttertoast.showToast(msg: 'Chat Thread response: $resMsg');
 
       // Store thread ID in SharedPreferences with a unique key based on post_id
-      prefs.setInt('post_${widget.postId}_thread_id', threadId!);
+      prefs.setInt('post_${widget.postId}_thread_id', threadId);
 
       // Navigate to chat screen with thread ID
       Navigator.pushReplacement(
@@ -191,7 +190,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
     } catch (error) {
       print('Error starting chat thread: $error');
 
-      // Fluttertoast.showToast(msg: 'Error starting chat thread: $error');
+      ///Fluttertoast.showToast(msg: 'Error starting chat thread: $error');
       // Handle error appropriately
     } finally {
       setState(() {
@@ -201,7 +200,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
   }
 
   Future<void> checkChatStatus() async {
-    // Fluttertoast.showToast(msg: 'Checking previous chat session!');
+    //Fluttertoast.showToast(msg: 'Checking previous chat session!');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? threadId = prefs.getInt('post_${widget.postId}_thread_id');
 
@@ -231,7 +230,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
   }
 
   Future<void> _startConversation() async {
-    // Fluttertoast.showToast(msg: 'Start Conversation Clicked!!!');
+    //Fluttertoast.showToast(msg: 'Start Conversation Clicked!!!');
     setState(() {
       _isLoading = true; // Show loading indicator
     });
@@ -258,7 +257,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       if (response.statusCode == 200) {
         // Handle success
         var responseData = json.decode(response.toString());
-        // Fluttertoast.showToast(msg: responseData);
+        //Fluttertoast.showToast(msg: responseData);
         setState(() {
           threadId = responseData['thread_id'];
           postTitle = responseData['post_title'];
@@ -305,7 +304,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         // Process the retrieved thread details as required
         print('Retrieved chat details');
 
-        // showToast('Retrieved chat details: ${response.body}');
+        ///showToast('Retrieved chat details: ${response.body}');
       } else {
         print('Error getting chat details');
       }
@@ -358,11 +357,11 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       final responseBody = response.body;
       print('API Response: $responseBody');
 
-      // Fluttertoast.showToast(msg: 'Chat sent successfully: $responseBody');
+      ///Fluttertoast.showToast(msg: 'Chat sent successfully: $responseBody');
     } catch (error) {
       print('Error sending request: $error');
 
-      // Fluttertoast.showToast(msg: 'Chat failed to start!: $error');
+      ///Fluttertoast.showToast(msg: 'Chat failed to start!: $error');
     }
   }
 
@@ -436,82 +435,71 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                   ),
                                   SizedBox(height: 20),
                                   ElevatedButton(
-                                    // onPressed: () async {
-                                    //   if (enteredOffer.isNotEmpty) {
-                                    //     setState(() {
-                                    //       // Show loading indicator
-                                    //       _isOfferLoading = true;
-                                    //     });
-                                    //
-                                    //     try {
-                                    //       // Make API call to send offer
-                                    //       var response = await http.post(
-                                    //         Uri.parse(
-                                    //             'https://cfast.ng/cfastapi/send_offer.php'),
-                                    //         body: jsonEncode({
-                                    //           'offer': enteredOffer,
-                                    //           'post_id': widget.postId,
-                                    //           'user_id': uid
-                                    //         }),
-                                    //       );
-                                    //
-                                    //       if (response.statusCode == 200) {
-                                    //         // Offer sent successfully
-                                    //         ScaffoldMessenger.of(context)
-                                    //             .showSnackBar(
-                                    //           SnackBar(
-                                    //             content: Text(
-                                    //                 'Offer submitted successfully!'),
-                                    //             backgroundColor: Colors.green,
-                                    //           ),
-                                    //         );
-                                    //       } else {
-                                    //         // Offer sending failed
-                                    //         ScaffoldMessenger.of(context)
-                                    //             .showSnackBar(
-                                    //           SnackBar(
-                                    //             content: Text(
-                                    //                 'Offer sending failed! Status Code: ${response.statusCode}'),
-                                    //             backgroundColor: Colors.red,
-                                    //           ),
-                                    //         );
-                                    //       }
-                                    //     } catch (e) {
-                                    //       // Error occurred during API call
-                                    //       Fluttertoast.showToast(
-                                    //           msg:
-                                    //               'Error occurred while sending offer: $e');
-                                    //     } finally {
-                                    //       setState(() {
-                                    //         // Hide loading indicator
-                                    //         _isOfferLoading = false;
-                                    //       });
-                                    //
-                                    //       // Close the bottom sheet
-                                    //       Navigator.pop(context);
-                                    //     }
-                                    //   } else {
-                                    //     // Show error message if offer amount is empty
-                                    //     Fluttertoast.showToast(
-                                    //         msg:
-                                    //             'Please enter an offer amount');
-                                    //   }
-                                    // },
+                                    onPressed: () async {
+                                      if (enteredOffer.isNotEmpty) {
+                                        setState(() {
+                                          // Show loading indicator
+                                          _isOfferLoading = true;
+                                        });
+
+                                        try {
+                                          // Make API call to send offer
+                                          var response = await http.post(
+                                            Uri.parse(
+                                                'https://cfast.ng/cfastapi/send_offer.php'),
+                                            body: jsonEncode({
+                                              'offer': enteredOffer,
+                                              'post_id': widget.postId,
+                                              'user_id': uid
+                                            }),
+                                          );
+
+                                          if (response.statusCode == 200) {
+                                            // Offer sent successfully
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Offer submitted successfully!'),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                          } else {
+                                            // Offer sending failed
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Offer sending failed! Status Code: ${response.statusCode}'),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          // Error occurred during API call
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  'Error occurred while sending offer: $e');
+                                        } finally {
+                                          setState(() {
+                                            // Hide loading indicator
+                                            _isOfferLoading = false;
+                                          });
+
+                                          // Close the bottom sheet
+                                          Navigator.pop(context);
+                                        }
+                                      } else {
+                                        // Show error message if offer amount is empty
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                'Please enter an offer amount');
+                                      }
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.blue,
                                       onPrimary: Colors.white,
                                     ),
-                                    onPressed: () {
-                                      // Fluttertoast.showToast(
-                                      //     msg: 'Is this available button clicked!');
-                                      checkLoginStatus(); // Call checkLoginStatus() on button click
-                                      setState(() {
-                                        // Set the text content within the setState method
-                                        widget.textEditingController.text =
-                                            enteredOffer;
-                                      });
-                                      widget.onMakeOfferPressed();
-                                    },
                                     child: _isOfferLoading
                                         ? CircularProgressIndicator() // Show loading indicator if offer is being sent
                                         : Text('Send Offer'),
@@ -533,16 +521,6 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                           BorderRadius.circular(10.0), // Adding border radius
                     ),
                   ),
-                  // onPressed: () {
-                  //   // Fluttertoast.showToast(
-                  //   //     msg: 'Is this available button clicked!');
-                  //   checkLoginStatus(); // Call checkLoginStatus() on button click
-                  //   setState(() {
-                  //     // Set the text content within the setState method
-                  //     widget.textEditingController.text = enteredOffer;
-                  //   });
-                  //   widget.onMakeOfferPressed();
-                  // },
                   child: Text(
                     'Make an Offer',
                     overflow: TextOverflow.ellipsis,

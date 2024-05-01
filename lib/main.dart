@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_example/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
+import 'package:flutter_smartlook/flutter_smartlook.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,10 +19,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isLoading = true;
+  final Smartlook smartlook = Smartlook.instance;
 
   @override
   void initState() {
     super.initState();
+    smartlook.start();
+    smartlook.preferences
+        .setProjectKey('d719c63b0970163078af5a1814668131ba1849e4');
     // Simulating a loading process. This can be3 replaced with your actual loading logic.
     // For demonstration, I'm using a Timer to simulate a -second delay.
     Timer(Duration(seconds: 2), () {
@@ -34,15 +39,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Cfast Classifieds',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-        useMaterial3: true,
-        textTheme: GoogleFonts.mulishTextTheme(),
+    return SmartlookRecordingWidget(
+      // Wrap MaterialApp with SmartlookRecordingWidget
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Cfast Classifieds',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+          useMaterial3: true,
+          textTheme: GoogleFonts.mulishTextTheme(),
+        ),
+        home: _isLoading ? const SplashScreen() : const MainScreen(),
       ),
-      home: _isLoading ? const SplashScreen() : const MainScreen(),
     );
   }
 }
