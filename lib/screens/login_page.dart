@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                                   passwordController.text);
                             },
                       style: ElevatedButton.styleFrom(
-                        primary:
+                        backgroundColor:
                             Colors.blue, // Set blue background color for Login
                       ),
                       child: const Text(
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors
+                        backgroundColor: Colors
                             .orange, // Set orange background color for Register
                       ),
                       child: const Text(
@@ -157,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black, // Set black background color
+                        backgroundColor:
+                            Colors.black, // Set black background color
                       ),
                       child: const Text(
                         "Forgot Password",
