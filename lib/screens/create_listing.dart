@@ -1109,8 +1109,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
               ElevatedButton(
                 onPressed: addImages,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.orange, // Button background color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.orange, // Text color
                 ),
                 child: Text(
                   'Select Image',
@@ -1125,8 +1125,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Button background color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue, // Text color
                 ),
                 child: _isLoading
                     ? CircularProgressIndicator() // Loading indicator
@@ -1143,8 +1143,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.purple, // Button background color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.purple, // Text color
                 ),
                 child: _isLoading2
                     ? CircularProgressIndicator() // Loading indicator
