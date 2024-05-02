@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:shop_example/constants.dart';
+import 'package:shop_cfast/constants.dart';
 
 class AddToCart extends StatelessWidget {
   final Function() onAdd;

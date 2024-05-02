@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop_example/widgets/saved_list.dart';
+import 'package:shop_cfast/widgets/saved_list.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override

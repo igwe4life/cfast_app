@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // Add this import
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/product.dart';
-import 'package:shop_example/screens/profile_page.dart';
-import 'package:shop_example/widgets/GridHome.dart';
-import 'package:shop_example/widgets/categories.dart';
-import 'package:shop_example/widgets/home_appbar.dart';
-import 'package:shop_example/widgets/search_field.dart';
-import 'package:shop_example/widgets/trending_widget.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/screens/profile_page.dart';
+import 'package:shop_cfast/widgets/GridHome.dart';
+import 'package:shop_cfast/widgets/categories.dart';
+import 'package:shop_cfast/widgets/home_appbar.dart';
+import 'package:shop_cfast/widgets/search_field.dart';
+import 'package:shop_cfast/widgets/trending_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeScreen extends StatefulWidget {

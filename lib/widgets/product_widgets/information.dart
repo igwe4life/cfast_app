@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/product.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/product.dart';
 import 'package:intl/intl.dart';
 
 class ProductInfo extends StatelessWidget {

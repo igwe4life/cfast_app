@@ -3,8 +3,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:shop_example/models/product.dart';
-import 'package:shop_example/screens/product_screen.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
 
 class GridSimilar extends StatefulWidget {
   final String catURL;
@@ -143,11 +143,11 @@ class _GridSimilarState extends State<GridSimilar> {
                     Text(
                       product.price.toString(),
                       style: Theme.of(context).textTheme.subtitle1!.merge(
-                        const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.blue,
-                        ),
-                      ),
+                            const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.blue,
+                            ),
+                          ),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
@@ -155,11 +155,11 @@ class _GridSimilarState extends State<GridSimilar> {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.subtitle2!.merge(
-                        TextStyle(
-                          color: Colors.grey.shade900,
-                          fontSize: 12,
-                        ),
-                      ),
+                            TextStyle(
+                              color: Colors.grey.shade900,
+                              fontSize: 12,
+                            ),
+                          ),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
@@ -167,12 +167,12 @@ class _GridSimilarState extends State<GridSimilar> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.subtitle2!.merge(
-                        TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 10,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+                            TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 10,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
                     ),
                   ],
                 ),

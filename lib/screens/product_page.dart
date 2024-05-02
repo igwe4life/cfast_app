@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:shop_example/widgets/product_widgets/ads_grid.dart';
+import 'package:shop_cfast/widgets/product_widgets/ads_grid.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});

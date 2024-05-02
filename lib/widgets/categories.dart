@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop_example/models/category.dart';
-import 'package:shop_example/screens/CategoryDetailScreen.dart';
+import 'package:shop_cfast/models/category.dart';
+import 'package:shop_cfast/screens/CategoryDetailScreen.dart';
 //import 'package:shop_example/screens/CatListView.dart'; // Import the CatListView screen
 import 'CatListView.dart';
 

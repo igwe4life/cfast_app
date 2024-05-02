@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shop_example/models/product.dart'; // Import your Product model
+import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
-import 'package:shop_example/screens/product_screen_brief.dart';
+import 'package:shop_cfast/screens/product_screen_brief.dart';
 
 class SavedScreen extends StatefulWidget {
   @override

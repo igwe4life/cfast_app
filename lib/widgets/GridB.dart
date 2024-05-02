@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 //import 'DetailViewBody.dart';
-import 'package:shop_example/models/product.dart';
+import 'package:shop_cfast/models/product.dart';
 
-//import 'package:shop_example/screens/product_detail_screen.dart';
-import 'package:shop_example/screens/product_screen.dart';
-import 'package:shop_example/screens/home_screen.dart';
+//import 'package:shop_cfast/screens/product_detail_screen.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
+import 'package:shop_cfast/screens/home_screen.dart';
 
 class GridB extends StatefulWidget {
   const GridB({Key? key}) : super(key: key);

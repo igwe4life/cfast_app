@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shop_example/models/product.dart'; // Import your Product model
+import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:http/http.dart' as http;
 
-///import 'package:shop_example/screens/product_detail_screen.dart';
-///import 'package:shop_example/screens/product_screen.dart';
-import 'package:shop_example/screens/product_screen_brief.dart';
+///import 'package:shop_cfast/screens/product_detail_screen.dart';
+///import 'package:shop_cfast/screens/product_screen.dart';
+import 'package:shop_cfast/screens/product_screen_brief.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final List<Product> products;

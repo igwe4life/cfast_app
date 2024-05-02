@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shop_example/screens/main_screen.dart';
+import 'package:shop_cfast/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
 

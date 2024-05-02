@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/cart_item.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/cart_item.dart';
 
 class CartTile extends StatelessWidget {
   final CartItem item;

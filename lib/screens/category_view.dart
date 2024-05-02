@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:shop_example/models/product.dart';
-import 'package:shop_example/screens/product_screen.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
 
 import 'home_screen.dart';
 

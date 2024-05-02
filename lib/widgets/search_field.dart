@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ionicons/ionicons.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/screens/search_results_screen.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/screens/search_results_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:shop_example/models/product.dart';
+import 'package:shop_cfast/models/product.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({Key? key}) : super(key: key);

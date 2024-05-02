@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shop_example/screens/main_screen.dart';
+import 'package:shop_cfast/screens/main_screen.dart';
 
 import '../main.dart';
 
@@ -70,12 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: isLoading
                   ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
                   : Text(
-                'Login',
-                style: TextStyle(fontSize: 18),
-              ),
+                      'Login',
+                      style: TextStyle(fontSize: 18),
+                    ),
             ),
           ],
         ),
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response =
-      await http.post(Uri.parse(apiUrl), headers: headers, body: body);
+          await http.post(Uri.parse(apiUrl), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);

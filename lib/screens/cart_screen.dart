@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/cart_item.dart';
-import 'package:shop_example/widgets/cart_tile.dart';
-import 'package:shop_example/widgets/check_out_box.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/cart_item.dart';
+import 'package:shop_cfast/widgets/cart_tile.dart';
+import 'package:shop_cfast/widgets/check_out_box.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});

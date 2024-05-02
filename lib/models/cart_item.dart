@@ -1,4 +1,4 @@
-import 'package:shop_example/models/product.dart';
+import 'package:shop_cfast/models/product.dart';
 
 class CartItem {
   int quantity;

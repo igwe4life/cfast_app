@@ -9,9 +9,9 @@ import 'package:http/http.dart' as http;
 
 ///import 'package:share/share.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shop_example/screens/post_list.dart';
-import 'package:shop_example/screens/save_later.dart';
-import 'package:shop_example/screens/saved_listing.dart';
+import 'package:shop_cfast/screens/post_list.dart';
+import 'package:shop_cfast/screens/save_later.dart';
+import 'package:shop_cfast/screens/saved_listing.dart';
 
 ///import 'package:shop_example/screens/saved_later.dart';
 import 'package:url_launcher/url_launcher.dart';

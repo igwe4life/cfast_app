@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image/image.dart' as img;
 import 'dart:typed_data';
 import 'package:image_watermark/image_watermark.dart';
-import 'package:shop_example/screens/saved_listing.dart';
+import 'package:shop_cfast/screens/saved_listing.dart';
 
 import 'login_page.dart';
 

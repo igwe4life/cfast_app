@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:shop_example/widgets/product_widgets/ad_card.dart';
+import 'package:shop_cfast/widgets/product_widgets/ad_card.dart';
 
 class AdsGrid extends StatelessWidget {
   AdsGrid({required this.ads});

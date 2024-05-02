@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/cart_item.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/cart_item.dart';
 
 class CheckOutBox extends StatelessWidget {
   final List<CartItem> items;

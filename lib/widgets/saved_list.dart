@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:shop_example/models/product.dart';
-import 'package:shop_example/screens/product_screen.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
 
 class SavedList extends StatefulWidget {
   const SavedList({Key? key}) : super(key: key);
@@ -22,8 +22,8 @@ class _SavedListState extends State<SavedList> {
   }
 
   Future<List<Product>> fetchDataFromApi() async {
-    final response = await http
-        .get(Uri.parse('https://cfast.ng/cfastapi/savedlist.php'));
+    final response =
+        await http.get(Uri.parse('https://cfast.ng/cfastapi/savedlist.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);

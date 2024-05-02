@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shop_example/constants.dart';
-import 'package:shop_example/models/product.dart';
-import 'package:shop_example/widgets/product_widgets/CallButtonsBar.dart';
-import 'package:shop_example/widgets/product_widgets/ChatActionsWidget.dart';
-import 'package:shop_example/widgets/product_widgets/appbar.dart';
-import 'package:shop_example/widgets/product_widgets/image_slider.dart';
-import 'package:shop_example/widgets/product_widgets/information.dart';
-import 'package:shop_example/widgets/product_widgets/product_desc.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/widgets/product_widgets/CallButtonsBar.dart';
+import 'package:shop_cfast/widgets/product_widgets/ChatActionsWidget.dart';
+import 'package:shop_cfast/widgets/product_widgets/appbar.dart';
+import 'package:shop_cfast/widgets/product_widgets/image_slider.dart';
+import 'package:shop_cfast/widgets/product_widgets/information.dart';
+import 'package:shop_cfast/widgets/product_widgets/product_desc.dart';
 
 class ProductScreen extends StatefulWidget {
   final Product product;
