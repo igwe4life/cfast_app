@@ -67,14 +67,15 @@ class _SearchFieldState extends State<SearchField> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
+        // const SizedBox(height: 10),
 
         // Add the AdMob banner here
-        Container(
-          height: 50,
-          alignment: Alignment.center,
-          // CustomBannerAd() can be added here
-        ),
+        // Container(
+        //   height: 50,
+        //   alignment: Alignment.center,
+        //   // CustomBannerAd() can be added here
+        // ),
       ],
     );
   }

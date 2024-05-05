@@ -37,12 +37,12 @@ class ProductDescription extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         // Add the AdMob banner here
-        Container(
-          height: 50, // Set your desired height
-          alignment: Alignment.center,
-          child: const CustomBannerAd(),
-        ),
-        const SizedBox(height: 5),
+        // Container(
+        //   height: 50, // Set your desired height
+        //   alignment: Alignment.center,
+        //   child: const CustomBannerAd(),
+        // ),
+        // const SizedBox(height: 5),
       ],
     );
   }
