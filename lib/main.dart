@@ -14,6 +14,9 @@ Future<void> main() async {
   ); // Initialize Firebase
   FirebaseMessaging.onBackgroundMessage(
       _firebaseMessagingBackgroundHandler); // Setup background message handler
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  print("FCMToken $fcmToken");
   runApp(const MyApp());
 }
 
