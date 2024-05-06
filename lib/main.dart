@@ -17,6 +17,9 @@ Future<void> main() async {
   final fcmToken = await FirebaseMessaging.instance.getToken();
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   print("FCMToken $fcmToken");
+
+  // Subscribe to a topic
+  await FirebaseMessaging.instance.subscribeToTopic('cfast_push');
   runApp(const MyApp());
 }
 
