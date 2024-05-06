@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "59306757065",
+    "project_id": "cfast-dd2cb",
+    "storage_bucket": "cfast-dd2cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59306757065:android:7e35b65c3a0d0049ae7618",
+        "android_client_info": {
+          "package_name": "com.cfast.ng"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59306757065-tgvh2q9eas24pf7mlc2dht069eql8dnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCix8oFqBGcSJslXWXS27Cj1f39pvB7_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59306757065-tgvh2q9eas24pf7mlc2dht069eql8dnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "59306757065-1vdi521vroclnhbpqoduu99vf8riopl3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bestFlutterUiTemplates"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

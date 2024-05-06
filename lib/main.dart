@@ -3,10 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:shop_cfast/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:firebase_messaging/firebase_messaging.dart'; // Import Firebase Messaging
+import 'firebase_options.dart'; // Import your Firebase options file
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); // Initialize Firebase
+  FirebaseMessaging.onBackgroundMessage(
+      _firebaseMessagingBackgroundHandler); // Setup background message handler
   runApp(const MyApp());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
 }
 
 class MyApp extends StatefulWidget {

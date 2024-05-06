@@ -59,5 +59,7 @@
             <string>Icon-App</string>
         </dict>
     </dict>
+    <key>NSPhotoLibraryUsageDescription</key>
+        <string>This app allows you to choose photos from your library to add to your classified listings. Access to your photo library is necessary for you to select and upload images for your listings.</string>
 </dict>
 </plist>
