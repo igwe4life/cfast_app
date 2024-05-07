@@ -12,6 +12,16 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6353765559327674~6650504995"/>
+        <!-- Set the notification icon -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher"/> <!-- Replace "your_notification_icon_name" with the name of your notification icon file without the file extension -->
+
+        <!-- Set the notification icon color (optional) -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@android:color/transparent"/> <!-- Change the color as needed -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
