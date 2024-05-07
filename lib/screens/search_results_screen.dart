@@ -221,7 +221,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   title: Text(
-                    product.price,
+                    product.price ?? 'Price not available',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -232,7 +232,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        product.title,
+                        product.title ?? 'Title not available',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -242,7 +242,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       ),
                       SizedBox(height: 4), // Added SizedBox for spacing
                       Text(
-                        product.location,
+                        product.location ?? 'Location not available',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.blueGrey.shade700,
@@ -250,22 +250,26 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       ),
                     ],
                   ),
-                  leading: Image.network(
-                    product.image,
-                    width: 100, // Reduced the width for better layout
-                    height:
-                        double.infinity, // Set the height to occupy full height
-                    fit: BoxFit.cover, // Cover the container with the image
-                    alignment:
-                        Alignment.centerLeft, // Align the image to the left
-                  ),
+                  leading: product.image != null
+                      ? Image.network(
+                          product.image!,
+                          width: 100, // Reduced the width for better layout
+                          height: double
+                              .infinity, // Set the height to occupy full height
+                          fit: BoxFit
+                              .cover, // Cover the container with the image
+                          alignment: Alignment
+                              .centerLeft, // Align the image to the left
+                        )
+                      : Placeholder(), // Placeholder or default image if image URL is null
                   onTap: () {
                     // Add onTap here
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ProductScreenBrief(product: product)),
+                        builder: (context) =>
+                            ProductScreenBrief(product: product),
+                      ),
                     );
                   },
                   dense: true, // Reduced the vertical size of the ListTile

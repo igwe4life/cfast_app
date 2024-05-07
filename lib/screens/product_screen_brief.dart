@@ -517,7 +517,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
 
   @override
   Widget build(BuildContext context) {
-    final processedHtml = removeHyperlinks(productData['Description']);
+    final processedHtml = removeHyperlinks(productData['Description'] ?? '');
 
     if (_isLoading) {
       // Show loading indicator if API call is in progress
@@ -759,7 +759,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                     ),
                     //FeedbackWidget(String productData['StoreName']),
                     FeedbackWidget(
-                      storeName: productData['StoreName'],
+                      storeName: productData['StoreName'] ?? '',
                     ),
                     const SizedBox(height: 5),
                     ElevatedButton(

@@ -127,11 +127,22 @@ class _GridHomeState extends State<GridHome> {
   Widget _buildGridItem(BuildContext context, Product product) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProductScreen(product: product)),
-        );
+        if (product != null) {
+          // Check if product is not null
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductScreen(product: product),
+            ),
+          );
+        } else {
+          // Handle the case where product is null, such as showing a toast message
+          Fluttertoast.showToast(
+            msg: 'Product details are not available.',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+          );
+        }
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -165,7 +176,7 @@ class _GridHomeState extends State<GridHome> {
                     return AspectRatio(
                       aspectRatio: aspectRatio,
                       child: Image.network(
-                        product.image,
+                        product.image ?? '', // Ensure image URL is not null
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
@@ -179,7 +190,8 @@ class _GridHomeState extends State<GridHome> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.price.toString(),
+                      product.price?.toString() ??
+                          '', // Ensure price is not null
                       style: Theme.of(context).textTheme.subtitle1!.merge(
                             const TextStyle(
                               fontWeight: FontWeight.w700,
@@ -189,7 +201,7 @@ class _GridHomeState extends State<GridHome> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      product.title,
+                      product.title ?? '', // Ensure title is not null
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.subtitle2!.merge(
@@ -201,7 +213,8 @@ class _GridHomeState extends State<GridHome> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      product.location.toLowerCase(),
+                      product.location?.toLowerCase() ??
+                          '', // Ensure location is not null
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.subtitle2!.merge(

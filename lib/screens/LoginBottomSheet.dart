@@ -85,8 +85,8 @@ class LoginBottomSheet extends StatelessWidget {
               _login(context);
             },
             style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // Set the background color to blue
-              onPrimary: Colors.white, // Set text color to white
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blue, // Set text color to white
             ),
             child: const Text(
               'Login',

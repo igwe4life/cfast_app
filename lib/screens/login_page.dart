@@ -38,65 +38,56 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  SizedBox(height: 40.0),
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/logo.png'),
-                        fit: BoxFit.contain,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 40.0),
+                    Container(
+                      height: 80,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/logo.png'),
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          controller: emailController,
-                          cursorColor: Colors.white,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.email, color: Colors.black),
-                            hintText: "Email",
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
-                            hintStyle: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                        const SizedBox(height: 30.0),
-                        TextFormField(
-                          controller: passwordController,
-                          cursorColor: Colors.white,
-                          obscureText: true,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.lock, color: Colors.black),
-                            hintText: "Password",
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
-                            hintStyle: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ],
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      controller: emailController,
+                      cursorColor: Colors.white,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.email, color: Colors.black),
+                        hintText: "Email",
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)),
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 40.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    margin: const EdgeInsets.only(top: 15.0),
-                    child: ElevatedButton(
-                      onPressed: emailController.text == "" ||
-                              passwordController.text == ""
+                    SizedBox(height: 30.0),
+                    TextFormField(
+                      controller: passwordController,
+                      cursorColor: Colors.white,
+                      obscureText: true,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock, color: Colors.black),
+                        hintText: "Password",
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)),
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+                    ElevatedButton(
+                      onPressed: emailController.text.isEmpty ||
+                              passwordController.text.isEmpty
                           ? null
                           : () {
                               setState(() {
@@ -106,22 +97,16 @@ class _LoginPageState extends State<LoginPage> {
                                   passwordController.text);
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.blue, // Set blue background color for Login
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.all(15.0),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Login",
-                        style: TextStyle(
-                            color: Colors.white), // Set white text color
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 40.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    margin: const EdgeInsets.only(top: 15.0),
-                    child: ElevatedButton(
+                    SizedBox(height: 15.0),
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -131,23 +116,16 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors
-                            .orange, // Set orange background color for Register
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.all(15.0),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Register",
-                        style: TextStyle(
-                            color: Colors.white), // Set white text color
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 20.0),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 40.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    margin: const EdgeInsets.only(top: 15.0),
-                    child: ElevatedButton(
+                    SizedBox(height: 15.0),
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -157,19 +135,17 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.black, // Set black background color
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.all(15.0),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Forgot Password",
-                        style: TextStyle(
-                          color: Colors.white, // Set white text color
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

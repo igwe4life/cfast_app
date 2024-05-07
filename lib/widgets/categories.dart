@@ -32,30 +32,33 @@ class Categories extends StatelessWidget {
                 ),
               );
             },
-            child: Column(
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(
-                        categories[index].image,
+            child: Expanded(
+              // Wrap your Column with Expanded
+              child: Column(
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage(
+                          categories[index].image,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  categories[index].title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 10,
+                  const SizedBox(height: 0),
+                  Text(
+                    categories[index].title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 10,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-              ],
+                  const SizedBox(height: 1),
+                ],
+              ),
             ),
           );
         }),

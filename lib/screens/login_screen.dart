@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: isLoading ? null : () => login(),
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
+                backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               ),
               child: isLoading

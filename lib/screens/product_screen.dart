@@ -71,6 +71,7 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
+    phone = '';
     loadAuthToken();
     loadFavoriteStatus();
     fetchData();
@@ -517,7 +518,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final processedHtml = removeHyperlinks(productData['Description']);
+    final processedHtml = removeHyperlinks(productData['Description'] ?? '');
 
     if (_isLoading) {
       // Show loading indicator if API call is in progress
@@ -671,7 +672,9 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     ),
                     const SizedBox(height: 5),
-                    if (productData['Phone'] != phone) // Add condition here
+                    if (phone != null &&
+                        productData['Phone'] != phone) // Add condition here
+
                       CallButtonsBar(
                         onRequestCallPressed: () {
                           print('Request Call button pressed');
@@ -761,7 +764,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     //FeedbackWidget(String productData['StoreName']),
                     FeedbackWidget(
-                      storeName: productData['StoreName'],
+                      storeName: productData['StoreName'] ?? '',
                     ),
                     const SizedBox(height: 5),
                     ElevatedButton(
