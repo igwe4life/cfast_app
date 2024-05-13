@@ -1,34 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:shop_cfast/constants.dart';
-import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
 
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../services/message_service.dart';
 import 'MessageScreen.dart';
 import 'create_listing.dart';
 import 'login_page.dart';
-//import 'messages_screen.dart';
 import 'profile_page.dart';
 import 'saved_screen.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:badges/badges.dart' as badges;
-import 'create_listing.dart';
-import 'login_page.dart';
-import 'messages_screen.dart';
-import 'profile_page.dart';
-import 'saved_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -101,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
 
           // Display a Flutter toast with the updated unread message count
           // Fluttertoast.showToast(
-          //   msg: 'Unread messages: $unreadCount',
+          //   msg: 'Unread messages: $unreadCount , ${response.statusCode}',
           //   toastLength: Toast.LENGTH_SHORT,
           //   gravity: ToastGravity.BOTTOM,
           //   timeInSecForIosWeb: 1,
@@ -109,6 +100,21 @@ class _MainScreenState extends State<MainScreen> {
           //   textColor: Colors.white,
           //   fontSize: 16.0,
           // );
+        } else if (response.statusCode == 401) {
+          // Token expired or unauthenticated
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text('Token expired or unauthenticated. Please login again.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          // Navigate to login page and remove all routes from stack
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            (Route<dynamic> route) => false,
+          );
         } else {
           print('Failed to load unread message count: ${response.statusCode}');
         }

@@ -532,11 +532,65 @@ class _ProductScreenState extends State<ProductScreen> {
           slivers: <Widget>[
             SliverAppBar(
               expandedHeight: 200.0,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(
-                  widget.product.image,
-                  fit: BoxFit.cover,
+              // flexibleSpace: FlexibleSpaceBar(
+              //   background: Image.network(
+              //     widget.product.image,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
+              flexibleSpace: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : CarouselSlider(
+                options: CarouselOptions(
+                  height: 400.0,
+                  aspectRatio: 16 / 9,
+                  viewportFraction: 0.8,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentImage = index;
+                    });
+                  },
+                  scrollDirection: Axis.horizontal,
                 ),
+                items: [
+                  for (var imageUrl in imageUrls)
+                    Builder(
+                      builder: (BuildContext context) {
+                        return GestureDetector(
+                          onTap: () {
+                            // Open gallery view
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => GalleryView(
+                                    images: imageUrls,
+                                    initialIndex: currentImage),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                            ),
+                            child: Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
               ),
               actions: [
                 // Favorite IconButton

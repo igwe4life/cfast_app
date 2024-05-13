@@ -14,17 +14,11 @@ import 'package:shop_cfast/widgets/GridHome.dart';
 import 'package:shop_cfast/widgets/GridSimilar.dart';
 import 'package:shop_cfast/widgets/product_widgets/CallButtonsBar.dart';
 import 'package:shop_cfast/widgets/product_widgets/ChatActionsWidget.dart';
-import 'package:shop_cfast/widgets/product_widgets/appbar.dart';
-import 'package:shop_cfast/widgets/product_widgets/image_slider.dart';
 import 'package:shop_cfast/widgets/product_widgets/information.dart';
-import 'package:shop_cfast/widgets/product_widgets/product_desc.dart';
-import 'package:shop_cfast/widgets/product_widgets/DescriptionWidget.dart';
-import 'package:shop_cfast/widgets/GridB.dart';
 import '../widgets/product_widgets/feedback_widget.dart';
 import 'create_listing.dart';
 import 'feedback_screen.dart';
 import 'login_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductScreenBrief extends StatefulWidget {
   final Product product;
@@ -46,11 +40,9 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
 
   final String apiUrl = 'https://cfast.ng/api/savedPosts';
 
-  bool _isOfferLoading = false;
   late SharedPreferences sharedPreferences;
 
   int currentImage = 0;
-  //bool isFavorite = false;
   Map<String, dynamic> productData = {};
   late int uid;
   late String name;
@@ -394,7 +386,6 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
         // Request successful
         var responseBody = response.body;
         print('Response Body: $responseBody');
-        // Fluttertoast.showToast(msg: 'Request for call sent successfully!');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Request for callback sent successfully!'),
@@ -415,7 +406,6 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
     } catch (e) {
       // Error occurred during the request
       print('Error: $e');
-      // Fluttertoast.showToast(msg: 'Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to request callback. Error: $e'),

@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:http/http.dart' as http;
 
-///import 'package:shop_cfast/screens/product_detail_screen.dart';
-///import 'package:shop_cfast/screens/product_screen.dart';
 import 'package:shop_cfast/screens/product_screen_brief.dart';
 
 class SearchResultsScreen extends StatefulWidget {

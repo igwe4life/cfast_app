@@ -8,8 +8,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'forgot_password.dart';
 import 'main_screen.dart';
-import 'profile_page.dart';
-import 'signup_page.dart'; // Import the SignupScreen
 
 class LoginPage extends StatefulWidget {
   @override
@@ -86,16 +84,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 30.0),
                     ElevatedButton(
-                      onPressed: emailController.text.isEmpty ||
-                              passwordController.text.isEmpty
+                      onPressed: emailController.text.trim().isEmpty || passwordController.text.trim().isEmpty
                           ? null
                           : () {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              signIn(emailController.text,
-                                  passwordController.text);
-                            },
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        signIn(emailController.text.trim(), passwordController.text.trim());
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.all(15.0),
