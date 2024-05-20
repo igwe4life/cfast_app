@@ -192,7 +192,7 @@ class _GridHomeState extends State<GridHome> {
                     Text(
                       product.price?.toString() ??
                           '', // Ensure price is not null
-                      style: Theme.of(context).textTheme.bodyText1!.merge(
+                      style: Theme.of(context).textTheme.bodyLarge!.merge(
                             const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.blue,
@@ -204,7 +204,7 @@ class _GridHomeState extends State<GridHome> {
                       product.title ?? '', // Ensure title is not null
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle2!.merge(
+                      style: Theme.of(context).textTheme.titleMedium!.merge(
                             TextStyle(
                               color: Colors.grey.shade900,
                               fontSize: 12,
@@ -217,7 +217,7 @@ class _GridHomeState extends State<GridHome> {
                           '', // Ensure location is not null
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle2!.merge(
+                      style: Theme.of(context).textTheme.titleMedium!.merge(
                             TextStyle(
                               color: Colors.grey.shade500,
                               fontSize: 10,
