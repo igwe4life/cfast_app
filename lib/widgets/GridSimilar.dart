@@ -142,7 +142,7 @@ class _GridSimilarState extends State<GridSimilar> {
                   children: [
                     Text(
                       product.price.toString(),
-                      style: Theme.of(context).textTheme.subtitle1!.merge(
+                      style: Theme.of(context).textTheme.bodyLarge!.merge(
                             const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.blue,
@@ -154,7 +154,7 @@ class _GridSimilarState extends State<GridSimilar> {
                       product.title,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle2!.merge(
+                      style: Theme.of(context).textTheme.titleMedium!.merge(
                             TextStyle(
                               color: Colors.grey.shade900,
                               fontSize: 12,
@@ -166,7 +166,7 @@ class _GridSimilarState extends State<GridSimilar> {
                       product.location.toLowerCase(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle2!.merge(
+                      style: Theme.of(context).textTheme.titleMedium!.merge(
                             TextStyle(
                               color: Colors.grey.shade500,
                               fontSize: 10,
