@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'edit_posts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 
 class ApiListViewScreen extends StatefulWidget {
   @override
@@ -48,8 +49,8 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
     //   return []; // Return empty list if UID is invalid
     // }
 
-    final url = Uri.parse(
-        'https://cfast.ng/cfastapi/fetch_saved_posts.php?user_id=$uid');
+    final url =
+        Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       return json.decode(response.body);

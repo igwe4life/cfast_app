@@ -12,6 +12,7 @@ import 'package:shop_cfast/widgets/home_appbar.dart';
 import 'package:shop_cfast/widgets/search_field.dart';
 import 'package:shop_cfast/widgets/trending_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -47,8 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Product>> fetchProductsFromAPI() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final response =
-        await http.get('https://cfast.ng/cfastapi/homelist.php' as Uri);
+    final response = await http.get('$baseUrl/cfastapi/homelist.php' as Uri);
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

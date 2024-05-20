@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:shop_cfast/screens/product_screen_brief.dart';
 
+import '../constants.dart';
+
 class SearchResultsScreen extends StatefulWidget {
   final List<Product> products;
   final String query;
@@ -49,7 +51,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     if (query.isNotEmpty) {
       try {
         final response = await http.get(
-          Uri.parse('https://cfast.ng/cfastapi/search.php?q=$query'),
+          Uri.parse('$baseUrl/cfastapi/search.php?q=$query'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -284,7 +286,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   void _saveSearchQuery(String query, int searchResultsCount) async {
     // Make API call to save the search query
     // Adjust the URL and headers according to your API documentation
-    final url = 'https://cfast.ng/api/savedSearches';
+    final url = '$baseUrl/api/savedSearches';
 
     try {
       final response = await http.post(

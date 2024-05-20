@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart'; // Import intl package for date formatting
+import '../constants.dart';
 
 class GetFeedbackScreen extends StatefulWidget {
   final String storeName;
@@ -24,7 +25,7 @@ class _GetFeedbackScreenState extends State<GetFeedbackScreen> {
 
   Future<void> fetchData() async {
     final response = await http.get(Uri.parse(
-        'https://cfast.ng/cfastapi/fetch_feedback.php?stname=${widget.storeName}'));
+        '$baseUrl/cfastapi/fetch_feedback.php?stname=${widget.storeName}'));
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import '../constants.dart';
 
 void main() {
   runApp(MyApp());
@@ -66,8 +67,7 @@ class _MessageScreenState extends State<MessageScreen> {
   Future<void> fetchMessages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-    final url =
-        Uri.parse('https://cfast.ng/cfastapi/getmessages.php?token=$token');
+    final url = Uri.parse('$baseUrl/cfastapi/getmessages.php?token=$token');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -225,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     final url = Uri.parse(
-        'https://cfast.ng/cfastapi/getfullmessages.php?token=$token&id=${widget.messageId}');
+        '$baseUrl/cfastapi/getfullmessages.php?token=$token&id=${widget.messageId}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -368,7 +368,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final uid = prefs.getInt("uid") ?? 0;
 
     final response = await http.put(
-      Uri.parse('https://cfast.ng/api/threads/${widget.messageId}'),
+      Uri.parse('$baseUrl/api/threads/${widget.messageId}'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

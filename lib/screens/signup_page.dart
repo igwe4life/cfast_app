@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../constants.dart';
 import 'login_page.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
             // Handle web resource error.
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://cfast.ng/account')) {
+            if (request.url.startsWith('$baseUrl/account')) {
               _showSuccessToast();
               _redirectToLoginScreen();
 
@@ -69,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://cfast.ng/register'));
+      ..loadRequest(Uri.parse('$baseUrl/register'));
   }
 
   @override

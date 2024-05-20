@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../constants.dart';
 
 class FeedbackWidget extends StatefulWidget {
   final String storeName;
@@ -23,7 +24,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
   Future<Map<String, dynamic>> fetchData() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://cfast.ng/cfastapi/fetch_feedback.php?stname=${widget.storeName}'));
+          '$baseUrl/cfastapi/fetch_feedback.php?stname=${widget.storeName}'));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {

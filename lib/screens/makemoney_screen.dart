@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../constants.dart';
 
 class MakemoneyScreen extends StatefulWidget {
   @override
@@ -52,7 +53,7 @@ class _MakemoneyScreenState extends State<MakemoneyScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://cfast.ng/page/makemoney'));
+      ..loadRequest(Uri.parse('$baseUrl/page/makemoney'));
   }
 
   @override

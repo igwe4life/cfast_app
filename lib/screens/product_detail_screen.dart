@@ -7,6 +7,7 @@ import 'package:shop_cfast/widgets/product_widgets/appbar.dart';
 import 'package:shop_cfast/widgets/product_widgets/image_slider.dart';
 import 'package:shop_cfast/widgets/product_widgets/information.dart';
 import 'package:shop_cfast/widgets/product_widgets/product_desc.dart';
+import '../constants.dart';
 
 class ProductScreen extends StatefulWidget {
   final Product product;

@@ -79,7 +79,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
 
     try {
       var response = await http.get(
-        Uri.parse('https://cfast.ng/cfastapi/get_images.php?purl=${purl}'),
+        Uri.parse('$baseUrl/cfastapi/get_images.php?purl=${purl}'),
       );
 
       if (response.statusCode == 200) {
@@ -145,7 +145,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
     try {
       final response = newFavoriteStatus
           ? await http.post(
-              Uri.parse('https://cfast.ng/api/savedPosts'),
+              Uri.parse('$baseUrl/api/savedPosts'),
               headers: <String, String>{
                 'Authorization': 'Bearer $token',
                 'Content-Type': 'application/json',
@@ -159,8 +159,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
               }),
             )
           : await http.delete(
-              Uri.parse(
-                  'https://cfast.ng/api/savedPosts/${widget.product.classID}'),
+              Uri.parse('$baseUrl/api/savedPosts/${widget.product.classID}'),
               headers: <String, String>{
                 'Authorization': 'Bearer $token',
                 'Content-Type': 'application/json',
@@ -209,7 +208,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
     });
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/provide_feedback.php'),
+        Uri.parse('$baseUrl/cfastapi/provide_feedback.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -276,7 +275,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
     // Add your logic to report abuse here
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/report_abuse.php'),
+        Uri.parse('$baseUrl/cfastapi/report_abuse.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -360,7 +359,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
   Future<void> requestCall() async {
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/request_call.php'),
+        Uri.parse('$baseUrl/cfastapi/request_call.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -427,7 +426,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
 
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/post_status.php'),
+        Uri.parse('$baseUrl/cfastapi/post_status.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -480,7 +479,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://cfast.ng/cfastapi/post_details.php?pid=${widget.product.classID}'));
+          '$baseUrl/cfastapi/post_details.php?pid=${widget.product.classID}'));
 
       if (response.statusCode == 200) {
         final decodedResponse = json.decode(response.body);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants.dart';
 
 class SearchesTab extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _SearchesTabState extends State<SearchesTab> {
   }
 
   Future<void> fetchSavedSearches() async {
-    final apiUrl = 'https://cfast.ng/api/savedSearches';
+    final apiUrl = '$baseUrl/api/savedSearches';
     final queryParams = {
       'embed': 'null',
       'sort': 'created_at',

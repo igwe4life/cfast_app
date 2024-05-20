@@ -5,7 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/screens/search_results_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import '../../constants.dart';
 import 'package:shop_cfast/models/product.dart';
 
 class SearchField extends StatefulWidget {
@@ -96,7 +96,7 @@ class _SearchFieldState extends State<SearchField> {
     if (query.isNotEmpty) {
       try {
         final response = await http.get(
-          Uri.parse('https://cfast.ng/cfastapi/search.php?q=$query'),
+          Uri.parse('$baseUrl/cfastapi/search.php?q=$query'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

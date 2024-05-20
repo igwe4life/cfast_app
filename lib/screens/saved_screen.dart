@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
 import 'package:shop_cfast/screens/product_screen_brief.dart';
+import '../constants.dart';
 
 class SavedScreen extends StatefulWidget {
   @override
@@ -160,7 +161,7 @@ class _SavedScreenState extends State<SavedScreen> {
 List<SavedSearch> savedSearches = [];
 
 Future<List<Ad>> fetchAds(token) async {
-  final apiUrl = 'https://cfast.ng/cfastapi/saved_posts.php?token=$token';
+  final apiUrl = '$baseUrl/cfastapi/saved_posts.php?token=$token';
 
   final response = await http.get(
     Uri.parse(apiUrl),
@@ -175,7 +176,7 @@ Future<List<Ad>> fetchAds(token) async {
 }
 
 Future<List<SavedSearch>> fetchSavedSearches(token) async {
-  final apiUrl = 'https://cfast.ng/api/savedSearches';
+  final apiUrl = '$baseUrl/api/savedSearches';
   final tkk = '293|IfbUsq2eVrwVEsE8UDXiwRPgZIsDDy933KZJcr92';
   final queryParams = {
     'embed': 'null',

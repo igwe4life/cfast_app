@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'get_feedback.dart';
 import 'login_page.dart';
+import '../constants.dart';
 
 class FeedbackScreen extends StatefulWidget {
   final String storeName;
@@ -88,7 +89,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       }
 
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/send_feedback.php'),
+        Uri.parse('$baseUrl/cfastapi/send_feedback.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

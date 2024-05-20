@@ -5,7 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import '../../constants.dart';
 import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
@@ -31,7 +31,7 @@ class _GridHomeState extends State<GridHome> {
   Future<List<Product>> fetchDataFromApi() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://cfast.ng/cfastapi/homelist.php?limit=$_limit&offset=$_offset'));
+          '$baseUrl/cfastapi/homelist.php?limit=$_limit&offset=$_offset'));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = json.decode(response.body);

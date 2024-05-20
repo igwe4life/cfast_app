@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import '../../screens/ChatScreen.dart';
 import '../../screens/MessageScreen.dart';
 import '../../screens/login_page.dart';
+import '../../constants.dart';
 
 class ChatActionsWidget extends StatefulWidget {
   final String title;
@@ -139,7 +140,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       isStartingChat = true; // Set flag to indicate API call is in progress
     });
 
-    final url = 'https://cfast.ng/cfastapi/start_chat.php';
+    final url = '$baseUrl/cfastapi/start_chat.php';
 
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -235,7 +236,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       _isLoading = true; // Show loading indicator
     });
 
-    String url = 'https://cfast.ng/api/threads';
+    String url = '$baseUrl/api/threads';
     String body = widget.textEditingController.text;
 
     try {
@@ -284,7 +285,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       _isLoading = true; // Show loading indicator
     });
 
-    String url = 'https://cfast.ng/api/threads/$threadId';
+    String url = '$baseUrl/api/threads/$threadId';
 
     try {
       var response = await http.get(
@@ -330,7 +331,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
   }
 
   Future<void> sendRequestToAPI() async {
-    final url = 'https://cfast.ng/api/threads';
+    final url = '$baseUrl/api/threads';
 
     try {
       final response = await http.post(
@@ -446,7 +447,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                           // Make API call to send offer
                                           var response = await http.post(
                                             Uri.parse(
-                                                'https://cfast.ng/cfastapi/send_offer.php'),
+                                                '$baseUrl/cfastapi/send_offer.php'),
                                             body: jsonEncode({
                                               'offer': enteredOffer,
                                               'post_id': widget.postId,

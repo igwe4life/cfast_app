@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../constants.dart';
 
 class ForgotPasswordWidget extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
           (_) => characters.codeUnitAt(randoms.nextInt(characters.length))));
     }
 
-    final String apiUrl = 'https://cfast.ng/api/auth/password/reset';
+    final String apiUrl = '$baseUrl/api/auth/password/reset';
 
     final Map<String, String> requestBody = {
       'email': _emailController.text,

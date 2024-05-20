@@ -13,7 +13,7 @@ import 'package:image/image.dart' as img;
 import 'dart:typed_data';
 import 'package:image_watermark/image_watermark.dart';
 import 'package:shop_cfast/screens/saved_listing.dart';
-
+import '../constants.dart';
 import 'login_page.dart';
 
 class AddListingScreen extends StatefulWidget {
@@ -96,8 +96,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   getData() async {
-    final res = await http.get(
-        Uri.parse("https://cfast.ng/cfastapi/get_cities.php?parentId=909"));
+    final res = await http
+        .get(Uri.parse("$baseUrl/cfastapi/get_cities.php?parentId=909"));
     setState(() {
       data = jsonDecode(res.body);
     });
@@ -158,7 +158,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   Future<void> loadSubCategories(int parentId) async {
     String apiUrl =
-        'https://cfast.ng/api/categories?parentId=$parentId&nestedIncluded=0';
+        '$baseUrl/api/categories?parentId=$parentId&nestedIncluded=0';
 
     try {
       var response = await http.get(Uri.parse(apiUrl), headers: {
@@ -186,8 +186,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   Future<void> loadSubCities(String statecode) async {
     //Fluttertoast.showToast(msg: 'And we\'re inside the cities');
 
-    String apiUrl =
-        'https://cfast.ng/cfastapi/get_cities.php?statecode=$statecode';
+    String apiUrl = '$baseUrl/cfastapi/get_cities.php?statecode=$statecode';
 
     try {
       var response = await http.get(Uri.parse(apiUrl), headers: {
@@ -225,8 +224,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       while (fetchNextPage) {
         var response = await http.get(
-          Uri.parse(
-              'https://cfast.ng/api/countries/NG/cities?page=$_currentPage'),
+          Uri.parse('$baseUrl/api/countries/NG/cities?page=$_currentPage'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -428,7 +426,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://cfast.ng/cfastapi/saveposts.php'),
+      Uri.parse('$baseUrl/cfastapi/saveposts.php'),
     );
 
     // Add headers
@@ -533,7 +531,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://cfast.ng/api/posts'),
+      Uri.parse('$baseUrl/api/posts'),
     );
 
     // Add headers

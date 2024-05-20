@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../constants.dart';
 
 class PremiumScreen extends StatefulWidget {
   final int uuid; // Define uuid parameter here
@@ -63,7 +64,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       )
       ..loadRequest(Uri.parse(
-          'https://cfast.ng/premium/index.php?uid=${widget.uuid}&email=${widget.uemail}&phone=${widget.uphone}'));
+          '$baseUrl/premium/index.php?uid=${widget.uuid}&email=${widget.uemail}&phone=${widget.uphone}'));
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 
 class Post {
   final int id;
@@ -73,7 +74,7 @@ class _PostsListScreenState extends State<PostsListScreen> {
   Future<void> fetchPosts() async {
     final response = await http.get(
       Uri.parse(
-          'https://cfast.ng/api/posts?op=null&belongLoggedUser=1&embed=null&sort=created_at&perPage=100'),
+          '$baseUrl/api/posts?op=null&belongLoggedUser=1&embed=null&sort=created_at&perPage=100'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

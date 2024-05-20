@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 
 class SavedPostsScreen extends StatefulWidget {
   @override
@@ -24,8 +25,8 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
     });
 
     try {
-      var response = await http
-          .get(Uri.parse('https://cfast.ng/cfastapi/fetch_saved_posts.php'));
+      var response =
+          await http.get(Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php'));
       if (response.statusCode == 200) {
         setState(() {
           _savedPosts = json.decode(response.body);
@@ -196,7 +197,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     // Create multipart request
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://cfast.ng/api/posts'),
+      Uri.parse('$baseUrl/api/posts'),
     );
 
     // Add headers

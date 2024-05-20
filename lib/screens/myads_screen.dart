@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
+import '../constants.dart';
 
 class AdScreen extends StatefulWidget {
   @override
@@ -150,7 +151,7 @@ class _AdScreenState extends State<AdScreen> {
 }
 
 Future<List<Ad>> fetchAds(token) async {
-  final apiUrl = 'https://cfast.ng/cfastapi/my_ads.php?token=$token';
+  final apiUrl = '$baseUrl/cfastapi/my_ads.php?token=$token';
 
   final response = await http.get(
     Uri.parse(apiUrl),

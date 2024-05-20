@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import '../../constants.dart';
 
 class StaggeredGridViewWidget extends StatefulWidget {
   @override
@@ -19,8 +20,7 @@ class _StaggeredGridViewWidgetState extends State<StaggeredGridViewWidget> {
   }
 
   Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse("https://bworldapp.online/cfastapi/test.php"));
+    final response = await http.get(Uri.parse("$baseUrl/cfastapi/test.php"));
 
     if (response.statusCode == 200) {
       setState(() {

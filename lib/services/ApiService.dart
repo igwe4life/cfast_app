@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants.dart';
 
 class ApiService {
   final SharedPreferences _prefs;
@@ -9,7 +10,7 @@ class ApiService {
 
   Future<void> startChatThread(
       String name, String email, String body, int postId) async {
-    final url = 'https://cfast.ng/cfastapi/start_chat.php';
+    final url = '$baseUrl/cfastapi/start_chat.php';
     final String? token = _prefs.getString('token');
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -39,7 +40,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> startConversation(
       String name, String email, String body, int postId) async {
-    final url = 'https://cfast.ng/api/threads';
+    final url = '$baseUrl/api/threads';
     final String? token = _prefs.getString('token');
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -67,7 +68,7 @@ class ApiService {
   }
 
   Future<void> getThread(int threadId) async {
-    final url = 'https://cfast.ng/api/threads/$threadId';
+    final url = '$baseUrl/api/threads/$threadId';
     final String? token = _prefs.getString('token');
 
     try {

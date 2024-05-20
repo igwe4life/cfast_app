@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 
 void main() {
   runApp(MyApp());
@@ -73,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     final url = Uri.parse(
-        'https://cfast.ng/cfastapi/getfullmessages.php?token=$token&id=${widget.threadId}');
+        '$baseUrl/cfastapi/getfullmessages.php?token=$token&id=${widget.threadId}');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -184,7 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final uid = prefs.getInt("uid") ?? 0;
 
     final response = await http.put(
-      Uri.parse('https://cfast.ng/api/threads/${widget.threadId}'),
+      Uri.parse('$baseUrl/api/threads/${widget.threadId}'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

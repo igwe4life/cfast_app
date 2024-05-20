@@ -46,6 +46,8 @@ class _ProductScreenState extends State<ProductScreen> {
 
   final String apiUrl = 'https://cfast.ng/api/savedPosts';
 
+  //final String url = '$baseUrl/getmessagescount.php?token=$token';
+
   bool _isOfferLoading = false;
   late SharedPreferences sharedPreferences;
 
@@ -88,7 +90,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     try {
       var response = await http.get(
-        Uri.parse('https://cfast.ng/cfastapi/get_images.php?purl=${purl}'),
+        Uri.parse('$baseUrl/cfastapi/get_images.php?purl=${purl}'),
       );
 
       if (response.statusCode == 200) {
@@ -154,7 +156,7 @@ class _ProductScreenState extends State<ProductScreen> {
     try {
       final response = newFavoriteStatus
           ? await http.post(
-              Uri.parse('https://cfast.ng/api/savedPosts'),
+              Uri.parse('$baseUrl/api/savedPosts'),
               headers: <String, String>{
                 'Authorization': 'Bearer $token',
                 'Content-Type': 'application/json',
@@ -168,8 +170,7 @@ class _ProductScreenState extends State<ProductScreen> {
               }),
             )
           : await http.delete(
-              Uri.parse(
-                  'https://cfast.ng/api/savedPosts/${widget.product.classID}'),
+              Uri.parse('$baseUrl/api/savedPosts/${widget.product.classID}'),
               headers: <String, String>{
                 'Authorization': 'Bearer $token',
                 'Content-Type': 'application/json',
@@ -218,7 +219,7 @@ class _ProductScreenState extends State<ProductScreen> {
     });
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/provide_feedback.php'),
+        Uri.parse('$baseUrl/cfastapi/provide_feedback.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -285,7 +286,7 @@ class _ProductScreenState extends State<ProductScreen> {
     // Add your logic to report abuse here
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/report_abuse.php'),
+        Uri.parse('$baseUrl/cfastapi/report_abuse.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -369,7 +370,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Future<void> requestCall() async {
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/request_call.php'),
+        Uri.parse('$baseUrl/cfastapi/request_call.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -438,7 +439,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/post_status.php'),
+        Uri.parse('$baseUrl/cfastapi/post_status.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -491,7 +492,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://cfast.ng/cfastapi/post_details.php?pid=${widget.product.classID}'));
+          '$baseUrl/cfastapi/post_details.php?pid=${widget.product.classID}'));
 
       if (response.statusCode == 200) {
         final decodedResponse = json.decode(response.body);
@@ -541,57 +542,57 @@ class _ProductScreenState extends State<ProductScreen> {
               flexibleSpace: isLoading
                   ? Center(child: CircularProgressIndicator())
                   : CarouselSlider(
-                options: CarouselOptions(
-                  height: 400.0,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.8,
-                  initialPage: 0,
-                  enableInfiniteScroll: true,
-                  reverse: false,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enlargeCenterPage: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentImage = index;
-                    });
-                  },
-                  scrollDirection: Axis.horizontal,
-                ),
-                items: [
-                  for (var imageUrl in imageUrls)
-                    Builder(
-                      builder: (BuildContext context) {
-                        return GestureDetector(
-                          onTap: () {
-                            // Open gallery view
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => GalleryView(
-                                    images: imageUrls,
-                                    initialIndex: currentImage),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                            ),
-                            child: Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                            ),
+                      options: CarouselOptions(
+                        height: 400.0,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 3),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentImage = index;
+                          });
+                        },
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      items: [
+                        for (var imageUrl in imageUrls)
+                          Builder(
+                            builder: (BuildContext context) {
+                              return GestureDetector(
+                                onTap: () {
+                                  // Open gallery view
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => GalleryView(
+                                          images: imageUrls,
+                                          initialIndex: currentImage),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                  ),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                      ],
                     ),
-                ],
-              ),
               actions: [
                 // Favorite IconButton
                 // IconButton(

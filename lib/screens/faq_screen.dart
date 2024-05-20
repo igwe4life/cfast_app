@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../constants.dart';
 
 class FaqScreen extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class _FaqScreenState extends State<FaqScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://cfast.ng/page/faq'));
+      ..loadRequest(Uri.parse('$baseUrl/page/faq'));
   }
 
   @override

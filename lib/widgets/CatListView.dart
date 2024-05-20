@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../screens/category_view.dart';
 import 'SubCatList.dart';
+import '../../constants.dart';
 
 class Category {
   final int id;
@@ -70,47 +71,47 @@ class _CatListViewState extends State<CatListView> {
   }
 
   void initializeImageUrl() {
-    String aurl = 'https://cfast.ng/api/categories?parentId=9';
+    String aurl = '$baseUrl/api/categories?parentId=9';
 
     if (widget.catname?.contains('Vehicles') == true) {
       var catId = 1;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Mobiles') == true) {
       var catId = 9;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Electronics') == true) {
       var catId = 14;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Furniture') == true) {
       var catId = 30;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Property') == true) {
       var catId = 37;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Pets') == true) {
       var catId = 46;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Fashion') == true) {
       var catId = 54;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Beauty') == true) {
       var catId = 62;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Jobs') == true) {
       var catId = 73;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Services') == true) {
       var catId = 97;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Learning') == true) {
       var catId = 114;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else if (widget.catname?.contains('Events') == true) {
       var catId = 122;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     } else {
       var catId = 9;
-      aurl = 'https://cfast.ng/api/categories?parentId=$catId';
+      aurl = '$baseUrl/api/categories?parentId=$catId';
     }
 
     fetchCategories(aurl);
@@ -165,7 +166,7 @@ class _CatListViewState extends State<CatListView> {
     };
 
     // Construct the API endpoint with the search query
-    String apiEndpoint = 'https://cfast.ng/api/posts?op=search&q=$query';
+    String apiEndpoint = '$baseUrl/api/posts?op=search&q=$query';
 
     try {
       final response = await http.get(Uri.parse(apiEndpoint), headers: headers);

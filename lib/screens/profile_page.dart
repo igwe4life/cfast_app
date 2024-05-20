@@ -24,6 +24,7 @@ import 'login_page.dart';
 import 'main_screen.dart';
 import 'makemoney_screen.dart';
 import 'myads_screen.dart';
+import '../constants.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -79,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> requestCall() async {
     try {
       var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/request_manager_call.php'),
+        Uri.parse('$baseUrl/cfastapi/request_manager_call.php'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -356,7 +357,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
       var response = await http.get(
-        Uri.parse('https://cfast.ng/api/auth/logout/$uid'),
+        Uri.parse('$baseUrl/api/auth/logout/$uid'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../constants.dart';
 
 class CardListViewWidget extends StatefulWidget {
   @override
@@ -17,8 +18,7 @@ class _CardListViewWidgetState extends State<CardListViewWidget> {
   }
 
   Future<void> fetchDataFromAPI() async {
-    final response =
-        await http.get('https://bworldapp.online/cfastapi/test.php' as Uri);
+    final response = await http.get('$baseUrl/cfastapi/test.php' as Uri);
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);

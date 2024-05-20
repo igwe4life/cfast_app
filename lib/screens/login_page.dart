@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_cfast/screens/signup_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:shop_cfast/constants.dart';
 import 'forgot_password.dart';
 import 'main_screen.dart';
 
@@ -18,6 +18,26 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
+  }
+
+  @override
+  void dispose() {
+    emailController.removeListener(_updateButtonState);
+    passwordController.removeListener(_updateButtonState);
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _updateButtonState() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +104,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 30.0),
                     ElevatedButton(
-                      onPressed: emailController.text.trim().isEmpty || passwordController.text.trim().isEmpty
+                      onPressed: emailController.text.trim().isEmpty ||
+                              passwordController.text.trim().isEmpty
                           ? null
                           : () {
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        signIn(emailController.text.trim(), passwordController.text.trim());
-                      },
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              signIn(emailController.text.trim(),
+                                  passwordController.text.trim());
+                            },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.all(15.0),
@@ -151,11 +173,8 @@ class _LoginPageState extends State<LoginPage> {
 
     Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
-    var response = await http.post(
-        Uri.parse('https://cfast.ng/cfastapi/auth_login.php'),
-        body: data);
-
-    //showToast("${response.body} Login response");
+    var response = await http
+        .post(Uri.parse('$baseUrl/cfastapi/auth_login.php'), body: data);
 
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);

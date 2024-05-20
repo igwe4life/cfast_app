@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../constants.dart';
 
 class ProductGrid extends StatefulWidget {
   const ProductGrid({super.key});
@@ -22,7 +23,7 @@ class _ProductGridState extends State<ProductGrid> {
 
   Future<List<Map<String, dynamic>>> fetchProductsFromAPI() async {
     final response = await http.get(Uri.parse(
-        'https://bworldapp.online/cfastapi/test.php')); // Replace with your API endpoint
+        '$baseUrl/cfastapi/test.php')); // Replace with your API endpoint
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

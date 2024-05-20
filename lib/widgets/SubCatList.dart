@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../constants.dart';
 
 class ProductListing {
   final int id;
@@ -60,7 +61,7 @@ class _CatSubListViewState extends State<CatSubListView> {
 
   Future<void> fetchProductListings() async {
     const url =
-        'https://cfast.ng/api/posts?op=latest'; // Replace with your actual API endpoint
+        '$baseUrl/api/posts?op=latest'; // Replace with your actual API endpoint
 
     const Map<String, String> headers = {
       'Content-Type': 'application/json',

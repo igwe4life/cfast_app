@@ -71,9 +71,10 @@ class _MainScreenState extends State<MainScreen> {
     try {
       final token = sharedPreferences.getString("token");
       if (token != null) {
+        final String url = '$baseUrl/getmessagescount.php?token=$token';
+
         final response = await http.get(
-          Uri.parse(
-              'https://cfast.ng/cfastapi/getmessagescount.php?token=$token'),
+          Uri.parse(url),
         );
         if (response.statusCode == 200) {
           final jsonData = json.decode(response.body);

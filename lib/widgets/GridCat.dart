@@ -5,7 +5,7 @@ import 'dart:convert';
 
 //import 'DetailViewBody.dart';
 import 'package:shop_cfast/models/product.dart';
-
+import '../../constants.dart';
 //import 'package:shop_cfast/screens/product_detail_screen.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
@@ -19,8 +19,7 @@ class GridCat extends StatefulWidget {
 
 class _GridCatState extends State<GridCat> {
   Future<List<Product>> fetchDataFromApi() async {
-    final response =
-        await http.get(Uri.parse('https://cfast.ng/cfastapi/test.php'));
+    final response = await http.get(Uri.parse('$baseUrl/cfastapi/test.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import '../../constants.dart';
 import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
 
@@ -23,7 +23,7 @@ class _SavedListState extends State<SavedList> {
 
   Future<List<Product>> fetchDataFromApi() async {
     final response =
-        await http.get(Uri.parse('https://cfast.ng/cfastapi/savedlist.php'));
+        await http.get(Uri.parse('$baseUrl/cfastapi/savedlist.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);

@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
-
+import '../constants.dart';
 import 'home_screen.dart';
 
 class Category {
@@ -66,7 +66,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   Future<List<Product>> fetchDataFromApi(int catId, int parentId) async {
     final response = await http.get(Uri.parse(
-        'https://cfast.ng/cfastapi/catlist.php?catId=$catId&parent_id=$parentId'));
+        '$baseUrl/cfastapi/catlist.php?catId=$catId&parent_id=$parentId'));
 
     if (response.statusCode == 200) {
       //
@@ -104,7 +104,7 @@ class _CategoryViewState extends State<CategoryView> {
     };
 
     // Construct the API endpoint with the search query
-    String apiEndpoint = 'https://cfast.ng/api/posts?op=search&q=$query';
+    String apiEndpoint = '$baseUrl/api/posts?op=search&q=$query';
 
     try {
       final response = await http.get(Uri.parse(apiEndpoint), headers: headers);

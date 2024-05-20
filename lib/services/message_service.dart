@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants.dart';
 
 class MessageService extends ChangeNotifier {
   late SharedPreferences _prefs;
@@ -14,8 +15,8 @@ class MessageService extends ChangeNotifier {
   Future<void> fetchUnreadMessages() async {
     _prefs = await SharedPreferences.getInstance();
     String? token = _prefs.getString('token');
-    final response = await http.get(Uri.parse(
-        'https://cfast.ng/cfastapi/getmessagescount.php?token=$token'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/cfastapi/getmessagescount.php?token=$token'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);

@@ -63,5 +63,11 @@
         <string>We need your location to show you classified listings near your current location for a better browsing experience.</string>
     <key>NSPhotoLibraryUsageDescription</key>
         <string>This app allows you to choose photos from your library to add to your classified listings. Access to your photo library is necessary for you to select and upload images for your listings.</string>
+    <!-- NSAppTransportSecurity Configuration -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 </dict>
 </plist>

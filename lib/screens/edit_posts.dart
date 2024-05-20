@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 
 class EditPostScreen extends StatefulWidget {
   final dynamic item;
@@ -209,7 +210,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     // Create multipart request
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://cfast.ng/api/posts'),
+      Uri.parse('$baseUrl/api/posts'),
     );
 
     // Add headers
@@ -238,7 +239,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
       var responseBody = await response.stream.bytesToString();
       var decodedResponse = json.decode(responseBody);
       final updateUrl = Uri.parse(
-          'https://cfast.ng/cfastapi/update_saved.php?id=${widget.item['id']}');
+          '$baseUrl/cfastapi/update_saved.php?id=${widget.item['id']}');
 
       ///Fluttertoast.showToast(msg: responseBody.toString());
       if (response.statusCode == 200) {
