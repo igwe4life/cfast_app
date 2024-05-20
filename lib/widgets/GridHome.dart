@@ -192,7 +192,7 @@ class _GridHomeState extends State<GridHome> {
                     Text(
                       product.price?.toString() ??
                           '', // Ensure price is not null
-                      style: Theme.of(context).textTheme.subtitle1!.merge(
+                      style: Theme.of(context).textTheme.bodyText1!.merge(
                             const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.blue,
