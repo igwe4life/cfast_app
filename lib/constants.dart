@@ -24,4 +24,4 @@ const Color kBlueColor = Color.fromRGBO(53, 88, 205, 1);
 const Color kButtonRemoveColor = Color.fromRGBO(213, 222, 255, 1);
 
 const String baseUrl =
-    'http://172.105.94.124/plesk-site-preview/platinumconcerns.com.ng/https/172.105.94.124';
+    'https://cfast.ng';
