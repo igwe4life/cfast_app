@@ -1,7 +1,7 @@
 name: shop_cfast
 description: Cfast classifieds Ads.
 publish_to: 'none' 
-version: 1.0.8+6
+version: 1.0.8+7
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
