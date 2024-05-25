@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/models/category.dart';
 import 'package:shop_cfast/screens/CategoryDetailScreen.dart';
-//import 'package:shop_example/screens/CatListView.dart'; // Import the CatListView screen
 import 'CatListView.dart';
 
 class Categories extends StatelessWidget {
-  const Categories({
-    Key? key,
-  }) : super(key: key);
+  const Categories({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,41 +21,37 @@ class Categories extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CatListView(
-                    // title: categories[index].title,
-                    // image: categories[index].image,
                     catname: categories[index].title,
-                    catId: 0, parentId: 0,
+                    catId: 0,
+                    parentId: 0,
                   ),
                 ),
               );
             },
-            child: Expanded(
-              // Wrap your Column with Expanded
-              child: Column(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          categories[index].image,
-                        ),
-                      ),
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Ensures the column takes minimum space
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(categories[index].image),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 0),
-                  Text(
-                    categories[index].title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 10,
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  categories[index].title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 10,
                   ),
-                  const SizedBox(height: 1),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         }),
