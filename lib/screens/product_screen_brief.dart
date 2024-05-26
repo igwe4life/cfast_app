@@ -666,20 +666,33 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                         handleRequestCallPressed(
                             context); // Call the method to show the alert dialog
                       },
-                      onMakeCallPressed: () {
+                      onMakeCallPressed: () async {
                         print('Make Call button pressed');
-                        String cphoneNumber = productData['Phone'];
-                        launch('tel:$cphoneNumber');
+                        String nuphoneNumber = productData['Phone'];
+                        final Uri telUri = Uri(
+                          scheme: 'tel',
+                          path: nuphoneNumber,
+                        );
+
+                        if (await canLaunchUrl(telUri)) {
+                          await launchUrl(telUri);
+                        } else {
+                          throw 'Could not launch $telUri';
+                        }
                       },
                       onWhatsappPressed: () {
                         print('Send Whatsapp Message');
                         String cphoneNumber = productData['Phone'];
+                        print('Send Whatsapp Message: $cphoneNumber');
                         String msg =
                             'I\'m interested in your Ad listing ${productData['Title']} posted on CFAST.NG';
 
-                        String url =
-                            "https://wa.me/${cphoneNumber}/?text=${msg}";
-                        launch(url);
+                        final Uri whatsapp = Uri.parse(
+                            "https://wa.me/${cphoneNumber}/?text=${msg}");
+                        // String url =
+                        //     "https://wa.me/${cphoneNumber}/?text=${msg}";
+                        // launch(url);
+                        launchUrl(whatsapp);
                       },
                     ),
                     const SizedBox(height: 5),

@@ -43,12 +43,12 @@ class Categories extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 3),
                 Text(
                   categories[index].title,
                   style: const TextStyle(
                     fontWeight: FontWeight.normal,
-                    fontSize: 10,
+                    fontSize: 9,
                   ),
                 ),
               ],

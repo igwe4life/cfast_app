@@ -173,8 +173,11 @@ class _LoginPageState extends State<LoginPage> {
 
     Map data = {'email': email, 'password': pass};
     var jsonResponse = null;
-    var response = await http
-        .post(Uri.parse('$baseUrl/cfastapi/auth_login.php'), body: data);
+
+    var loginUrl = '$baseUrl/cfastapi/auth_login.php';
+    print("Login URL: $loginUrl");
+
+    var response = await http.post(Uri.parse(loginUrl), body: data);
 
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);

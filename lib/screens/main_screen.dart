@@ -71,7 +71,10 @@ class _MainScreenState extends State<MainScreen> {
     try {
       final token = sharedPreferences.getString("token");
       if (token != null) {
-        final String url = '$baseUrl/getmessagescount.php?token=$token';
+        final String url =
+            '$baseUrl/cfastapi/getmessagescount.php?token=$token';
+
+        print(url);
 
         final response = await http.get(
           Uri.parse(url),
