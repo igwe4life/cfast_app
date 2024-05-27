@@ -784,6 +784,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         },
                         postId: int.parse(widget
                             .product.classID), // Convert to int if necessary
+                        price: "${productData['Price']}",
+                        storeName: "${productData['StoreName']}",
+                        phoneNumber: "${productData['Phone']}",
                       ),
                     const SizedBox(height: 10),
                     Container(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 
 void main() {
@@ -72,6 +73,7 @@ class _MessageScreenState extends State<MessageScreen> {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final resultData = jsonData['result']['data'];
+      print(jsonData);
       setState(() {
         messages = List<Map<String, dynamic>>.from(resultData);
         _isLoading = false;
@@ -131,8 +133,13 @@ class _MessageScreenState extends State<MessageScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ChatScreen(messageId: message['id']),
+                          builder: (context) => ChatScreen(
+                            messageId: message['id'],
+                            productTitle: '',
+                            price: '',
+                            storeName: '',
+                            phoneNumber: '',
+                          ),
                         ),
                       );
                     },
@@ -172,8 +179,18 @@ class _MessageScreenState extends State<MessageScreen> {
 
 class ChatScreen extends StatefulWidget {
   final int messageId;
+  final String productTitle;
+  final String price;
+  final String storeName;
+  final String phoneNumber;
 
-  ChatScreen({required this.messageId});
+  ChatScreen({
+    required this.messageId,
+    required this.productTitle,
+    required this.price,
+    required this.storeName,
+    required this.phoneNumber,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -230,6 +247,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final resultData = jsonData['result']['data'];
+      print(jsonData);
       setState(() {
         _messages = List<Map<String, dynamic>>.from(resultData);
         _isLoading = false;
@@ -243,13 +261,81 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Chat Screen',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        leading: Container(
+          width: 100, // Adjust this width to fit your layout needs
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white, // Set the icon color to white
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(
+                  width: 8), // Add some spacing between the icon and the avatar
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://cfast.ng/storage/app/default/user.png'),
+              ),
+            ],
           ),
         ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.storeName,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              widget.productTitle.length > 20
+                  ? widget.productTitle.substring(0, 20) + '...'
+                  : widget.productTitle,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white70,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            Text(
+              widget.price ?? 'Price not available',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white70,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              String nuphoneNumber = widget.phoneNumber;
+              final Uri telUri = Uri(
+                scheme: 'tel',
+                path: nuphoneNumber,
+              );
+
+              if (await canLaunchUrl(telUri)) {
+                await launchUrl(telUri);
+              } else {
+                throw 'Could not launch $telUri';
+              }
+            },
+            icon: Icon(
+              Icons.call,
+              color: Colors.white, // Set the icon color to white
+            ),
+          ),
+        ],
         backgroundColor: Colors.blue,
         centerTitle: true,
       ),

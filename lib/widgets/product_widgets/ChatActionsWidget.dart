@@ -18,6 +18,9 @@ class ChatActionsWidget extends StatefulWidget {
   final TextEditingController textEditingController;
   final VoidCallback onStartChatPressed;
   final int postId; // Add postId parameter
+  final String price;
+  final String storeName;
+  final String phoneNumber;
 
   ChatActionsWidget({
     required this.title,
@@ -27,6 +30,9 @@ class ChatActionsWidget extends StatefulWidget {
     required this.textEditingController,
     required this.onStartChatPressed,
     required this.postId, // Add postId parameter
+    required this.price,
+    required this.storeName,
+    required this.phoneNumber,
   });
 
   @override
@@ -156,8 +162,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       request.fields['email'] = email;
       request.fields['phone'] = phone;
       request.fields['phone_country'] = 'NG';
-      request.fields['body'] =
-          'New chat started - ${widget.title}\n\n$currentValue';
+      // request.fields['body'] =
+      //     'New chat started - ${widget.title}\n\n$currentValue';
+      // request.fields['post_id'] = widget.postId.toString();
+      request.fields['body'] = '$currentValue';
       request.fields['post_id'] = widget.postId.toString();
 
       var response = await request.send();
@@ -175,6 +183,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
           MaterialPageRoute(
             builder: (context) => ChatScreen(
               messageId: threadId,
+              productTitle: widget.title,
+              price: widget.price,
+              storeName: widget.storeName,
+              phoneNumber: widget.phoneNumber,
             ),
           ),
         );
@@ -221,6 +233,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
             builder: (context) => ChatScreen(
                   //threadId: threadId,
                   messageId: threadId,
+                  productTitle: widget.title,
+                  price: widget.price,
+                  storeName: widget.storeName,
+                  phoneNumber: widget.phoneNumber,
                 )),
       );
     } else {
