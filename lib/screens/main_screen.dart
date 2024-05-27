@@ -12,7 +12,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'MessageScreen.dart';
+import 'MessageScreen2.dart';
 import 'create_listing.dart';
 import 'login_page.dart';
 import 'profile_page.dart';
@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     SavedScreen(),
     HomeScreen(),
-    MessageScreen(),
+    MessageScreen2(),
     ProfilePage(),
   ];
 
