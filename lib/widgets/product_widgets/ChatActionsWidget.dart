@@ -702,12 +702,12 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     checkLoginStatus(); // Call checkLoginStatus() on button click
                     setState(() {
                       // Set the text content within the setState method
-                      widget.textEditingController.text = 'Last Price';
+                      widget.textEditingController.text = 'Last Price?';
                     });
                     widget.onLastPricePressed();
                   },
                   child: Text(
-                    'Last Price',
+                    'Last Price?',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.center,
