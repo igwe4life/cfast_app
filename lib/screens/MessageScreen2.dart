@@ -186,6 +186,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late List<Map<String, dynamic>> _messages;
   late Timer _timers;
   bool _isLoading = true;
+  Map<String, dynamic> productData = {};
 
   late int uid;
   late String name;
@@ -212,6 +213,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     loadUserProfile();
+    fetchData();
     fetchMessagesChats();
     _timers = Timer.periodic(Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
@@ -222,6 +224,27 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     _timers.cancel(); // Cancel the timer when the widget is disposed
+  }
+
+  // Fetch product data from the API
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(Uri.parse(
+          '$baseUrl/cfastapi/post_details.php?pid=${widget.message['post_id']}'));
+
+      if (response.statusCode == 200) {
+        final decodedResponse = json.decode(response.body);
+        setState(() {
+          productData = decodedResponse;
+        });
+      } else {
+        print('HTTP Error: ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception during HTTP request: $e');
+    }
   }
 
   Future<void> fetchMessagesChats() async {
@@ -281,11 +304,9 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Text(
-              widget.message["subject"].length > 20
-                  ? widget.message["subject"].substring(0, 20) + '...'
-                  : widget.message["subject"],
+              productData['UserStatus'] ?? "Loading...",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 10,
                 color: Colors.white70,
               ),
               overflow: TextOverflow.ellipsis,
@@ -330,6 +351,49 @@ class _ChatScreenState extends State<ChatScreen> {
           ? _buildShimmerEffect()
           : Column(
               children: [
+                // New container added at the top of the chat screen
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200], // Light grey color
+                    borderRadius: BorderRadius.circular(10), // Rounded edges
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 5, // Radius half of 40 to make it 40x40
+                            backgroundImage:
+                                NetworkImage(productData['StorePhoto'] ?? ""),
+                          ),
+                          SizedBox(
+                              width: 5), // Adding space between image and text
+                          Text(
+                            productData['Title'] ?? "Loading...",
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(width: 45),
+                          Text(
+                            //productData['UserStatus'] ?? "Loading...",
+                            productData['Price'] ?? "Loading...",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     reverse: true,

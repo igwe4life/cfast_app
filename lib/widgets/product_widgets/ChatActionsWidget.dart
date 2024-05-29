@@ -225,6 +225,8 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? threadId = prefs.getInt('post_${widget.postId}_thread_id');
 
+    String currentValue = widget.textEditingController.text;
+
     if (threadId != null) {
       // If thread ID is found, navigate to chat screen with thread ID
       Navigator.pushReplacement(
@@ -234,7 +236,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                   //threadId: threadId,
                   messageId: threadId,
                   productTitle: widget.title,
-                  price: widget.price,
+                  price: currentValue,
                   storeName: widget.storeName,
                   phoneNumber: widget.phoneNumber,
                 )),

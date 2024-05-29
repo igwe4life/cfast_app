@@ -361,7 +361,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: TextField(
                           controller: _messageController,
                           decoration: InputDecoration(
-                            hintText: 'Type your message...',
+                            hintText: widget.price ??
+                                'Enter price...', // Display hint text if initial value not set
                           ),
                         ),
                       ),
