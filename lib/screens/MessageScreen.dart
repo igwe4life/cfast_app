@@ -256,8 +256,10 @@ class _ChatScreenState extends State<ChatScreen> {
     defaultProduct = Product(
       title: '${widget.productTitle}',
       description: 'This is in good condition, tested and works like new.',
-      image: '${widget.firstImageUrl}',
-      price: '${productData['Price']}',
+      //image: '${widget.firstImageUrl}',
+      image:
+          'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+      price: '${widget.price}',
       date: '31st May, 2024',
       time: '8:40AM',
       itemUrl:
@@ -441,12 +443,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         Row(
                           children: [
                             Container(
-                              width: 40,
-                              height: 40,
+                              width: 60,
+                              height: 60,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: NetworkImage(
-                                      productData['StorePhoto'] ?? ""),
+                                  image:
+                                      NetworkImage(widget.firstImageUrl ?? ""),
                                   fit: BoxFit.cover,
                                 ),
                                 shape: BoxShape.rectangle,
@@ -457,8 +459,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               width: 5,
                             ), // Adding space between image and text
                             Text(
-                              (productData['Title'] ?? "Loading...").length > 30
-                                  ? (productData['Title']?.substring(0, 30) ??
+                              (productData['Title'] ?? "Loading...").length > 24
+                                  ? (productData['Title']?.substring(0, 24) ??
                                           "Loading...") +
                                       '...'
                                   : productData['Title'] ?? "Loading...",
@@ -505,10 +507,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       Expanded(
                         child: TextField(
                           controller: _messageController
-                            ..text = widget.price ?? '',
+                            ..text = widget.description ?? '',
                           decoration: InputDecoration(
-                            hintText: widget.price == null
-                                ? 'Enter price...'
+                            hintText: widget.description == null
+                                ? 'Enter message...'
                                 : null, // Display hint text if initial value not set
                           ),
                         ),

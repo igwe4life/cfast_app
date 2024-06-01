@@ -14,7 +14,7 @@ import 'package:shop_cfast/widgets/GridHome.dart';
 import 'package:shop_cfast/widgets/GridSimilar.dart';
 import 'package:shop_cfast/widgets/product_widgets/CallButtonsBar.dart';
 import 'package:shop_cfast/widgets/product_widgets/ChatActionsWidget.dart';
-import 'package:shop_cfast/widgets/product_widgets/information.dart';
+import 'package:shop_cfast/widgets/product_widgets/information_brief.dart';
 import '../widgets/product_widgets/feedback_widget.dart';
 import 'create_listing.dart';
 import 'feedback_screen.dart';
@@ -737,8 +737,8 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                               CircleAvatar(
                                 radius:
                                     20, // Radius half of 40 to make it 40x40
-                                backgroundImage: NetworkImage(
-                                    productData['StorePhoto'] ?? ""),
+                                backgroundImage: NetworkImage(imageUrls[0] ??
+                                    "https://cfast.ng/storage/app/default/user.png"),
                               ),
                               SizedBox(
                                   width:

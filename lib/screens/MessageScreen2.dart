@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shop_cfast/screens/product_screen_brief.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
+import '../models/product.dart';
 
 void main() {
   runApp(MyApp());
@@ -194,6 +196,9 @@ class _ChatScreenState extends State<ChatScreen> {
   late String photoUrl;
   late String phone;
   late String token;
+  late String firstimg;
+
+  late Product defaultProduct;
 
   TextEditingController _messageController = TextEditingController();
 
@@ -218,6 +223,20 @@ class _ChatScreenState extends State<ChatScreen> {
     _timers = Timer.periodic(Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
+
+    defaultProduct = Product(
+      title: '${widget.message['subject']}',
+      description: '',
+      image: 'https://cfast.ng/storage/app/default/user.png}',
+      price: '${productData['Price']}',
+      date: '',
+      time: '',
+      itemUrl:
+          'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+      classID: '${widget.message['post_id']}',
+      location: '',
+      catURL: '',
+    );
   }
 
   @override
@@ -311,15 +330,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-            ),
-            Text(
-              '',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white70,
-              ),
-            ),
+            )
           ],
         ),
         actions: [
@@ -351,49 +362,80 @@ class _ChatScreenState extends State<ChatScreen> {
           ? _buildShimmerEffect()
           : Column(
               children: [
-                // New container added at the top of the chat screen
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[200], // Light grey color
-                    borderRadius: BorderRadius.circular(10), // Rounded edges
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 25, // Radius half of 40 to make it 40x40
-                            backgroundImage:
-                                NetworkImage(productData['StorePhoto'] ?? ""),
-                          ),
-                          SizedBox(
-                              width: 5), // Adding space between image and text
-                          Text(
-                            productData['Title'] ?? "Loading...",
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                            maxLines: 1, // Limit to 1 lines
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                GestureDetector(
+                  onTap: () {
+                    //Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductScreenBrief(
+                          product:
+                              defaultProduct, // Pass the actual Product instance
+                        ),
                       ),
-                      Row(
-                        children: [
-                          SizedBox(width: 45),
-                          Text(
-                            //productData['UserStatus'] ?? "Loading...",
-                            productData['Price'] ?? "Loading...",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[200], // Light grey color
+                      borderRadius: BorderRadius.circular(10), // Rounded edges
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            // CircleAvatar(
+                            //   radius: 25, // Radius half of 40 to make it 40x40
+                            //   backgroundImage:
+                            //       NetworkImage(productData['StorePhoto'] ?? ""),
+                            // ),
+                            // SizedBox(
+                            //     width:
+                            //         5), // Adding space between image and text
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      productData['StorePhoto'] ?? ""),
+                                  fit: BoxFit.cover,
+                                ),
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            SizedBox(
+                              width: 5,
+                            ), // Adding
+                            Expanded(
+                              child: Text(
+                                productData['Title'] ?? "Loading...",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1, // Limit to 1 line
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(width: 45),
+                            Text(
+                              productData['Price'] ?? "Loading...",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(

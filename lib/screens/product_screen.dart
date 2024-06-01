@@ -103,15 +103,15 @@ class _ProductScreenState extends State<ProductScreen> {
           String firstImageUrl = imageUrls[0];
 
           // Show a toast notification with the first image URL
-          Fluttertoast.showToast(
-            msg: firstImageUrl,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          // Fluttertoast.showToast(
+          //   msg: firstImageUrl,
+          //   toastLength: Toast.LENGTH_SHORT,
+          //   gravity: ToastGravity.BOTTOM,
+          //   timeInSecForIosWeb: 1,
+          //   backgroundColor: Colors.black,
+          //   textColor: Colors.white,
+          //   fontSize: 16.0,
+          // );
 
           // Save the first image URL to SharedPreferences
           SharedPreferences sharedPreferences =
