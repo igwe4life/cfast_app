@@ -93,17 +93,6 @@ class _MainScreenState extends State<MainScreen> {
 
           // Save unread message count to SharedPreferences
           sharedPreferences.setInt('unreadCount', unreadCount);
-
-          // Display a Flutter toast with the updated unread message count
-          // Fluttertoast.showToast(
-          //   msg: 'Unread messages: $unreadCount , ${response.statusCode}',
-          //   toastLength: Toast.LENGTH_SHORT,
-          //   gravity: ToastGravity.BOTTOM,
-          //   timeInSecForIosWeb: 1,
-          //   backgroundColor: Colors.blue,
-          //   textColor: Colors.white,
-          //   fontSize: 16.0,
-          // );
         } else if (response.statusCode == 401) {
           // Token expired or unauthenticated
           ScaffoldMessenger.of(context).showSnackBar(
@@ -310,13 +299,6 @@ class _MainScreenState extends State<MainScreen> {
                   },
                 ),
               ),
-              // IconButton(
-              //   onPressed: () => _handleTabTap(3), // Chat tab
-              //   icon: Icon(
-              //     Ionicons.chatbox,
-              //     color: currentTab == 3 ? kprimaryColor : Colors.grey.shade400,
-              //   ),
-              // ),
               IconButton(
                 onPressed: () => _handleTabTap(4), // Profile tab
                 icon: Icon(

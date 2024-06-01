@@ -199,6 +199,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late String firstimg;
 
   late Product defaultProduct;
+  late Product defaultProduct1;
 
   TextEditingController _messageController = TextEditingController();
 
@@ -227,7 +228,7 @@ class _ChatScreenState extends State<ChatScreen> {
     defaultProduct = Product(
       title: '${widget.message['subject']}',
       description: '',
-      image: 'https://cfast.ng/storage/app/default/user.png}',
+      image: '${widget.message["p_creator"]["photo_url"]}',
       price: '${productData['Price']}',
       date: '',
       time: '',
@@ -256,6 +257,20 @@ class _ChatScreenState extends State<ChatScreen> {
         setState(() {
           productData = decodedResponse;
         });
+
+        defaultProduct1 = Product(
+          title: '${widget.message['subject']}',
+          description: '',
+          image: 'https://cfast.ng/storage/app/default/user.png}',
+          price: '${productData['Price']}',
+          date: '',
+          time: '',
+          itemUrl:
+              'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+          classID: '${widget.message['post_id']}',
+          location: '',
+          catURL: '',
+        );
       } else {
         print('HTTP Error: ${response.statusCode}');
         throw Exception(
@@ -395,8 +410,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             //     width:
                             //         5), // Adding space between image and text
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: NetworkImage(

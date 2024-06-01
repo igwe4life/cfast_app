@@ -64,7 +64,6 @@ class _GridHomeState extends State<GridHome> {
   }
 
   // Method to load more products
-  // Method to load more products
   Future<void> loadMoreProducts() async {
     final currentProducts = await _futureProducts;
     print('Current products length: ${currentProducts.length}');

@@ -256,9 +256,8 @@ class _ChatScreenState extends State<ChatScreen> {
     defaultProduct = Product(
       title: '${widget.productTitle}',
       description: 'This is in good condition, tested and works like new.',
-      //image: '${widget.firstImageUrl}',
-      image:
-          'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+      image: '${widget.firstImageUrl}',
+      //image: 'https://cfast.ng/uk-used-microsoft-16gb-256gb/80',
       price: '${widget.price}',
       date: '31st May, 2024',
       time: '8:40AM',
@@ -443,8 +442,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         Row(
                           children: [
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image:
