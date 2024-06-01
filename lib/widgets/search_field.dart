@@ -4,9 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:ionicons/ionicons.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/screens/search_results_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../../constants.dart';
 import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/widgets/CustomBannerAd.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({Key? key}) : super(key: key);
@@ -68,14 +67,11 @@ class _SearchFieldState extends State<SearchField> {
           ),
         ),
         const SizedBox(height: 20),
-        // const SizedBox(height: 10),
-
-        //Add the AdMob banner here
+        // Add the AdMob banner here
         Container(
           height: 50,
           alignment: Alignment.center,
-          // CustomBannerAd() can be added here
-            CustomBannerAd();
+          child: CustomBannerAd(), // Correctly added as a child
         ),
         const SizedBox(height: 5),
       ],
@@ -145,12 +141,12 @@ class _SearchFieldState extends State<SearchField> {
           } else {
             // Handle API error
             print('API Error: Invalid response format');
-            //Fluttertoast.showToast(msg: 'API Error: Invalid response format');
+            // Fluttertoast.showToast(msg: 'API Error: Invalid response format');
           }
         } else {
           // Handle API error
           print('API Error: ${response.statusCode}');
-          //Fluttertoast.showToast(msg: 'API Error: ${response.statusCode}');
+          // Fluttertoast.showToast(msg: 'API Error: ${response.statusCode}');
         }
       } catch (e) {
         // Hide loading indicator
@@ -158,7 +154,7 @@ class _SearchFieldState extends State<SearchField> {
 
         // Handle other errors
         print('Error: $e');
-        //Fluttertoast.showToast(msg: 'API Error 2: ${e}');
+        // Fluttertoast.showToast(msg: 'API Error 2: ${e}');
       }
     }
   }
