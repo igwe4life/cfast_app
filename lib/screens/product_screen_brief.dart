@@ -698,6 +698,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                     const SizedBox(height: 5),
                     ChatActionsWidget(
                       title: "${productData['Title']}",
+
                       onMakeOfferPressed: () {
                         // Handle "Make an Offer" button press
                       },
@@ -716,6 +717,9 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                       price: "${productData['Price']}",
                       storeName: "${productData['StoreName']}",
                       phoneNumber: "${productData['Phone']}",
+                      product: widget.product,
+                      firstImageUrl: imageUrls[0],
+                      //product: widget.product.toString(),
                     ),
                     const SizedBox(height: 10),
                     Container(

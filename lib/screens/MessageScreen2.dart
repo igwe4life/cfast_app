@@ -364,7 +364,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Row(
                         children: [
                           CircleAvatar(
-                            radius: 5, // Radius half of 40 to make it 40x40
+                            radius: 25, // Radius half of 40 to make it 40x40
                             backgroundImage:
                                 NetworkImage(productData['StorePhoto'] ?? ""),
                           ),
@@ -375,6 +375,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             style: TextStyle(
                               fontSize: 14,
                             ),
+                            maxLines: 1, // Limit to 1 lines
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

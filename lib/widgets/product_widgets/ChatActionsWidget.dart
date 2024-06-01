@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shop_cfast/models/product.dart';
 
 //import '../../screens/ChatScreen.dart';
 import '../../screens/MessageScreen.dart';
@@ -21,6 +22,8 @@ class ChatActionsWidget extends StatefulWidget {
   final String price;
   final String storeName;
   final String phoneNumber;
+  final String firstImageUrl;
+  final Product product;
 
   ChatActionsWidget({
     required this.title,
@@ -33,6 +36,8 @@ class ChatActionsWidget extends StatefulWidget {
     required this.price,
     required this.storeName,
     required this.phoneNumber,
+    required this.product,
+    required this.firstImageUrl,
   });
 
   @override
@@ -174,6 +179,15 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
 
       print(responseBody);
 
+      // Fluttertoast.showToast(
+      //   msg: 'Start chatresponse: $responseBody.',
+      //   toastLength: Toast.LENGTH_LONG,
+      //   gravity: ToastGravity.BOTTOM,
+      //   backgroundColor: Colors.blue,
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
+
       if (response.statusCode == 200 && decodedResponse['status'] != 'error') {
         final threadId = decodedResponse['thread_id'];
         prefs.setInt('post_${widget.postId}_thread_id', threadId);
@@ -185,8 +199,12 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
               messageId: threadId,
               productTitle: widget.title,
               price: widget.price,
+              description: widget.title,
+              postId: widget.postId,
               storeName: widget.storeName,
               phoneNumber: widget.phoneNumber,
+              firstImageUrl: widget.firstImageUrl,
+              product: widget.product,
             ),
           ),
         );
@@ -194,7 +212,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         String errorMessage = decodedResponse['error'] ?? 'An error occurred';
         Fluttertoast.showToast(
           msg:
-              'Error starting chat: $errorMessage. Please use WhatsApp or call to reach out to the merchant.',
+              'Unable to send a chat: You tried to send to recipient(s) that have been marked as inactive. Please use WhatsApp or call to reach out to the merchant.',
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -236,9 +254,13 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                   //threadId: threadId,
                   messageId: threadId,
                   productTitle: widget.title,
-                  price: currentValue,
+                  price: widget.price,
+                  description: currentValue,
                   storeName: widget.storeName,
                   phoneNumber: widget.phoneNumber,
+                  firstImageUrl: widget.firstImageUrl,
+                  postId: widget.postId,
+                  product: widget.product,
                 )),
       );
     } else {
@@ -418,145 +440,6 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                // ElevatedButton(
-                //   onPressed: () async {
-                //     checkLoginStatus(); // Call checkLoginStatus() on button click
-                //     showModalBottomSheet(
-                //       context: context,
-                //       builder: (BuildContext context) {
-                //         return StatefulBuilder(
-                //           builder:
-                //               (BuildContext context, StateSetter setState) {
-                //             return Container(
-                //               padding: EdgeInsets.all(16.0),
-                //               child: Column(
-                //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                //                 mainAxisSize: MainAxisSize.min,
-                //                 children: [
-                //                   const Text(
-                //                     'Make an Offer',
-                //                     style: TextStyle(
-                //                       fontSize: 20,
-                //                       fontWeight: FontWeight.bold,
-                //                     ),
-                //                   ),
-                //                   const SizedBox(height: 20),
-                //                   TextFormField(
-                //                     decoration: InputDecoration(
-                //                       labelText: '₦ Enter your bid',
-                //                       border: OutlineInputBorder(
-                //                         borderSide:
-                //                             BorderSide(color: Colors.blue),
-                //                       ),
-                //                       prefixText:
-                //                           '\u20A6', // Prefix text to display at all times
-                //                     ),
-                //                     keyboardType: TextInputType.number,
-                //                     onChanged: (value) {
-                //                       setState(() {
-                //                         // Update the entered offer value
-                //                         enteredOffer = value;
-                //                         print('Entered offer: $enteredOffer');
-                //                       });
-                //                     },
-                //                   ),
-                //                   SizedBox(height: 20),
-                //                   ElevatedButton(
-                //                     onPressed: () async {
-                //                       if (enteredOffer.isNotEmpty) {
-                //                         setState(() {
-                //                           // Show loading indicator
-                //                           _isOfferLoading = true;
-                //                         });
-                //
-                //                         try {
-                //                           // Make API call to send offer
-                //                           var response = await http.post(
-                //                             Uri.parse(
-                //                                 '$baseUrl/cfastapi/send_offer.php'),
-                //                             body: jsonEncode({
-                //                               'offer': enteredOffer,
-                //                               'post_id': widget.postId,
-                //                               'user_id': uid
-                //                             }),
-                //                           );
-                //
-                //                           if (response.statusCode == 200) {
-                //                             // Offer sent successfully
-                //                             ScaffoldMessenger.of(context)
-                //                                 .showSnackBar(
-                //                               SnackBar(
-                //                                 content: Text(
-                //                                     'Offer submitted successfully!'),
-                //                                 backgroundColor: Colors.green,
-                //                               ),
-                //                             );
-                //                           } else {
-                //                             // Offer sending failed
-                //                             ScaffoldMessenger.of(context)
-                //                                 .showSnackBar(
-                //                               SnackBar(
-                //                                 content: Text(
-                //                                     'Offer sending failed! Status Code: ${response.statusCode}'),
-                //                                 backgroundColor: Colors.red,
-                //                               ),
-                //                             );
-                //                           }
-                //                         } catch (e) {
-                //                           // Error occurred during API call
-                //                           Fluttertoast.showToast(
-                //                               msg:
-                //                                   'Error occurred while sending offer: $e');
-                //                         } finally {
-                //                           setState(() {
-                //                             // Hide loading indicator
-                //                             _isOfferLoading = false;
-                //                           });
-                //
-                //                           // Close the bottom sheet
-                //                           Navigator.pop(context);
-                //                         }
-                //                       } else {
-                //                         // Show error message if offer amount is empty
-                //                         Fluttertoast.showToast(
-                //                             msg:
-                //                                 'Please enter an offer amount');
-                //                       }
-                //                     },
-                //                     style: ElevatedButton.styleFrom(
-                //                       foregroundColor: Colors.white,
-                //                       backgroundColor: Colors.blue,
-                //                     ),
-                //                     child: _isOfferLoading
-                //                         ? CircularProgressIndicator() // Show loading indicator if offer is being sent
-                //                         : Text('Send Offer'),
-                //                   ),
-                //                 ],
-                //               ),
-                //             );
-                //           },
-                //         );
-                //       },
-                //     );
-                //   },
-                //   style: ElevatedButton.styleFrom(
-                //     foregroundColor: Colors.white,
-                //     backgroundColor: Colors.blue, // Text color
-                //     side: BorderSide(color: Colors.blue), // Border color
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius:
-                //           BorderRadius.circular(10.0), // Adding border radius
-                //     ),
-                //   ),
-                //   child: Text(
-                //     'Make an Offer',
-                //     overflow: TextOverflow.ellipsis,
-                //     maxLines: 1,
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(fontSize: 10),
-                //   ),
-                // ),
-                // //Old make offer button
                 ElevatedButton(
                   onPressed: () async {
                     checkLoginStatus(); // Call checkLoginStatus() on button click

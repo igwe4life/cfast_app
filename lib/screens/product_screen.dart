@@ -99,6 +99,25 @@ class _ProductScreenState extends State<ProductScreen> {
           imageUrls = List<String>.from(jsonData);
           isLoading = false; // Set loading to false after data is fetched
         });
+        if (imageUrls.isNotEmpty) {
+          String firstImageUrl = imageUrls[0];
+
+          // Show a toast notification with the first image URL
+          Fluttertoast.showToast(
+            msg: firstImageUrl,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+
+          // Save the first image URL to SharedPreferences
+          SharedPreferences sharedPreferences =
+              await SharedPreferences.getInstance();
+          await sharedPreferences.setString('firstImageUrl', firstImageUrl);
+        }
       } else {
         print(
             'Failed to fetch image URLs. Status Code: ${response.statusCode}');
@@ -787,6 +806,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         price: "${productData['Price']}",
                         storeName: "${productData['StoreName']}",
                         phoneNumber: "${productData['Phone']}",
+                        firstImageUrl: imageUrls[0],
+                        product: widget.product,
                       ),
                     const SizedBox(height: 10),
                     Container(
