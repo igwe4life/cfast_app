@@ -188,7 +188,10 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late List<Map<String, dynamic>> _messages;
   late Timer _timers;
+  Timer? _debounceTimer;
   bool _isLoading = true;
+  bool _isSending = false;
+
   Map<String, dynamic> productData = {};
 
   late int uid;
@@ -567,6 +570,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage(String message) async {
+    if (_isSending)
+      return; // Prevent sending if a message is already being sent
+
+    setState(() {
+      _isSending = true; // Set sending flag to true
+    });
+
     DateTime now = DateTime.now();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -617,5 +627,8 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       );
     }
+    setState(() {
+      _isSending = false; // Reset sending flag after response
+    });
   }
 }
