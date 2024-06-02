@@ -19,6 +19,7 @@ import '../widgets/product_widgets/feedback_widget.dart';
 import 'create_listing.dart';
 import 'feedback_screen.dart';
 import 'login_page.dart';
+import '../services/product_storage.dart';
 
 class ProductScreenBrief extends StatefulWidget {
   final Product product;
@@ -37,6 +38,8 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
   bool isFavoriteLoading = false;
 
   bool addedToFavourites = false;
+
+  Product? product;
 
   final String apiUrl = 'https://cfast.ng/api/savedPosts';
 
@@ -68,6 +71,12 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
     fetchData();
     // Call fetchImageUrls method to retrieve image URLs
     fetchImageUrls();
+    getProduct();
+  }
+
+  Future<void> getProduct() async {
+    product = await ProductStorage.getProductByClassID(widget.product.classID);
+    setState(() {}); // Update the UI to display the retrieved product
   }
 
   Future<void> fetchImageUrls() async {
@@ -522,7 +531,7 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
               expandedHeight: 200.0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Image.network(
-                  widget.product.image,
+                  product!.image,
                   fit: BoxFit.cover,
                 ),
               ),

@@ -1,25 +1,55 @@
 class Products {
-  final int id;
-  final String country_code;
-  final int user_id;
-  final int category_id;
   final String title;
   final String description;
-  final String email;
-  final String phone;
-  final String created_at_formatted;
-  final String contact_name;
+  final String image;
+  final double price;
+  final String date;
+  final String time;
+  final String itemUrl;
+  final String classID;
+  final String location;
+  final String catURL;
 
   Products({
-    required this.id,
-    required this.country_code,
-    required this.user_id,
-    required this.category_id,
     required this.title,
     required this.description,
-    required this.email,
-    required this.phone,
-    required this.created_at_formatted,
-    required this.contact_name,
+    required this.image,
+    required this.price,
+    required this.date,
+    required this.time,
+    required this.itemUrl,
+    required this.classID,
+    required this.location,
+    required this.catURL,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'image': image,
+      'price': price,
+      'date': date,
+      'time': time,
+      'itemUrl': itemUrl,
+      'classID': classID,
+      'location': location,
+      'catURL': catURL,
+    };
+  }
+
+  factory Products.fromJson(Map<String, dynamic> json) {
+    return Products(
+      title: json['title'],
+      description: json['description'],
+      image: json['image'],
+      price: json['price'],
+      date: json['date'],
+      time: json['time'],
+      itemUrl: json['itemUrl'],
+      classID: json['classID'],
+      location: json['location'],
+      catURL: json['catURL'],
+    );
+  }
 }

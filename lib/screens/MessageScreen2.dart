@@ -8,6 +8,7 @@ import 'package:shop_cfast/screens/product_screen_brief.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 import '../models/product.dart';
+import '../services/product_storage.dart';
 
 void main() {
   runApp(MyApp());
@@ -201,6 +202,8 @@ class _ChatScreenState extends State<ChatScreen> {
   late Product defaultProduct;
   late Product defaultProduct1;
 
+  Product? product;
+
   TextEditingController _messageController = TextEditingController();
 
   Future<void> loadUserProfile() async {
@@ -221,6 +224,7 @@ class _ChatScreenState extends State<ChatScreen> {
     loadUserProfile();
     fetchData();
     fetchMessagesChats();
+    getProduct();
     _timers = Timer.periodic(Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
@@ -246,6 +250,12 @@ class _ChatScreenState extends State<ChatScreen> {
     _timers.cancel(); // Cancel the timer when the widget is disposed
   }
 
+  Future<void> getProduct() async {
+    product = await ProductStorage.getProductByClassID(
+        '${widget.message['post_id']}');
+    setState(() {}); // Update the UI to display the retrieved product
+  }
+
   // Fetch product data from the API
   Future<void> fetchData() async {
     try {
@@ -261,8 +271,8 @@ class _ChatScreenState extends State<ChatScreen> {
         defaultProduct1 = Product(
           title: '${widget.message['subject']}',
           description: '',
-          image: 'https://cfast.ng/storage/app/default/user.png}',
-          price: '${productData['Price']}',
+          image: '${product!.image}',
+          price: '${product!.price}',
           date: '',
           time: '',
           itemUrl:
@@ -385,7 +395,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       MaterialPageRoute(
                         builder: (context) => ProductScreenBrief(
                           product:
-                              defaultProduct, // Pass the actual Product instance
+                              defaultProduct1, // Pass the actual Product instance
                         ),
                       ),
                     );
@@ -414,8 +424,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               height: 40,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: NetworkImage(
-                                      productData['StorePhoto'] ?? ""),
+                                  image: NetworkImage(product!.image ?? ""),
                                   fit: BoxFit.cover,
                                 ),
                                 shape: BoxShape.rectangle,
@@ -426,25 +435,25 @@ class _ChatScreenState extends State<ChatScreen> {
                               width: 5,
                             ), // Adding
                             Expanded(
-                              child: Text(
-                                productData['Title'] ?? "Loading...",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1, // Limit to 1 line
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(width: 45),
-                            Text(
-                              productData['Price'] ?? "Loading...",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product?.title ?? "Loading...",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 1, // Limit to 1 line
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    product?.price ?? "0.00",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

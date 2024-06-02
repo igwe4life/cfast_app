@@ -10,6 +10,8 @@ import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
 
+import '../services/product_storage.dart';
+
 class GridHome extends StatefulWidget {
   const GridHome({Key? key}) : super(key: key);
 
@@ -51,6 +53,9 @@ class _GridHomeState extends State<GridHome> {
             catURL: item['catURL'],
           );
         }).toList();
+
+        // Save products to SharedPreferences
+        await ProductStorage.saveProducts(products);
 
         return products;
       } else {

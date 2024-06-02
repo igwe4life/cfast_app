@@ -2,19 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
+import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'firebase_options.dart'; // Import your Firebase options file
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //Remove this method to stop OneSignal Debugging
+  // Initialize AdMob with your App ID
+  MobileAds.instance.initialize();
+  // runApp(const MyApp());
+  // Remove this method to stop OneSignal Debugging
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-
   OneSignal.initialize("722ef7af-cf8d-4858-98ec-8f5db0a58de2");
-
-// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.Notifications.requestPermission(true);
 
   runApp(const MyApp());

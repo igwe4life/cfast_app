@@ -69,7 +69,7 @@ class ProductInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "₦" + product.price ??
+                  product.price ??
                       'Price not available', // Use a default value if product.price is null
                   style: const TextStyle(
                     fontSize: 20,

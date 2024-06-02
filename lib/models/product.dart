@@ -22,4 +22,34 @@ class Product {
     required this.location,
     required this.catURL,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'image': image,
+      'price': price,
+      'date': date,
+      'time': time,
+      'itemUrl': itemUrl,
+      'classID': classID,
+      'location': location,
+      'catURL': catURL,
+    };
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      title: json['title'],
+      description: json['description'],
+      image: json['image'],
+      price: json['price'],
+      date: json['date'],
+      time: json['time'],
+      itemUrl: json['itemUrl'],
+      classID: json['classID'],
+      location: json['location'],
+      catURL: json['catURL'],
+    );
+  }
 }
