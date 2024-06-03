@@ -511,16 +511,14 @@ class _ChatScreenState extends State<ChatScreen> {
                           decoration: InputDecoration(
                             hintText: widget.description == null
                                 ? 'Enter message...'
-                                : null, // Display hint text if initial value not set
+                                : null,
                           ),
                         ),
-                      // ),
+                      ),
                       SizedBox(width: 8.0),
                       ElevatedButton(
                         onPressed: () {
                           _sendMessage(_messageController.text);
-                          // _messageController.clear();
-                          // _messageController.text = '';
                         },
                         child: Text('Send'),
                       ),
