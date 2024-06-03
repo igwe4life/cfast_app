@@ -192,6 +192,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         final threadId = decodedResponse['thread_id'];
         prefs.setInt('post_${widget.postId}_thread_id', threadId);
 
+        // Clear the message controller after starting the chat
+        widget.textEditingController.clear();
+        //currentValue = '';
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

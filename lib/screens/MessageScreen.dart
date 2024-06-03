@@ -256,6 +256,8 @@ class _ChatScreenState extends State<ChatScreen> {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
 
+    _messageController.text = widget.description ?? '';
+
     defaultProduct = Product(
       title: '${widget.productTitle}',
       description: 'This is in good condition, tested and works like new.',
@@ -275,6 +277,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     super.dispose();
+    _messageController.dispose();
     _timers.cancel(); // Cancel the timer when the widget is disposed
   }
 
@@ -504,19 +507,20 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _messageController
-                            ..text = widget.description ?? '',
+                          controller: _messageController,
                           decoration: InputDecoration(
                             hintText: widget.description == null
                                 ? 'Enter message...'
                                 : null, // Display hint text if initial value not set
                           ),
                         ),
-                      ),
+                      // ),
                       SizedBox(width: 8.0),
                       ElevatedButton(
                         onPressed: () {
                           _sendMessage(_messageController.text);
+                          // _messageController.clear();
+                          // _messageController.text = '';
                         },
                         child: Text('Send'),
                       ),
@@ -633,8 +637,9 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
-      _messageController.clear(); // Clear the message text field after sending
       setState(() {
+        _messageController.clear();
+        _messageController.text = '';
         _messages.insert(
           0,
           {
