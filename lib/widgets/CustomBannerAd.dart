@@ -20,7 +20,8 @@ class _CustomBannerAdState extends State<CustomBannerAd> {
       size: AdSize.banner,
       //adUnitId: "ca-app-pub-3940256099942544/6300978111",
       //adUnitId: "ca-app-pub-6353765559327674/1270147819",
-      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      //adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      adUnitId: "ca-app-pub-6353765559327674/6066186955",
       listener: BannerAdListener(onAdFailedToLoad: (ad, error) {
         print("Ad Failed to Load");
         ad.dispose();
