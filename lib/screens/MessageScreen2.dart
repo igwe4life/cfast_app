@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shop_cfast/screens/product_screen_brief.dart';
+import 'package:shop_cfast/screens/chat_screen_new.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 import '../models/product.dart';
@@ -135,9 +136,22 @@ class _MessageScreen2State extends State<MessageScreen2> {
                     onTap: () {
                       Navigator.push(
                         context,
+                        // MaterialPageRoute(
+                        //   builder: (context) => ChatScreen2(
+                        //     message: message,
+                        //   ),
+                        // ),
                         MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                            message: message,
+                          builder: (context) => ChatScreen2(
+                            messageId: message['id'],
+                            postId: message['postId'],
+                            productTitle: '',
+                            price: '',
+                            description: '',
+                            storeName: '',
+                            phoneNumber: '',
+                            product: null,
+                            firstImageUrl: 'firstImageUrl',
                           ),
                         ),
                       );

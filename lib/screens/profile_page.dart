@@ -1,5 +1,5 @@
 import 'dart:ffi';
-
+import 'dart:io'; // For Platform checks
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -251,20 +251,49 @@ class _ProfilePageState extends State<ProfilePage> {
                     //   Share.share('Check out this token: $token');
                     // }),
                     // _buildDivider(), // Divider
+                    // _buildListItem('SHARE APP', Icons.share, () async {
+                    //   // Share the app link
+                    //   String appLink =
+                    //       'https://play.google.com/store/apps/details?id=com.cfast.ng'; // Replace with your app link
+                    //   String message = 'Check out this awesome app:\n$appLink';
+                    //
+                    //   // Open the appropriate app store link based on the platform
+                    //   String platform =
+                    //       Theme.of(context).platform.toString().toLowerCase();
+                    //   String storeLink = platform == 'targetplatform.android'
+                    //       ? 'https://play.google.com/store/apps/details?id=com.cfast.ng'
+                    //       : 'https://apps.apple.com/us/app/cfast/id1234567890';
+                    //
+                    //   await launch(storeLink);
+                    //
+                    //   // Share the app link and message
+                    //   Share.share(message);
+                    // }),
                     _buildListItem('SHARE APP', Icons.share, () async {
                       // Share the app link
-                      String appLink =
-                          'https://play.google.com/store/apps/details?id=com.cfast.ng'; // Replace with your app link
-                      String message = 'Check out this awesome app:\n$appLink';
+                      String androidAppLink =
+                          'https://play.google.com/store/apps/details?id=com.cfast.ng';
+                      String iosAppLink =
+                          'https://apps.apple.com/app/id6496972740';
+                      String message = 'Check out this awesome app:\n';
 
-                      // Open the appropriate app store link based on the platform
-                      String platform =
-                          Theme.of(context).platform.toString().toLowerCase();
-                      String storeLink = platform == 'targetplatform.android'
-                          ? 'https://play.google.com/store/apps/details?id=com.cfast.ng'
-                          : 'https://apps.apple.com/us/app/cfast/id1234567890';
+                      // Determine the appropriate app store link based on the platform
+                      String storeLink;
+                      if (Platform.isAndroid) {
+                        storeLink = androidAppLink;
+                        message += androidAppLink;
+                      } else if (Platform.isIOS) {
+                        storeLink = iosAppLink;
+                        message += iosAppLink;
+                      } else {
+                        throw 'Unsupported platform';
+                      }
 
-                      await launch(storeLink);
+                      if (await canLaunch(storeLink)) {
+                        await launch(storeLink);
+                      } else {
+                        throw 'Could not launch $storeLink';
+                      }
 
                       // Share the app link and message
                       Share.share(message);

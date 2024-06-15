@@ -216,9 +216,6 @@ class _ChatScreenState extends State<ChatScreen> {
   late List<Map<String, dynamic>> _messages;
   late Timer _timers;
   bool _isLoading = true;
-  bool _isSending = false;
-  Timer? _debounceTimer;
-
   Map<String, dynamic> productData = {};
 
   late int uid;
@@ -256,8 +253,6 @@ class _ChatScreenState extends State<ChatScreen> {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
 
-    _messageController.text = widget.description ?? '';
-
     defaultProduct = Product(
       title: '${widget.productTitle}',
       description: 'This is in good condition, tested and works like new.',
@@ -277,7 +272,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     super.dispose();
-    _messageController.dispose();
     _timers.cancel(); // Cancel the timer when the widget is disposed
   }
 
@@ -463,26 +457,30 @@ class _ChatScreenState extends State<ChatScreen> {
                             SizedBox(
                               width: 5,
                             ), // Adding space between image and text
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    productData['Title'] ?? "Loading...",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    maxLines: 1, // Limit to 1 line
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "₦" + (productData['Price'] ?? "0.00"),
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                            Text(
+                              (productData['Title'] ?? "Loading...").length > 24
+                                  ? (productData['Title']?.substring(0, 24) ??
+                                          "Loading...") +
+                                      '...'
+                                  : productData['Title'] ?? "Loading...",
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(width: 45),
+                            Text(
+                              //productData['UserStatus'] ?? "Loading...",
+                              //'₦' + (productData['Price'] ?? "Loading...")
+                              "₦" + (productData['Price'] ?? "Loading..."),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -507,11 +505,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _messageController,
+                          controller: _messageController
+                            ..text = widget.description ?? '',
                           decoration: InputDecoration(
                             hintText: widget.description == null
                                 ? 'Enter message...'
-                                : null,
+                                : null, // Display hint text if initial value not set
                           ),
                         ),
                       ),
@@ -609,13 +608,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage(String message) async {
-    if (_isSending)
-      return; // Prevent sending if a message is already being sent
-
-    setState(() {
-      _isSending = true; // Set sending flag to true
-    });
-
     DateTime now = DateTime.now();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -635,9 +627,8 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
+      _messageController.clear(); // Clear the message text field after sending
       setState(() {
-        _messageController.clear();
-        _messageController.text = '';
         _messages.insert(
           0,
           {
@@ -667,8 +658,5 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       );
     }
-    setState(() {
-      _isSending = false; // Reset sending flag after response
-    });
   }
 }
