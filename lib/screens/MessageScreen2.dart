@@ -144,12 +144,12 @@ class _MessageScreen2State extends State<MessageScreen2> {
                         MaterialPageRoute(
                           builder: (context) => ChatScreen2(
                             messageId: message['id'],
-                            postId: message['postId'],
-                            productTitle: '',
+                            postId: message['post_id'],
+                            productTitle: message['subject'],
                             price: '',
                             description: '',
-                            storeName: '',
-                            phoneNumber: '',
+                            storeName: message["p_creator"]["name"],
+                            phoneNumber: message["p_creator"]["phone"],
                             product: null,
                             firstImageUrl: 'firstImageUrl',
                           ),

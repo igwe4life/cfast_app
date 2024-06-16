@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -334,6 +335,16 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  String formatCurrency(String price) {
+    final formatCurrency = NumberFormat.currency(symbol: '₦');
+    try {
+      double value = double.parse(price);
+      return formatCurrency.format(value);
+    } catch (e) {
+      return price; // Return the original price if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -477,7 +488,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             Text(
                               //productData['UserStatus'] ?? "Loading...",
                               //'₦' + (productData['Price'] ?? "Loading...")
-                              "₦" + (productData['Price'] ?? "Loading..."),
+                              //"₦" + (productData['Price'] ?? "Loading..."),
+                              formatCurrency(productData['Price'] ?? "0.00"),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

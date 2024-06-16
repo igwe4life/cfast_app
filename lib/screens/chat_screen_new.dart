@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shop_cfast/screens/product_screen_brief.dart';
 import '../constants.dart';
 import '../models/product.dart';
 import '../services/product_storage.dart';
@@ -52,6 +54,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
   late String token;
 
   late Product defaultProduct;
+  late Product defaultProduct1;
 
   TextEditingController _messageController = TextEditingController();
 
@@ -70,6 +73,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
   @override
   void initState() {
     super.initState();
+    fetchData();
     loadUserProfile();
     fetchMessagesChats();
     _timers = Timer.periodic(Duration(seconds: 15), (timer) {
@@ -109,6 +113,21 @@ class _ChatScreen2State extends State<ChatScreen2> {
         setState(() {
           productData = decodedResponse;
         });
+
+        defaultProduct1 = Product(
+          title: '${widget.productTitle}',
+          description: '',
+          image: '${widget.firstImageUrl}',
+          price: '${productData['Price']}',
+          date: '',
+          time: '',
+          itemUrl:
+          'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+          classID: '${widget.postId}',
+          location: '',
+          catURL: '',
+        );
+
       } else {
         print('HTTP Error: ${response.statusCode}');
         throw Exception(
@@ -137,6 +156,16 @@ class _ChatScreen2State extends State<ChatScreen2> {
     }
   }
 
+  String formatCurrency(String price) {
+    final formatCurrency = NumberFormat.currency(symbol: '₦');
+    try {
+      double value = double.parse(price);
+      return formatCurrency.format(value);
+    } catch (e) {
+      return price; // Return the original price if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,12 +185,12 @@ class _ChatScreen2State extends State<ChatScreen2> {
                 },
               ),
               SizedBox(
-                  width: 8), // Add some spacing between the icon and the avatar
+                  width: 4),
               CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cfast.ng/storage/app/default/user.png'),
               ),
-//              SizedBox(width: 8),
+              //SizedBox(width: 8),
             ],
           ),
         ),
@@ -170,16 +199,16 @@ class _ChatScreen2State extends State<ChatScreen2> {
           children: [
             SizedBox(width: 6),
             Text(
-              //widget.message["latest_message"]["p_recipient"]["name"],
-              "Igwe Shop",
+              productData['StoreName'] ?? "Loading...",
+              //"Igwe Shop",
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.white,
               ),
             ),
             Text(
-              //productData['UserStatus'] ?? "Loading...",
-              "Online now!",
+              productData['UserStatus'] ?? "Loading...",
+              //"Online now!",
               style: TextStyle(
                 fontSize: 10,
                 color: Colors.white70,
@@ -192,12 +221,12 @@ class _ChatScreen2State extends State<ChatScreen2> {
         actions: [
           IconButton(
             onPressed: () async {
-              //String nuphoneNumber =
-              //widget.message["latest_message"]["p_recipient"]["phone"];,
+              String nuphoneNumber =
+                  productData['Phone'] ?? "08033330000";
               //phone,
               final Uri telUri = Uri(
                 scheme: 'tel',
-                path: phone,
+                path: nuphoneNumber,
               );
 
               if (await canLaunchUrl(telUri)) {
@@ -208,7 +237,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
             },
             icon: Icon(
               Icons.call,
-              color: Colors.white, // Set the icon color to white
+              color: Colors.white,
             ),
           ),
         ],
@@ -219,6 +248,82 @@ class _ChatScreen2State extends State<ChatScreen2> {
           ? _buildShimmerEffect()
           : Column(
               children: [
+                GestureDetector(
+                  onTap: () {
+                    //Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductScreenBrief(
+                          product:
+                          defaultProduct1, // Pass the actual Product instance
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[200], // Light grey color
+                      borderRadius: BorderRadius.circular(10), // Rounded edges
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            // CircleAvatar(
+                            //   radius: 25, // Radius half of 40 to make it 40x40
+                            //   backgroundImage:
+                            //       NetworkImage(productData['StorePhoto'] ?? ""),
+                            // ),
+                            // SizedBox(
+                            //     width:
+                            //         5), // Adding space between image and text
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(productData['StorePhoto'] ?? ""),
+                                  fit: BoxFit.cover,
+                                ),
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ), // Adding
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    productData['Title'] ?? "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                    maxLines: 1, // Limit to 1 line
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    //productData['Price'] ?? "0.00",
+                                    formatCurrency(productData['Price'] ?? "0.00"),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     reverse: true,

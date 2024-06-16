@@ -727,7 +727,8 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                       storeName: "${productData['StoreName']}",
                       phoneNumber: "${productData['Phone']}",
                       product: widget.product,
-                      firstImageUrl: imageUrls[0],
+                      firstImageUrl: "${productData['StorePhoto']}",
+                      //firstImageUrl: imageUrls[0],
                       //product: widget.product.toString(),
                     ),
                     const SizedBox(height: 10),
@@ -743,12 +744,12 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
-                                radius:
-                                    20, // Radius half of 40 to make it 40x40
-                                backgroundImage: NetworkImage(imageUrls[0] ??
-                                    "https://cfast.ng/storage/app/default/user.png"),
-                              ),
+                              // CircleAvatar(
+                              //   radius:
+                              //       20, // Radius half of 40 to make it 40x40
+                              //   backgroundImage: NetworkImage(imageUrls[0] ??
+                              //       "https://cfast.ng/storage/app/default/user.png"),
+                              // ),
                               SizedBox(
                                   width:
                                       5), // Adding space between image and text
