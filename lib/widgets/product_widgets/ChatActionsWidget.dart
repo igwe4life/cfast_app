@@ -96,7 +96,6 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         (Route<dynamic> route) => false,
       );
     } else {
-      //sendRequestToAPI();
       _startOrGetConversation();
     }
   }
@@ -148,10 +147,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
 
   Future<void> startChatThread() async {
     setState(() {
-      isStartingChat = true;
+      isStartingChat = true; // Set loading state
     });
 
-    final url = '$baseUrl/cfastapi/start_chat.php';
+    final url = '$baseUrl/cfastapi/sendofferapp.php'; // API endpoint URL
 
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -161,62 +160,58 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.headers['Authorization'] = 'Bearer $token';
 
+      // Populate request fields
       request.fields['token'] = token!;
-      request.fields['name'] = name;
+      request.fields['name'] = name; // Make sure name, email, phone, etc. are defined
       request.fields['auth_field'] = 'email';
       request.fields['email'] = email;
       request.fields['phone'] = phone;
       request.fields['phone_country'] = 'NG';
-      // request.fields['body'] =
-      //     'New chat started - ${widget.title}\n\n$currentValue';
-      // request.fields['post_id'] = widget.postId.toString();
-      request.fields['body'] = '$currentValue';
-      request.fields['post_id'] = widget.postId.toString();
+      request.fields['body'] = currentValue; // Use the current value
+      request.fields['post_id'] = widget.postId.toString(); // Convert postId to string
 
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      final decodedResponse = json.decode(responseBody);
+      var response = await request.send(); // Send the request
+      var responseBody = await response.stream.bytesToString(); // Read response
+      final decodedResponse = json.decode(responseBody); // Decode JSON response
 
-      print(responseBody);
+      print(responseBody); // Print response for debugging
 
-      // Fluttertoast.showToast(
-      //   msg: 'Start chatresponse: $responseBody.',
-      //   toastLength: Toast.LENGTH_LONG,
-      //   gravity: ToastGravity.BOTTOM,
-      //   backgroundColor: Colors.blue,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
-
-      if (response.statusCode == 200 && decodedResponse['status'] != 'error') {
+      // Check if the response indicates success
+      if (response.statusCode == 200 && decodedResponse['success'] != null) {
+        // Extract threadId if available
         final threadId = decodedResponse['thread_id'];
-        prefs.setInt('post_${widget.postId}_thread_id', threadId);
+        if (threadId != null) {
+          prefs.setInt('post_${widget.postId}_thread_id', threadId);
 
-        // Clear the message controller after starting the chat
-        widget.textEditingController.clear();
-        //currentValue = '';
+          // Clear the message controller after starting the chat
+          widget.textEditingController.clear();
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatScreen(
-              messageId: threadId,
-              productTitle: widget.title,
-              price: widget.price,
-              description: widget.title,
-              postId: widget.postId,
-              storeName: widget.storeName,
-              phoneNumber: widget.phoneNumber,
-              firstImageUrl: widget.firstImageUrl,
-              product: widget.product,
+          // Navigate to the chat screen with necessary details
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                messageId: threadId,
+                productTitle: widget.title,
+                price: widget.price,
+                description: '',
+                postId: widget.postId,
+                storeName: widget.storeName,
+                phoneNumber: widget.phoneNumber,
+                firstImageUrl: widget.firstImageUrl,
+                product: widget.product,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          // Handle case where threadId is null
+          throw Exception('Thread ID is null in response');
+        }
       } else {
+        // Handle API errors or unexpected response
         String errorMessage = decodedResponse['error'] ?? 'An error occurred';
         Fluttertoast.showToast(
-          msg:
-              'Unable to send a chat: You tried to send to recipient(s) that have been marked as inactive. Please use WhatsApp or call to reach out to the merchant.',
+          msg: errorMessage,
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -225,10 +220,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         );
       }
     } catch (error) {
+      // Catch any errors during the API call
       print('Error starting chat thread: $error');
       Fluttertoast.showToast(
-        msg:
-            'Error starting chat with merchant: $error. You tried to chat with a recipient that have been marked as inactive. Please use WhatsApp or call to reach out to the merchant.',
+        msg: 'Error starting chat with merchant: $error',
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
@@ -237,7 +232,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       );
     } finally {
       setState(() {
-        isStartingChat = false;
+        isStartingChat = false; // Reset loading state
       });
     }
   }
@@ -380,42 +375,6 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       textColor: Colors.white,
       fontSize: 16.0,
     );
-  }
-
-  Future<void> sendRequestToAPI() async {
-    final url = '$baseUrl/api/threads';
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json',
-          'Content-Language': 'en',
-          'X-AppApiToken': 'Uk1DSFlVUVhIRXpHbWt6d2pIZjlPTG15akRPN2tJTUs=',
-          'X-AppType': 'docs',
-          'Authorization': 'Bearer $token',
-        },
-        body: {
-          'name': name,
-          'auth_field': 'email',
-          'email': email,
-          'phone': phone,
-          'phone_country': 'NG',
-          'body': widget.textEditingController.text,
-          'post_id': widget.postId, // Use postId from widget parameter
-        },
-      );
-
-      final responseBody = response.body;
-      print('API Response: $responseBody');
-
-      ///Fluttertoast.showToast(msg: 'Chat sent successfully: $responseBody');
-    } catch (error) {
-      print('Error sending request: $error');
-
-      ///Fluttertoast.showToast(msg: 'Chat failed to start!: $error');
-    }
   }
 
   @override
