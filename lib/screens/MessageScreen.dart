@@ -219,6 +219,8 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isLoading = true;
   Map<String, dynamic> productData = {};
 
+  bool _isSending = false; // Add this line
+
   late int uid;
   late String name;
   late String email;
@@ -254,6 +256,8 @@ class _ChatScreenState extends State<ChatScreen> {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
 
+    _messageController = TextEditingController(text: widget.description ?? '');
+
     defaultProduct = Product(
       title: '${widget.productTitle}',
       description: 'This is in good condition, tested and works like new.',
@@ -272,8 +276,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    super.dispose();
+    _messageController.dispose();
     _timers.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
   }
 
   // Fetch product data from the API
@@ -348,78 +353,143 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          width: 100, // Adjust this width to fit your layout needs
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+        appBar: AppBar(
+          leadingWidth: 100, // Adjust this width to fit your layout needs
+          leading: Row(
             children: [
               IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: Colors.white, // Set the icon color to white
+                  color: Colors.white,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              SizedBox(
-                  width: 8), // Add some spacing between the icon and the avatar
               CircleAvatar(
+                radius: 16, // You can adjust the size as needed
                 backgroundImage: NetworkImage(
                     'https://cfast.ng/storage/app/default/user.png'),
               ),
-//              SizedBox(width: 8),
             ],
           ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(width: 6),
-            Text(
-              widget.storeName,
-              style: TextStyle(
-                fontSize: 14,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.storeName,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                productData['UserStatus'] ?? "Loading...",
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white70,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                String nuphoneNumber = widget.phoneNumber;
+                final Uri telUri = Uri(
+                  scheme: 'tel',
+                  path: nuphoneNumber,
+                );
+
+                if (await canLaunchUrl(telUri)) {
+                  await launchUrl(telUri);
+                } else {
+                  throw 'Could not launch $telUri';
+                }
+              },
+              icon: Icon(
+                Icons.call,
                 color: Colors.white,
               ),
             ),
-            Text(
-              productData['UserStatus'] ?? "Loading...",
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.white70,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
           ],
+          backgroundColor: Colors.blue,
+          centerTitle: true,
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              String nuphoneNumber = widget.phoneNumber;
-              final Uri telUri = Uri(
-                scheme: 'tel',
-                path: nuphoneNumber,
-              );
-
-              if (await canLaunchUrl(telUri)) {
-                await launchUrl(telUri);
-              } else {
-                throw 'Could not launch $telUri';
-              }
-            },
-            icon: Icon(
-              Icons.call,
-              color: Colors.white, // Set the icon color to white
+        /*appBar: AppBar(
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(width: 8),
+              Flexible(
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      'https://cfast.ng/storage/app/default/user.png'),
+                ),
+              ),
+            ],
+          ),
+          title: Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.storeName,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  productData['UserStatus'] ?? "Loading...",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.white70,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ],
             ),
           ),
-        ],
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-      ),
-      body: _isLoading
+          actions: [
+            IconButton(
+              onPressed: () async {
+                String nuphoneNumber = widget.phoneNumber;
+                final Uri telUri = Uri(
+                  scheme: 'tel',
+                  path: nuphoneNumber,
+                );
+
+                if (await canLaunchUrl(telUri)) {
+                  await launchUrl(telUri);
+                } else {
+                  throw 'Could not launch $telUri';
+                }
+              },
+              icon: Icon(
+                Icons.call,
+                color: Colors.white,
+              ),
+            ),
+          ],
+          backgroundColor: Colors.blue,
+          centerTitle: true,
+        ),*/
+        body: _isLoading
           ? _buildShimmerEffect()
           : Column(
               children: [
@@ -517,8 +587,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _messageController
-                            ..text = widget.description ?? '',
+                          // controller: _messageController
+                          //   ..text = widget.description ?? '',
+                          controller: _messageController,
                           decoration: InputDecoration(
                             hintText: widget.description == null
                                 ? 'Enter message...'
@@ -528,10 +599,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       SizedBox(width: 8.0),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: _isSending ? null : () {
+                          setState(() {
+                            _isSending = true;
+                          });
                           _sendMessage(_messageController.text);
                         },
-                        child: Text('Send'),
+                        child: _isSending
+                            ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                            : Text('Send'),
                       ),
                     ],
                   ),
@@ -639,8 +717,10 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
-      _messageController.clear(); // Clear the message text field after sending
       setState(() {
+        _isSending = false; // Reset the sending state
+        _messageController.clear(); // Clear the text field after sending
+        // fetchMessagesChats(); // Refresh the messages list
         _messages.insert(
           0,
           {
@@ -649,6 +729,7 @@ class _ChatScreenState extends State<ChatScreen> {
             'user_id': uid,
           },
         );
+        // _messageController.clear(); // Clear the message text field after sending
       });
     } else {
       // Handle failed message sending
@@ -671,4 +752,5 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
   }
+
 }

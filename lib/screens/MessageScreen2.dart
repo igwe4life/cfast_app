@@ -206,6 +206,9 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isLoading = true;
   bool _isSending = false;
 
+  // bool loading = false;
+  // bool _isSending = false; // Add this line
+
   Map<String, dynamic> productData = {};
 
   late int uid;
@@ -502,11 +505,44 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       SizedBox(width: 8.0),
-                      ElevatedButton(
+                      /*ElevatedButton(
                         onPressed: () {
                           _sendMessage(_messageController.text);
                         },
                         child: Text('Send'),
+                      ),*/
+                      // Stack(
+                      //   children: [
+                      //     ElevatedButton(
+                      //       onPressed: () {
+                      //         // Toggle loading state
+                      //         setState(() {
+                      //           loading = true;
+                      //         });
+                      //         _sendMessage(_messageController.text);
+                      //       },
+                      //       child: Text('Send'),
+                      //     ),
+                      //     if (loading)
+                      //       Positioned.fill(
+                      //         child: Center(
+                      //           child: CircularProgressIndicator(),
+                      //         ),
+                      //       ),
+                      //   ],
+                      // ),
+                      ElevatedButton(
+                        onPressed: _isSending ? null : () {
+                          setState(() {
+                            _isSending = true;
+                          });
+                          _sendMessage(_messageController.text);
+                        },
+                        child: _isSending
+                            ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                            : Text('Send'),
                       ),
                     ],
                   ),
@@ -584,8 +620,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage(String message) async {
-    if (_isSending)
-      return; // Prevent sending if a message is already being sent
+    if (_isSending) return; // Prevent sending if a message is already being sent
 
     setState(() {
       _isSending = true; // Set sending flag to true
@@ -610,7 +645,9 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
-      _messageController.clear(); // Clear the message text field after sending
+      // Clear the message text field after sending
+      _messageController.clear();
+
       setState(() {
         _messages.insert(
           0,
@@ -620,6 +657,10 @@ class _ChatScreenState extends State<ChatScreen> {
             'user_id': uid,
           },
         );
+
+        // Toggle loading state back to false
+        // loading = false;
+        _isSending = false;
       });
     } else {
       // Handle failed message sending
@@ -641,8 +682,11 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       );
     }
+
     setState(() {
       _isSending = false; // Reset sending flag after response
+      //loading = false; // Also toggle loading state back to false on error
     });
   }
+
 }

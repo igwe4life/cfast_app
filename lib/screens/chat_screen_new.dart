@@ -43,6 +43,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
   late List<Map<String, dynamic>> _messages;
   late Timer _timers;
   bool _isLoading = true;
+  bool loading = false;
 
   Map<String, dynamic> productData = {};
 
@@ -73,11 +74,12 @@ class _ChatScreen2State extends State<ChatScreen2> {
   @override
   void initState() {
     super.initState();
+    _messageController = TextEditingController(text: widget.description);
     fetchData();
     loadUserProfile();
     fetchMessagesChats();
     _timers = Timer.periodic(Duration(seconds: 15), (timer) {
-      fetchMessagesChats(); // Fetch messages every 15 seconds
+      fetchMessagesChats();
     });
 
     defaultProduct = Product(
@@ -170,45 +172,38 @@ class _ChatScreen2State extends State<ChatScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          width: 100, // Adjust this width to fit your layout needs
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white, // Set the icon color to white
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+        leadingWidth: 100, // Adjust this width to fit your layout needs
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
               ),
-              SizedBox(
-                  width: 4),
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://cfast.ng/storage/app/default/user.png'),
-              ),
-              //SizedBox(width: 8),
-            ],
-          ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            CircleAvatar(
+              radius: 16, // You can adjust the size as needed
+              backgroundImage: NetworkImage(
+                  'https://cfast.ng/storage/app/default/user.png'),
+            ),
+          ],
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 6),
             Text(
-              productData['StoreName'] ?? "Loading...",
-              //"Igwe Shop",
+              widget.storeName,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 color: Colors.white,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
               productData['UserStatus'] ?? "Loading...",
-              //"Online now!",
               style: TextStyle(
                 fontSize: 10,
                 color: Colors.white70,
@@ -221,9 +216,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
         actions: [
           IconButton(
             onPressed: () async {
-              String nuphoneNumber =
-                  productData['Phone'] ?? "08033330000";
-              //phone,
+              String nuphoneNumber = widget.phoneNumber;
               final Uri telUri = Uri(
                 scheme: 'tel',
                 path: nuphoneNumber,
@@ -341,17 +334,31 @@ class _ChatScreen2State extends State<ChatScreen2> {
                       Expanded(
                         child: TextField(
                           controller: _messageController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Type your message...',
                           ),
                         ),
                       ),
                       SizedBox(width: 8.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          _sendMessage(_messageController.text);
-                        },
-                        child: Text('Send'),
+                      Stack(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Toggle loading state
+                              setState(() {
+                                loading = true;
+                              });
+                              _sendMessage(_messageController.text);
+                            },
+                            child: Text('Send'),
+                          ),
+                          if (loading)
+                            Positioned.fill(
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
@@ -448,7 +455,10 @@ class _ChatScreen2State extends State<ChatScreen2> {
     );
 
     if (response.statusCode == 200) {
-      _messageController.clear(); // Clear the message text field after sending
+      // Clear the message text field after sending
+      _messageController.clear();
+
+      // Update state with the new message
       setState(() {
         _messages.insert(
           0,
@@ -458,6 +468,9 @@ class _ChatScreen2State extends State<ChatScreen2> {
             'user_id': uid,
           },
         );
+
+        // Toggle loading state back to false
+        loading = false;
       });
     } else {
       // Handle failed message sending
@@ -478,6 +491,11 @@ class _ChatScreen2State extends State<ChatScreen2> {
           );
         },
       );
+
+      // Also toggle loading state back to false on error
+      setState(() {
+        loading = false;
+      });
     }
   }
 }
