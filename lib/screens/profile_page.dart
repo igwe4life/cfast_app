@@ -332,6 +332,76 @@ class _ProfilePageState extends State<ProfilePage> {
                         signOut(uid, token);
                       }
                     }),
+                    _buildDivider(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 15.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.all(15.0),
+                        ),
+                        onPressed: () async {
+                          bool confirmDelete = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Confirm Delete'),
+                                content: Text('Are you sure you want to delete your account and all associated data?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    child: Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (confirmDelete == true) {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CircularProgressIndicator(),
+                                        SizedBox(height: 16),
+                                        Text('Deleting account...'),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+
+                            // await signOut(uid, token);
+                            await deleteAccount(uid, token);
+                            Navigator.pop(context); // Close the progress dialog
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => GoodbyeScreen()),
+                            );
+                          }
+                        },
+                        // child: Text('Delete Account'),
+                        child: Text(
+                          "Delete Account",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -448,5 +518,71 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
     }
+  }
+
+  Future<void> deleteAccount(int userId, String token) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/users/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Language': 'en',
+        'X-AppType': 'docs',
+        'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw='
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete account.');
+    }
+
+    // Remove the specified shared preferences
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.remove("token");
+    await sharedPreferences.remove("status");
+    await sharedPreferences.remove("uid");
+    await sharedPreferences.remove("name");
+    await sharedPreferences.remove("email");
+    await sharedPreferences.remove("photo_url");
+    await sharedPreferences.remove("phone");
+  }
+}
+
+class GoodbyeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Goodbye')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/logo.png'), // Replace with your app logo
+              SizedBox(height: 20),
+              Text(
+                'We hate to see you go!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Your account and all associated data have been successfully deleted. We hope to see you again!',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  exit(0); // Close the app
+                },
+                child: Text('Close App'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

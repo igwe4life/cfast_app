@@ -46,7 +46,7 @@ class _DetailsPageState extends State<DetailsPage> {
             style: TextStyle(
                 fontFamily: 'OpenSansLight',
                 fontSize: 26,
-                color: Theme.of(context).textTheme.headline1!.color),
+                color: Theme.of(context).textTheme.headlineMedium!.color),
           ),
         ),
         elevation: 0,

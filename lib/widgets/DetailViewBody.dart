@@ -28,12 +28,12 @@ class DetailViewBody extends StatelessWidget {
               children: <Widget>[
                 Text(
                   item['title'],
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 8.0),
                 Text(
                   item['price'],
-                  style: Theme.of(context).textTheme.subtitle1!.merge(
+                  style: Theme.of(context).textTheme.titleMedium!.merge(
                         const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.blue,
@@ -43,7 +43,7 @@ class DetailViewBody extends StatelessWidget {
                 const SizedBox(height: 8.0),
                 Text(
                   item['location'],
-                  style: Theme.of(context).textTheme.subtitle1!.merge(
+                  style: Theme.of(context).textTheme.titleMedium!.merge(
                         const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.blue,
