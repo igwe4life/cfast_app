@@ -6,6 +6,8 @@ import '../constants.dart';
 import 'login_page.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
@@ -43,14 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             // Inject JavaScript code using evaluateJavascript
             _controller
-                .runJavaScript("javascript:(function() { " +
-                    "var header = document.querySelector('.header');" +
-                    "if (header) header.parentNode.removeChild(header);" +
-                    "var footer = document.querySelector('.main-footer');" +
-                    "if (footer) footer.parentNode.removeChild(footer);" +
-                    "var sidebar = document.querySelector('.col-md-4.reg-sidebar');" +
-                    "if (sidebar) sidebar.parentNode.removeChild(sidebar);" +
-                    "})()")
+                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
                 .then((value) =>
                     debugPrint('Header, Footer, and Sidebar removed'))
                 .catchError((onError) => debugPrint(
@@ -77,7 +72,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Signup',
           style: TextStyle(
             color: Colors.white,
@@ -91,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           WebViewWidget(controller: _controller),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 color: Colors.blue, // Set the loading indicator color
               ),
@@ -109,7 +104,7 @@ class _SignupScreenState extends State<SignupScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => const LoginPage(),
       ),
     );
   }

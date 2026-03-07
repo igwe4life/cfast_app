@@ -12,19 +12,23 @@ import '../constants.dart';
 import '../models/product.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MessageScreen(),
     );
   }
 }
 
 class MessageScreen extends StatefulWidget {
+  const MessageScreen({super.key});
+
   @override
   _MessageScreenState createState() => _MessageScreenState();
 }
@@ -46,7 +50,7 @@ class _MessageScreenState extends State<MessageScreen> {
     super.initState();
     loadUserProfile();
     fetchMessages(); // Fetch messages initially
-    _timer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessages(); // Fetch messages every 15 seconds
     });
   }
@@ -91,7 +95,7 @@ class _MessageScreenState extends State<MessageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Messages',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -167,7 +171,7 @@ class _MessageScreenState extends State<MessageScreen> {
         itemCount: 8, // Number of shimmering list items
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            leading: CircleAvatar(
+            leading: const CircleAvatar(
               backgroundColor: Colors.white,
               radius: 30.0,
             ),
@@ -197,7 +201,7 @@ class ChatScreen extends StatefulWidget {
   final Product? product;
   final String firstImageUrl;
 
-  ChatScreen({
+  const ChatScreen({super.key, 
     required this.messageId,
     required this.postId,
     required this.productTitle,
@@ -252,18 +256,18 @@ class _ChatScreenState extends State<ChatScreen> {
     loadUserProfile();
     fetchData();
     fetchMessagesChats();
-    _timers = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timers = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
 
     _messageController = TextEditingController(text: widget.description ?? '');
 
     defaultProduct = Product(
-      title: '${widget.productTitle}',
+      title: widget.productTitle,
       description: 'This is in good condition, tested and works like new.',
-      image: '${widget.firstImageUrl}',
+      image: widget.firstImageUrl,
       //image: 'https://cfast.ng/uk-used-microsoft-16gb-256gb/80',
-      price: '${widget.price}',
+      price: widget.price,
       date: '31st May, 2024',
       time: '8:40AM',
       itemUrl:
@@ -358,7 +362,7 @@ class _ChatScreenState extends State<ChatScreen> {
           leading: Row(
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white,
                 ),
@@ -366,7 +370,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Navigator.pop(context);
                 },
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 16, // You can adjust the size as needed
                 backgroundImage: NetworkImage(
                     'https://cfast.ng/storage/app/default/user.png'),
@@ -378,7 +382,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Text(
                 widget.storeName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.white,
                 ),
@@ -386,7 +390,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               Text(
                 productData['UserStatus'] ?? "Loading...",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 10,
                   color: Colors.white70,
                 ),
@@ -410,7 +414,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   throw 'Could not launch $telUri';
                 }
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.call,
                 color: Colors.white,
               ),
@@ -512,7 +516,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.blue[200], // Light grey color
                       borderRadius: BorderRadius.circular(10), // Rounded edges
@@ -535,7 +539,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ), // Adding space between image and text
                             Text(
@@ -544,7 +548,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           "Loading...") +
                                       '...'
                                   : productData['Title'] ?? "Loading...",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                               ),
                               maxLines: 1,
@@ -554,13 +558,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         Row(
                           children: [
-                            SizedBox(width: 45),
+                            const SizedBox(width: 45),
                             Text(
                               //productData['UserStatus'] ?? "Loading...",
                               //'₦' + (productData['Price'] ?? "Loading...")
                               //"₦" + (productData['Price'] ?? "Loading..."),
                               formatCurrency(productData['Price'] ?? "0.00"),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -597,7 +601,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
                       ElevatedButton(
                         onPressed: _isSending ? null : () {
                           setState(() {
@@ -606,10 +610,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           _sendMessage(_messageController.text);
                         },
                         child: _isSending
-                            ? CircularProgressIndicator(
+                            ? const CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         )
-                            : Text('Send'),
+                            : const Text('Send'),
                       ),
                     ],
                   ),
@@ -630,7 +634,7 @@ class _ChatScreenState extends State<ChatScreen> {
             : CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSentByCurrentUser ? Colors.blue : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(16),
@@ -643,7 +647,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: TextStyle(
                       color: isSentByCurrentUser ? Colors.white : Colors.black),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   // Format date and time here (message['created_at'] as String)
                   message['created_at_formatted'],
@@ -673,7 +677,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   height: 30,
                   color: Colors.white,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Container(
                   height: 15,
                   color: Colors.white,
@@ -737,14 +741,14 @@ class _ChatScreenState extends State<ChatScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Failed to send message'),
-            content: Text('Please try again later.'),
+            title: const Text('Failed to send message'),
+            content: const Text('Please try again later.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );

@@ -38,7 +38,7 @@ class _ProductGridState extends State<ProductGrid> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(response),
-        duration: Duration(seconds: 5),
+        duration: const Duration(seconds: 5),
       ),
     );
   }
@@ -47,13 +47,13 @@ class _ProductGridState extends State<ProductGrid> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Grid'),
+        title: const Text('Product Grid'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -74,7 +74,7 @@ class _ProductGridState extends State<ProductGrid> {
         return _buildProductCard(product);
       },
       staggeredTileBuilder: (int index) =>
-          StaggeredTile.fit(1), // Adjusts based on content
+          const StaggeredTile.fit(1), // Adjusts based on content
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
     );

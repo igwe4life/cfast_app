@@ -6,13 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ChatScreen(
         threadId: 0,
       ),
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
 class ChatScreen extends StatefulWidget {
   final int threadId;
 
-  ChatScreen({required this.threadId});
+  const ChatScreen({super.key, required this.threadId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -40,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late String phone;
   late String token;
 
-  TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   Future<void> loadUserProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -59,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     loadUserProfile();
     fetchMessagesChats();
-    _timers = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timers = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
   }
@@ -91,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Chat Screen',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -120,17 +122,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type your message...',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 ElevatedButton(
                   onPressed: () {
                     _sendMessage(_messageController.text);
                   },
-                  child: Text('Send'),
+                  child: const Text('Send'),
                 ),
               ],
             ),
@@ -151,7 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
             : CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSentByCurrentUser ? Colors.blue : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(16),
@@ -164,11 +166,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: TextStyle(
                       color: isSentByCurrentUser ? Colors.white : Colors.black),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   // Format date and time here (message['created_at'] as String)
                   message['created_at_formatted'],
-                  style: TextStyle(fontSize: 9, color: Colors.grey),
+                  style: const TextStyle(fontSize: 9, color: Colors.grey),
                 ),
               ],
             ),
@@ -215,14 +217,14 @@ class _ChatScreenState extends State<ChatScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Failed to send message'),
-            content: Text('Please try again later.'),
+            title: const Text('Failed to send message'),
+            content: const Text('Please try again later.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );

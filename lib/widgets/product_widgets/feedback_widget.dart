@@ -6,7 +6,7 @@ import '../../constants.dart';
 class FeedbackWidget extends StatefulWidget {
   final String storeName;
 
-  FeedbackWidget({Key? key, required this.storeName}) : super(key: key);
+  const FeedbackWidget({Key? key, required this.storeName}) : super(key: key);
 
   @override
   _FeedbackWidgetState createState() => _FeedbackWidgetState();
@@ -42,7 +42,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
       future: _futureData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -54,7 +54,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (feedbackData.isNotEmpty)
-                Center(
+                const Center(
                   child: Text(
                     'Feedback about seller',
                     style: TextStyle(
@@ -64,7 +64,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
                     ),
                   ),
                 ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Column(
                 children: feedbackData.take(2).map((feedback) {
                   return ListTile(
@@ -73,12 +73,12 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
                     ),
                     title: Text(feedback['post_title']),
                     subtitle: Text(feedback['comment']),
-                    trailing: Icon(Icons.arrow_forward),
+                    trailing: const Icon(Icons.arrow_forward),
                   );
                 }).toList(),
               ),
               if (feedbackData.isEmpty)
-                Center(
+                const Center(
                   child: Text(
                     'No reviews available',
                     style: TextStyle(

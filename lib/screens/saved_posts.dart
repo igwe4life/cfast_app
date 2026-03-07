@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 
 class SavedPostsScreen extends StatefulWidget {
+  const SavedPostsScreen({super.key});
+
   @override
   _SavedPostsScreenState createState() => _SavedPostsScreenState();
 }
@@ -47,11 +49,11 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved Posts', style: TextStyle(color: Colors.white)),
+        title: const Text('Saved Posts', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
@@ -70,7 +72,7 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
                     backgroundColor: Colors.blue,
                     child: Text(
                       '${index + 1}',
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   title: Text(post['title']),
@@ -86,7 +88,7 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
 class EditPostScreen extends StatefulWidget {
   final dynamic post;
 
-  EditPostScreen(this.post);
+  const EditPostScreen(this.post, {super.key});
 
   @override
   _EditPostScreenState createState() => _EditPostScreenState();
@@ -100,10 +102,10 @@ class _EditPostScreenState extends State<EditPostScreen> {
   late String token;
 
   // Define controllers for editing post details
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _tagsController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _tagsController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   void initState() {
@@ -134,7 +136,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Post', style: TextStyle(color: Colors.white)),
+        title: const Text('Edit Post', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -144,29 +146,29 @@ class _EditPostScreenState extends State<EditPostScreen> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _tagsController,
-              decoration: InputDecoration(labelText: 'Tags'),
+              decoration: const InputDecoration(labelText: 'Tags'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _priceController,
-              decoration: InputDecoration(labelText: 'Price'),
+              decoration: const InputDecoration(labelText: 'Price'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 _submitEditedPost();
               },
-              child: Text('Post'),
+              child: const Text('Post'),
             ),
           ],
         ),

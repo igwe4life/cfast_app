@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../screens/category_view.dart';
-import 'SubCatList.dart';
 import '../../constants.dart';
 
 class Category {
@@ -135,6 +134,7 @@ class _CatListViewState extends State<CatListView> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+        print(response.body);
 
         final List<dynamic> data = responseData['result']['data'];
         final fetchedCategories = data
@@ -184,7 +184,7 @@ class _CatListViewState extends State<CatListView> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Search Results'),
+              title: const Text('Search Results'),
               content: SizedBox(
                 height: 300, // Set the desired height
                 child: ListView.builder(
@@ -204,7 +204,7 @@ class _CatListViewState extends State<CatListView> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );

@@ -10,6 +10,8 @@ import 'forgot_password.dart';
 import 'main_screen.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -45,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Login',
           style: TextStyle(
             color: Colors.white,
@@ -54,33 +56,33 @@ class _LoginPageState extends State<LoginPage> {
         ),
         backgroundColor: Colors.blue,
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20.0),
           child: _isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 40.0),
+                    const SizedBox(height: 40.0),
                     Container(
                       height: 80,
                       width: 120,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('assets/logo.png'),
                           fit: BoxFit.contain,
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     TextFormField(
                       controller: emailController,
                       cursorColor: Colors.white,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black),
+                      decoration: const InputDecoration(
                         icon: Icon(Icons.email, color: Colors.black),
                         hintText: "Email",
                         border: UnderlineInputBorder(
@@ -88,13 +90,13 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle: TextStyle(color: Colors.black),
                       ),
                     ),
-                    SizedBox(height: 30.0),
+                    const SizedBox(height: 30.0),
                     TextFormField(
                       controller: passwordController,
                       cursorColor: Colors.white,
                       obscureText: true,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black),
+                      decoration: const InputDecoration(
                         icon: Icon(Icons.lock, color: Colors.black),
                         hintText: "Password",
                         border: UnderlineInputBorder(
@@ -102,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle: TextStyle(color: Colors.black),
                       ),
                     ),
-                    SizedBox(height: 30.0),
+                    const SizedBox(height: 30.0),
                     ElevatedButton(
                       onPressed: emailController.text.trim().isEmpty ||
                               passwordController.text.trim().isEmpty
@@ -118,18 +120,18 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.all(15.0),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Login",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: 15.0),
+                    const SizedBox(height: 15.0),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignupScreen(),
+                            builder: (context) => const SignupScreen(),
                           ),
                         );
                       },
@@ -137,18 +139,18 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.orange,
                         padding: const EdgeInsets.all(15.0),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Register",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: 15.0),
+                    const SizedBox(height: 15.0),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgotPasswordWidget(),
+                            builder: (context) => const ForgotPasswordWidget(),
                           ),
                         );
                       },
@@ -156,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.black,
                         padding: const EdgeInsets.all(15.0),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Forgot Password",
                         style: TextStyle(color: Colors.white),
                       ),
@@ -172,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     Map data = {'email': email, 'password': pass};
-    var jsonResponse = null;
+    var jsonResponse;
 
     var loginUrl = '$baseUrl/cfastapi/auth_login.php';
     print("Login URL: $loginUrl");
@@ -197,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MainScreen(),
+            builder: (context) => const MainScreen(),
           ),
         );
       } else {
@@ -234,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

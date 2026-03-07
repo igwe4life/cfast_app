@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
 class MakemoneyScreen extends StatefulWidget {
+  const MakemoneyScreen({super.key});
+
   @override
   _MakemoneyScreenState createState() => _MakemoneyScreenState();
 }
@@ -38,14 +39,7 @@ class _MakemoneyScreenState extends State<MakemoneyScreen> {
             });
 
             _controller
-                .runJavaScript("javascript:(function() { " +
-                    "var header = document.querySelector('.header');" +
-                    "if (header) header.parentNode.removeChild(header);" +
-                    "var footer = document.querySelector('.main-footer');" +
-                    "if (footer) footer.parentNode.removeChild(footer);" +
-                    "var sidebar = document.querySelector('.col-md-4.reg-sidebar');" +
-                    "if (sidebar) sidebar.parentNode.removeChild(sidebar);" +
-                    "})()")
+                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
                 .then((value) =>
                     debugPrint('Header, Footer, and Sidebar removed'))
                 .catchError((onError) => debugPrint(
@@ -60,7 +54,7 @@ class _MakemoneyScreenState extends State<MakemoneyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Make Money',
           style: TextStyle(
             color: Colors.white,
@@ -74,7 +68,7 @@ class _MakemoneyScreenState extends State<MakemoneyScreen> {
         children: [
           WebViewWidget(controller: _controller),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 color: Colors.blue,
               ),

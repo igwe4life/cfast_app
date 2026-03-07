@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Expandable Description'),
+          title: const Text('Expandable Description'),
         ),
-        body: Center(
+        body: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
 class ExpandableDescriptionWidget extends StatefulWidget {
   final String description;
 
-  ExpandableDescriptionWidget({required this.description});
+  const ExpandableDescriptionWidget({super.key, required this.description});
 
   @override
   _ExpandableDescriptionWidgetState createState() =>
@@ -58,14 +60,14 @@ class _ExpandableDescriptionWidgetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Product Description',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
         GestureDetector(
           onTap: () {
             setState(() {
@@ -82,19 +84,19 @@ class _ExpandableDescriptionWidgetState
             overflow: TextOverflow.ellipsis,
             text: TextSpan(
               text: displayedText,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
               ),
               children: [
                 if (!isExpanded)
-                  TextSpan(
+                  const TextSpan(
                     text: '...', // Adding ellipsis for the collapsed text
                     style: TextStyle(color: Colors.blue),
                   ),
                 TextSpan(
                   text: isExpanded ? ' Hide' : ' Show more',
                   // Changed 'Show less' to 'Show more'
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.bold,
                   ),

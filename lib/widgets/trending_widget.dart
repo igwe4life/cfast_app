@@ -5,6 +5,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../constants.dart';
 
 class StaggeredGridViewWidget extends StatefulWidget {
+  const StaggeredGridViewWidget({super.key});
+
   @override
   _StaggeredGridViewWidgetState createState() =>
       _StaggeredGridViewWidgetState();
@@ -34,13 +36,13 @@ class _StaggeredGridViewWidgetState extends State<StaggeredGridViewWidget> {
   @override
   Widget build(BuildContext context) {
     return _data.isEmpty
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : StaggeredGridView.countBuilder(
             crossAxisCount: 2,
             itemCount: _data.length,
             itemBuilder: (BuildContext context, int index) =>
                 _buildListItem(index),
-            staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+            staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
             mainAxisSpacing: 4.0,
             crossAxisSpacing: 4.0,
           );
@@ -59,17 +61,17 @@ class _StaggeredGridViewWidgetState extends State<StaggeredGridViewWidget> {
             height: 150,
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(item['title'],
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.0),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4.0),
                 Text(item['price']),
-                SizedBox(height: 4.0),
+                const SizedBox(height: 4.0),
                 Text('Location: ${item['location']}'),
-                SizedBox(height: 4.0),
+                const SizedBox(height: 4.0),
                 Text('Date: ${item['date']} at ${item['time']}'),
               ],
             ),

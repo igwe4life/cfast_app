@@ -13,13 +13,8 @@ class ApiListViewScreen extends StatefulWidget {
 }
 
 class _ApiListViewScreenState extends State<ApiListViewScreen> {
-  late Future<List<dynamic>> _futureData;
-  late int uid;
-  // late String name;
-  // late String email;
-  // late String photoUrl;
-  // late String phone;
-  // late String token;
+  Future<List<dynamic>>? _futureData;
+  int uid = 0;
 
   @override
   void initState() {
@@ -29,17 +24,14 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
 
   Future<void> loadAuthToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      uid = sharedPreferences.getInt("uid") ?? 0;
-      // name = sharedPreferences.getString("name") ?? "Name";
-      // email = sharedPreferences.getString("email") ?? "Email";
-      // photoUrl = sharedPreferences.getString("photo_url") ?? "";
-      // phone = sharedPreferences.getString("phone") ?? "Phone";
-      // token = sharedPreferences.getString("token") ?? "token";
-    });
+    if (mounted) {
+      setState(() {
+        uid = sharedPreferences.getInt("uid") ?? 0;
+      });
 
-    // Call fetchData() here after setting uid
-    _futureData = fetchData();
+      // Call fetchData() here after setting uid
+      _futureData = fetchData();
+    }
   }
 
   Future<List<dynamic>> fetchData() async {
@@ -50,7 +42,7 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
     // }
 
     final url =
-        Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
+    Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -78,7 +70,11 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
-          } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Center(
+              child: Text('No data or still loading...'),
+            );
+          } else if (snapshot.data!.isEmpty) {
             return Center(
               child: Text('No results found'),
             );
@@ -94,7 +90,7 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
                       final leadingText = (index + 1).toString();
                       DateTime date = DateTime.parse(item['created_at']);
                       String formattedDate =
-                          DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
+                      DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -127,7 +123,7 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
                               item['title'] ?? '',
                               style: TextStyle(
                                 fontWeight:
-                                    FontWeight.bold, // Make the title bold
+                                FontWeight.bold, // Make the title bold
                               ),
                             ),
                             subtitle: Text(formattedDate),

@@ -14,17 +14,17 @@ class SearchResultsScreen extends StatefulWidget {
   final List<Product> products;
   final String query;
 
-  SearchResultsScreen({required this.products, required this.query});
+  const SearchResultsScreen({super.key, required this.products, required this.query});
 
   @override
   _SearchResultsScreenState createState() => _SearchResultsScreenState();
 }
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
-  TextEditingController _searchController = TextEditingController();
-  String _selectedLocation = 'Location';
-  String _selectedCategory = 'Category';
-  String _selectedPrice = 'Price';
+  final TextEditingController _searchController = TextEditingController();
+  final String _selectedLocation = 'Location';
+  final String _selectedCategory = 'Category';
+  final String _selectedPrice = 'Price';
 
   late SharedPreferences sharedPreferences;
 
@@ -41,7 +41,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       context: context,
       barrierDismissible: false, // Prevent dialog from closing on tap outside
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(), // Circular loading indicator
         );
       },
@@ -111,7 +111,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
         // Handle other errors
         print('Error: $e');
-        Fluttertoast.showToast(msg: 'API Error 2: ${e}');
+        Fluttertoast.showToast(msg: 'API Error 2: $e');
       }
     }
   }
@@ -121,7 +121,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text(
+        title: const Text(
           'Search Results',
           style: TextStyle(
             color: Colors.white,
@@ -138,17 +138,17 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Enter search term...',
                     ),
                   ),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 ElevatedButton(
                   onPressed: () {
                     _performSearch(context);
                   },
-                  child: Text('Go'),
+                  child: const Text('Go'),
                 ),
               ],
             ),
@@ -180,21 +180,21 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Found ${widget.products.length} results for ',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color: Colors.black,
                   ),
                 ),
                 Text(
-                  '${widget.query}',
-                  style: TextStyle(
+                  widget.query,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color: Colors.blue,
@@ -204,7 +204,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   onPressed: () {
                     _saveSearchQuery(widget.query, widget.products.length);
                   },
-                  icon: Icon(Icons.save),
+                  icon: const Icon(Icons.save),
                   color: Colors.blue,
                 ),
               ],
@@ -216,13 +216,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               Product product = widget.products[index];
               return Card(
                 elevation: 3,
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: ListTile(
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   title: Text(
                     product.price ?? 'Price not available',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: Colors.blue,
@@ -240,7 +240,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                           color: Colors.blueGrey.shade900,
                         ),
                       ),
-                      SizedBox(height: 4), // Added SizedBox for spacing
+                      const SizedBox(height: 4), // Added SizedBox for spacing
                       Text(
                         product.location ?? 'Location not available',
                         style: TextStyle(
@@ -252,7 +252,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   ),
                   leading: product.image != null
                       ? Image.network(
-                          product.image!,
+                          product.image,
                           width: 100, // Reduced the width for better layout
                           height: double
                               .infinity, // Set the height to occupy full height
@@ -261,7 +261,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                           alignment: Alignment
                               .centerLeft, // Align the image to the left
                         )
-                      : Placeholder(), // Placeholder or default image if image URL is null
+                      : const Placeholder(), // Placeholder or default image if image URL is null
                   onTap: () {
                     // Add onTap here
                     Navigator.push(
@@ -286,7 +286,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   void _saveSearchQuery(String query, int searchResultsCount) async {
     // Make API call to save the search query
     // Adjust the URL and headers according to your API documentation
-    final url = '$baseUrl/api/savedSearches';
+    const url = '$baseUrl/api/savedSearches';
 
     try {
       final response = await http.post(
@@ -309,7 +309,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       if (response.statusCode == 200) {
         // Display success message using SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Search query saved successfully'),
             backgroundColor: Colors.green,
           ),
@@ -318,7 +318,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       } else {
         // Display error message using SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to save search query'),
             backgroundColor: Colors.red,
           ),

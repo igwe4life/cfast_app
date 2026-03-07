@@ -11,7 +11,7 @@ class FeedbackScreen extends StatefulWidget {
   final String storeName;
   final String productTitle;
 
-  FeedbackScreen({required this.storeName, required this.productTitle});
+  const FeedbackScreen({super.key, required this.storeName, required this.productTitle});
 
   @override
   _FeedbackScreenState createState() => _FeedbackScreenState();
@@ -21,7 +21,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   bool _isLoadingFeedback = false;
   String _selectedRating = 'positive'; // Selected positive by default
   String _selectedOption = '';
-  TextEditingController _feedbackController = TextEditingController();
+  final TextEditingController _feedbackController = TextEditingController();
 
   late int uid;
   late String name;
@@ -36,13 +36,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please login first!'),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
     }
@@ -155,7 +155,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Leave Feedback',
           style: TextStyle(color: Colors.white),
         ),
@@ -163,16 +163,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'How was your experience?',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -191,7 +191,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             : Colors.grey,
                         size: 50,
                       ),
-                      Text(
+                      const Text(
                         'Positive',
                         style: TextStyle(color: Colors.blue),
                       ),
@@ -213,7 +213,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             : Colors.grey,
                         size: 50,
                       ),
-                      Text(
+                      const Text(
                         'Neutral',
                         style: TextStyle(color: Colors.blue),
                       ),
@@ -235,7 +235,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             : Colors.grey,
                         size: 50,
                       ),
-                      Text(
+                      const Text(
                         'Negative',
                         style: TextStyle(color: Colors.blue),
                       ),
@@ -244,9 +244,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             DropdownButtonFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Select an option',
                 border: OutlineInputBorder(),
               ),
@@ -256,32 +256,32 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   _selectedOption = newValue!;
                 });
               },
-              items: [
+              items: const [
                 DropdownMenuItem(
-                  child: Text('Successful purchase'),
                   value: 'Successful purchase',
+                  child: Text('Successful purchase'),
                 ),
                 DropdownMenuItem(
-                  child: Text('Failed purchase'),
                   value: 'Failed purchase',
+                  child: Text('Failed purchase'),
                 ),
                 DropdownMenuItem(
-                  child: Text("Can't reach the seller"),
                   value: "Can't reach the seller",
+                  child: Text("Can't reach the seller"),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: _feedbackController,
               minLines: 3,
               maxLines: 5,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Detailed Comment',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 if (_selectedRating.isNotEmpty &&
@@ -291,23 +291,23 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       _feedbackController.text);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Please fill in all fields'),
                       backgroundColor: Colors.red,
                     ),
                   );
                 }
               },
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
+              ),
               child: _isLoadingFeedback
-                  ? CircularProgressIndicator(
+                  ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
-                  : Text('Send Feedback'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
+                  : const Text('Send Feedback'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -328,7 +328,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       BorderRadius.circular(10), // Border radius set to 10
                 ),
               ),
-              child: Text('View Feedback'),
+              child: const Text('View Feedback'),
             ),
           ],
         ),

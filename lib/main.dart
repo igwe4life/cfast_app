@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_cfast/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
-import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
-import 'firebase_options.dart'; // Import your Firebase options file
+// Import Firebase Core
+// Import your Firebase options file
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> main() async {
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // Simulating a loading process. This can be replaced with your actual loading logic.
     // For demonstration, I'm using a Timer to simulate a 2-second delay.
-    Timer(Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       setState(() {
         _isLoading =
             false; // Update isLoading to false to indicate loading is complete.
@@ -77,8 +77,8 @@ class SplashScreen extends StatelessWidget {
               height: 150, // Adjust height as needed
               fit: BoxFit.contain, // Adjust fit as needed
             ),
-            SizedBox(height: 50), // Spacer
-            CircularProgressIndicator(
+            const SizedBox(height: 50), // Spacer
+            const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
                   Colors.orange), // Set progress indicator color to orange
             ),

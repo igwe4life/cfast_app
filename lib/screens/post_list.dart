@@ -38,6 +38,8 @@ class Post {
 }
 
 class PostsListScreen extends StatefulWidget {
+  const PostsListScreen({super.key});
+
   @override
   _PostsListScreenState createState() => _PostsListScreenState();
 }
@@ -99,10 +101,10 @@ class _PostsListScreenState extends State<PostsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Posts'),
+        title: const Text('Posts'),
       ),
       body: _posts == null
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
@@ -115,7 +117,9 @@ class _PostsListScreenState extends State<PostsListScreen> {
                         ? CircleAvatar(
                             backgroundImage: NetworkImage(post.userPhotoUrl),
                           )
-                        : Icon(Icons.person),
+                        : const CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
                     title: Text(post.title),
                     subtitle: Text(post.description),
                     onTap: () {

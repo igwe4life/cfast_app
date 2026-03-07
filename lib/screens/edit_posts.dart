@@ -13,7 +13,7 @@ import '../constants.dart';
 class EditPostScreen extends StatefulWidget {
   final dynamic item;
 
-  EditPostScreen(this.item);
+  const EditPostScreen(this.item, {super.key});
 
   @override
   _EditPostScreenState createState() => _EditPostScreenState();
@@ -27,13 +27,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
   late String token;
 
   // Define controllers for editing post details
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _tagsController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _tagsController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   File? _selectedImage;
-  List<File?> _selectedImages = List.generate(5, (index) => null);
+  final List<File?> _selectedImages = List.generate(5, (index) => null);
 
   @override
   void initState() {
@@ -41,12 +42,15 @@ class _EditPostScreenState extends State<EditPostScreen> {
     loadAuthToken();
 
     // Initialize controller values with post data
-    _titleController.text = widget.item['title'] ?? '';
-    _descriptionController.text = widget.item['description'] ?? '';
-    _tagsController.text = widget.item['tags'] ?? '';
-    _priceController.text = widget.item['price'] ?? '';
-    // _categoryController.text = widget.post['category_id'];
-    // _cityController.text = widget.post['city_id'];
+    _titleController.text = (widget.item['title'] ?? '').toString();
+    _descriptionController.text = (widget.item['description'] ?? '').toString();
+    _tagsController.text = (widget.item['tags'] ?? '').toString();
+    _priceController.text = (widget.item['price'] ?? '').toString();
+    // Initialize phone, stripping country code if present for display, or just showing generic
+    // For now, assuming we just show what's there or user's phone, but user wants to add country code "in front" (UI prefix)
+    // So we should put the number WITHOUT the prefix in the controller if we use prefixText.
+    // However, simplicity: let's load the raw phone number.
+     _phoneController.text = (widget.item['phone'] ?? '').toString();
   }
 
   Future<void> loadAuthToken() async {
@@ -57,6 +61,11 @@ class _EditPostScreenState extends State<EditPostScreen> {
       photoUrl = sharedPreferences.getString("photo_url") ?? "";
       phone = sharedPreferences.getString("phone") ?? "Phone";
       token = sharedPreferences.getString("token") ?? "token";
+      
+      // If widget item didn't have phone, try using profile phone
+      if (_phoneController.text.isEmpty) {
+         _phoneController.text = phone;
+      }
     });
   }
 
@@ -72,15 +81,15 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Delete Image'),
+                      title: const Text('Delete Image'),
                       content:
-                          Text('Are you sure you want to delete this image?'),
+                          const Text('Are you sure you want to delete this image?'),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close the dialog
                           },
-                          child: Text('Cancel'),
+                          child: const Text('Cancel'),
                         ),
                         TextButton(
                           onPressed: () {
@@ -90,7 +99,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                             });
                             Navigator.of(context).pop(); // Close the dialog
                           },
-                          child: Text('Delete'),
+                          child: const Text('Delete'),
                         ),
                       ],
                     );
@@ -100,8 +109,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
               child: Stack(
                 alignment: Alignment.topRight,
                 children: [
-                  Image.file(image),
-                  Icon(
+                   Image.file(image),
+                  const Icon(
                     Icons.delete,
                     size: 36, // Set the size of the icon
                     color: Colors.red, // Set the color of the icon
@@ -117,7 +126,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Ad Listing', style: TextStyle(color: Colors.white)),
+        title: const Text('Edit Ad Listing', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
@@ -128,38 +137,48 @@ class _EditPostScreenState extends State<EditPostScreen> {
             children: [
               TextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _tagsController,
-                decoration: InputDecoration(labelText: 'Tags'),
+                decoration: const InputDecoration(labelText: 'Tags'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _priceController,
-                decoration: InputDecoration(labelText: 'Price'),
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number (Required)',
+                  prefixText: '+234 ',
+                ),
+                keyboardType: TextInputType.phone,
               ),
               // Image preview
               _buildImagePreview(),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: addImages,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.orange, // Text color
                 ),
-                child: Text(
+                child: const Text(
                   'Select Image',
                   style: TextStyle(color: Colors.white), // Text color
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   _submitEditedPost();
@@ -168,7 +187,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue, // Text color
                 ),
-                child: Text('Submit Ad Listing'),
+                child: const Text('Submit Ad Listing'),
               ),
             ],
           ),
@@ -178,23 +197,43 @@ class _EditPostScreenState extends State<EditPostScreen> {
   }
 
   void _submitEditedPost() async {
+    if (_phoneController.text.trim().isEmpty) {
+      Fluttertoast.showToast(msg: 'Phone number is required');
+      return;
+    }
+
     // Show CircularProgressIndicator
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },
     );
+    
+    // Format phone number with country code if not present
+    String finalPhone = _phoneController.text.trim();
+    // Assuming the user types the local number, we prepend +234/country code if we want to force it.
+    // The requirement says "add country code in front". 
+    // If we use prefixText in decoration, it's visual. We might want to prepend it to data.
+    // However, let's just send what's in the controller combined with our knowledge, or just the controller if the API expects local.
+    // Let's assume we prepend +234 if it's missing.
+    // Actually, usually APIs want the full E.164.
+    // Let's stick to sending what the user typed but ensuring it's not empty. 
+    // Wait, "add country code in front" usually implies visual prefix. logic-wise, let's prepend it for data.
+    if (!finalPhone.startsWith('+')) {
+         finalPhone = '+234$finalPhone';
+    }
+
     // Prepare data to post
     var data = {
       'category_id': widget.item['category_id'].toString(),
       'package_id': '1',
       'country_code': 'NG',
       'email': email,
-      'phone': phone,
+      'phone': finalPhone, 
       'phone_country': 'NG',
       'city_id': widget.item['city_id'].toString(),
       'auth_field': 'email',
@@ -242,23 +281,25 @@ class _EditPostScreenState extends State<EditPostScreen> {
           '$baseUrl/cfastapi/update_saved.php?id=${widget.item['id']}');
 
       ///Fluttertoast.showToast(msg: responseBody.toString());
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) { // 201 Created is often used too
         // Handle successful response
         print('Post updated successfully');
 
         ///Fluttertoast.showToast(msg: decodedResponse['message']);
         final responses = await http.get(updateUrl);
+        
+        // Navigation should be here regardless of update_saved status
+         Navigator.of(context).popUntil((route) => route.isFirst);
 
         // Check if the request was successful
         if (responses.statusCode == 200) {
           // Request was successful, handle the response if needed
           print('Update request successful');
           Fluttertoast.showToast(msg: 'Update request successful');
-          Navigator.of(context).popUntil((route) => route.isFirst);
         } else {
           // Request failed
           print('Failed to make update request: ${responses.statusCode}');
-          Fluttertoast.showToast(msg: 'Update request successful');
+          Fluttertoast.showToast(msg: 'Saved status update failed: ${responses.statusCode}');
         }
         // Success toast and navigation to home screen
         //Fluttertoast.showToast(msg: decodedResponse['message']);
@@ -266,7 +307,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
         // You can navigate back to previous screen or show a success message
       } else {
         // Handle error response
-        print('Failed to update post: ${decodedResponse.statusCode}');
+        print('Failed to update post: ${response.statusCode}');
         Fluttertoast.showToast(
             msg:
                 'Listing creation update failed: ${decodedResponse['message']}');
@@ -301,73 +342,52 @@ class _EditPostScreenState extends State<EditPostScreen> {
     }
   }
 
-  Set<String> uploadedFiles = Set(); // Maintain a set of uploaded file paths
+  Set<String> uploadedFiles = {}; // Maintain a set of uploaded file paths
 
   Future<void> addImages() async {
     final picker = ImagePicker();
-    final List<XFile>? images = await picker.pickMultiImage();
+    final List<XFile> images = await picker.pickMultiImage();
 
-    if (images != null) {
-      for (XFile image in images) {
-        // Get image file
-        File file = File(image.path);
+    for (XFile image in images) {
+      // Get image file
+      File file = File(image.path);
 
-        // Check if image is a screenshot
-        bool isScreenshot = await isImageScreenshot(file);
+      // Check if image is a screenshot
+      bool isScreenshot = await isImageScreenshot(file);
 
-        // If the image is not a screenshot
-        if (!isScreenshot) {
-          // Check if the file has already been uploaded
-          if (!uploadedFiles.contains(image.path)) {
-            // Get image dimensions
-            final decodedImage =
-                await decodeImageFromList(await file.readAsBytes());
-            int width = decodedImage.width;
+      // If the image is not a screenshot
+      if (!isScreenshot) {
+        // Check if the file has already been uploaded
+        if (!uploadedFiles.contains(image.path)) {
+          // Get image dimensions
+          final decodedImage =
+              await decodeImageFromList(await file.readAsBytes());
+          int width = decodedImage.width;
 
-            // Check if image width is greater than 600 pixels
-            if (width > 600) {
-              // Watermark the image before adding it to the list
-              File watermarkedImage = await _addWatermarkToImages(file);
-              setState(() {
-                _selectedImages.add(watermarkedImage);
-              });
-              // Add the file path of watermarked image to the uploaded files set
-              uploadedFiles.add(watermarkedImage.path);
-            } else {
-              // Remove the image from the list
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Image Width Alert'),
-                    content: Text(
-                        'Image with width less than or equal to 600 pixels is not allowed.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+          // Check if image width is greater than 600 pixels
+          if (width > 600) {
+            // Watermark the image before adding it to the list
+            File watermarkedImage = await _addWatermarkToImages(file);
+            setState(() {
+              _selectedImages.add(watermarkedImage);
+            });
+            // Add the file path of watermarked image to the uploaded files set
+            uploadedFiles.add(watermarkedImage.path);
           } else {
-            // Alert user that the file has already been uploaded
+            // Remove the image from the list
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('File Upload Alert'),
-                  content: Text('This file has already been uploaded.'),
+                  title: const Text('Image Width Alert'),
+                  content: const Text(
+                      'Image with width less than or equal to 600 pixels is not allowed.'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );
@@ -375,28 +395,47 @@ class _EditPostScreenState extends State<EditPostScreen> {
             );
           }
         } else {
-          // Alert user that screenshot images are not allowed
+          // Alert user that the file has already been uploaded
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Screenshot Alert'),
-                content: Text('Screenshot images are not allowed.'),
+                title: const Text('File Upload Alert'),
+                content: const Text('This file has already been uploaded.'),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               );
             },
           );
         }
+      } else {
+        // Alert user that screenshot images are not allowed
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Screenshot Alert'),
+              content: const Text('Screenshot images are not allowed.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
-  }
+    }
 
   Future<File> _addWatermarkToImages(File imageFile) async {
     try {
@@ -410,7 +449,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
       // Draw the original image on the canvas
       canvas.drawImage(image, Offset.zero, Paint());
       // Define watermark text
-      String watermarkText = '${name}\n Posted on Cfast.NG';
+      String watermarkText = '$name\n Posted on Cfast.NG';
       // Calculate scaling factor for font size based on image dimensions
       double scaleFactor = 1.0;
       if (image.width <= 640) {
@@ -476,7 +515,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
       return watermarkedFile;
     } catch (e) {
       print('Error adding watermark: $e');
-      throw e; // Propagate the error
+      rethrow; // Propagate the error
     }
   }
 }

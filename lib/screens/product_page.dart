@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/widgets/product_widgets/ads_grid.dart';
-import '../constants.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -23,22 +22,23 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Watch ads"),
+        title: const Text("Watch ads"),
       ),
       body: FutureBuilder(
           future: fetchAds(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return Center(
+                return const Center(
                   child: Text('Try again'),
                 );
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               case ConnectionState.done:
-                if (snapshot.hasError)
-                  return Center(child: Text('Check internet connection'));
+                if (snapshot.hasError) {
+                  return const Center(child: Text('Check internet connection'));
+                }
                 return AdsGrid(ads: snapshot.data);
             } // unreachable
           }),

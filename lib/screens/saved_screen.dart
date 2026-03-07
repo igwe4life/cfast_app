@@ -3,13 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
-import 'package:shop_cfast/screens/product_screen_brief.dart';
 import '../constants.dart';
 
 class SavedScreen extends StatefulWidget {
+  const SavedScreen({super.key});
+
   @override
   _SavedScreenState createState() => _SavedScreenState();
 }
@@ -21,8 +21,8 @@ class _SavedScreenState extends State<SavedScreen> {
   late String photoUrl;
   late String phone;
   late String token;
-  late Future<List<SavedSearch>> _fetchData;
-  late Future<List<Ad>> _fetchAds;
+  Future<List<SavedSearch>>? _fetchData;
+  Future<List<Ad>>? _fetchAds;
 
   Future<void> loadUserProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -33,23 +33,24 @@ class _SavedScreenState extends State<SavedScreen> {
       photoUrl = sharedPreferences.getString("photo_url") ?? "";
       phone = sharedPreferences.getString("phone") ?? "Phone";
       token = sharedPreferences.getString("token") ?? "token";
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadUserProfile().then((_) {
+      
+      // Fetch data after token is loaded
       _fetchData = fetchSavedSearches(token);
       _fetchAds = fetchAds(token);
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadUserProfile();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Saved',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -64,8 +65,8 @@ class _SavedScreenState extends State<SavedScreen> {
         child: Column(
           children: [
             Container(
-              constraints: BoxConstraints.expand(height: 50),
-              child: TabBar(
+              constraints: const BoxConstraints.expand(height: 50),
+              child: const TabBar(
                 labelColor: Colors.blue,
                 unselectedLabelColor: Colors.blueAccent,
                 tabs: [
@@ -83,12 +84,32 @@ class _SavedScreenState extends State<SavedScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return _buildShimmerList();
                       } else if (snapshot.hasError) {
+                        print('Ads error details: ${snapshot.error}'); // Debug print
                         return Center(
-                          child: Text('Error loading ads'),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Error loading ads: ${snapshot.error}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _fetchAds = fetchAds(token);
+                                  });
+                                },
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
                         );
-                      } else if (snapshot.data == null ||
-                          snapshot.data!.isEmpty) {
-                        return Center(
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
                           child: Text('No ads saved!'),
                         );
                       } else {
@@ -102,12 +123,12 @@ class _SavedScreenState extends State<SavedScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return _buildShimmerList();
                       } else if (snapshot.hasError) {
-                        return Center(
+                        return const Center(
                           child: Text('Error loading data'),
                         );
                       } else if (snapshot.data == null ||
                           snapshot.data!.isEmpty) {
-                        return Center(
+                        return const Center(
                           child: Text('No searches saved!'),
                         );
                       } else {
@@ -132,12 +153,12 @@ class _SavedScreenState extends State<SavedScreen> {
         itemCount: 5, // Number of shimmering list items
         itemBuilder: (BuildContext context, int index) {
           return Card(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: ListTile(
               leading: Container(
                 width: 56,
                 height: 56,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
                 ),
@@ -160,24 +181,40 @@ class _SavedScreenState extends State<SavedScreen> {
 
 List<SavedSearch> savedSearches = [];
 
-Future<List<Ad>> fetchAds(token) async {
+Future<List<Ad>> fetchAds(String token) async {
   final apiUrl = '$baseUrl/cfastapi/saved_posts.php?token=$token';
 
-  final response = await http.get(
-    Uri.parse(apiUrl),
-  );
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+    );
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = json.decode(response.body);
-    return data.map((ad) => Ad.fromJson(ad)).toList();
-  } else {
-    throw Exception('Failed to load ads');
+    if (response.statusCode == 200) {
+      final dynamic responseData = json.decode(response.body);
+
+      // Handle if response is a string or already a List
+      List<dynamic> data;
+      if (responseData is String) {
+        data = json.decode(responseData);
+      } else if (responseData is List) {
+        data = responseData;
+      } else {
+        data = [];
+      }
+
+      return data.map((ad) => Ad.fromJson(ad)).toList();
+    } else {
+      throw Exception('Failed to load ads: HTTP ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching ads: $e');
+    rethrow;
   }
 }
 
 Future<List<SavedSearch>> fetchSavedSearches(token) async {
-  final apiUrl = '$baseUrl/api/savedSearches';
-  final tkk = '293|IfbUsq2eVrwVEsE8UDXiwRPgZIsDDy933KZJcr92';
+  const apiUrl = '$baseUrl/api/savedSearches';
+  const tkk = '293|IfbUsq2eVrwVEsE8UDXiwRPgZIsDDy933KZJcr92';
   final queryParams = {
     'embed': 'null',
     'sort': 'created_at',
@@ -185,24 +222,33 @@ Future<List<SavedSearch>> fetchSavedSearches(token) async {
     'token': token,
   };
 
-  final response = await http.get(
-    Uri.parse('$apiUrl?${Uri(queryParameters: queryParams)}'),
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Content-Language': 'en',
-      'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw=',
-      'X-AppType': 'docs',
-    },
-  );
+  final uri = Uri.parse(apiUrl).replace(queryParameters: queryParams);
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(response.body);
-    final List<dynamic> searchList = data['result']['data'];
-    return searchList.map((search) => SavedSearch.fromJson(search)).toList();
-  } else {
-    throw Exception('Failed to load saved searches');
+  try {
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Language': 'en',
+        'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw=',
+        'X-AppType': 'docs',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> searchList = data['result']['data'];
+      return searchList.map((search) => SavedSearch.fromJson(search)).toList();
+    } else {
+      print('Failed to load saved searches. Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      throw Exception('Failed to load saved searches');
+    }
+  } catch (e) {
+    print('Error fetching saved searches: $e');
+    rethrow;
   }
 }
 
@@ -218,7 +264,7 @@ class SearchesTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final search = savedSearches[index];
         return Card(
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           child: ListTile(
             title: Text(search.keyword),
             subtitle: Text('Search count: ${search.count}'),
@@ -281,26 +327,31 @@ class AdsTab extends StatelessWidget {
             '₦${priceFormat.format(double.parse(ad.price))}';
 
         return Card(
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           child: ListTile(
             leading: SizedBox(
               width: 64, // Specify desired width
               height: 64, // Specify desired height
-              child: Image.network(
-                product.image,
-                fit: BoxFit.cover,
-              ),
+              child: product.image.isNotEmpty
+                  ? Image.network(
+                      product.image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.error);
+                      },
+                    )
+                  : const Icon(Icons.image), // Placeholder for missing image
             ),
             title: Text(
               product.title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   formattedPrice,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
@@ -353,16 +404,16 @@ class Ad {
 
   factory Ad.fromJson(Map<String, dynamic> json) {
     return Ad(
-      postId: json['post_id'],
-      userId: json['user_id'],
-      categoryId: json['category_id'],
-      title: json['title'],
-      price: json['price'],
-      contactName: json['contact_name'],
-      email: json['email'],
-      phone: json['phone'],
-      createdAt: json['created_at'],
-      userPhotoUrl: json['user_photo_url'],
+      postId: int.tryParse(json['post_id'].toString()) ?? 0,
+      userId: int.tryParse(json['user_id'].toString()),
+      categoryId: int.tryParse(json['category_id'].toString()) ?? 0,
+      title: json['title'] ?? '',
+      price: json['price'].toString(),
+      contactName: json['contact_name'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      userPhotoUrl: json['user_photo_url'] ?? '',
       photoUrl: json['photo_url'],
     );
   }

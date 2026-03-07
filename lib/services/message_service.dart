@@ -39,7 +39,7 @@ class MessageService extends ChangeNotifier {
 
   void startPolling() {
     fetchUnreadMessages(); // Initial fetch
-    Timer.periodic(Duration(minutes: 1), (Timer timer) {
+    Timer.periodic(const Duration(minutes: 1), (Timer timer) {
       fetchUnreadMessages(); // Fetch unread messages every 3 minutes
     });
   }

@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/constants.dart';
-import 'package:shop_cfast/widgets/CustomBannerAd.dart';
 
 class ProductDescription extends StatelessWidget {
   final String text;

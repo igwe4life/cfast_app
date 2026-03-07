@@ -74,7 +74,7 @@ class _SavedListState extends State<SavedList> {
 
   Widget _buildListItem(BuildContext context, Product product) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: () {
           Navigator.push(
@@ -84,10 +84,10 @@ class _SavedListState extends State<SavedList> {
             ),
           );
         },
-        contentPadding: EdgeInsets.all(8.0),
+        contentPadding: const EdgeInsets.all(8.0),
         title: Text(
           product.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -96,7 +96,7 @@ class _SavedListState extends State<SavedList> {
           children: [
             Text(
               product.price.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.blue,
                 fontWeight: FontWeight.w700,
               ),

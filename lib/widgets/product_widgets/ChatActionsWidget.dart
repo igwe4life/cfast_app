@@ -25,7 +25,7 @@ class ChatActionsWidget extends StatefulWidget {
   final String firstImageUrl;
   final Product product;
 
-  ChatActionsWidget({
+  const ChatActionsWidget({super.key, 
     required this.title,
     required this.onMakeOfferPressed,
     required this.onIsAvailablePressed,
@@ -53,7 +53,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
   late String token;
 
   bool _isLoading = false; // Loading indicator flag
-  bool _isOfferLoading = false;
+  final bool _isOfferLoading = false;
   String enteredOffer = ''; // Move outside the builder function
 
   bool isStartingChat = false;
@@ -70,13 +70,13 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please login first!'),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
     }
@@ -86,13 +86,13 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please login first!'),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
     } else {
@@ -150,7 +150,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
       isStartingChat = true; // Set loading state
     });
 
-    final url = '$baseUrl/cfastapi/sendofferapp.php'; // API endpoint URL
+    const url = '$baseUrl/cfastapi/sendofferapp.php'; // API endpoint URL
 
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -380,7 +380,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey[200], // Light grey color
         borderRadius: BorderRadius.circular(10), // Rounded edges
@@ -389,7 +389,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Text widget for 'Start cfast chat with seller'
-          Text(
+          const Text(
             'Start cfast chat with seller',
             style: TextStyle(
               fontSize: 16,
@@ -397,7 +397,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
               color: Colors.orange, // Text color set to orange
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -421,7 +421,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                               ),
                               child: SingleChildScrollView(
                                 child: Container(
-                                  padding: EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
@@ -436,7 +436,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                       ),
                                       const SizedBox(height: 20),
                                       TextFormField(
-                                        decoration: InputDecoration(
+                                        decoration: const InputDecoration(
                                           labelText: '₦ Enter your bid',
                                           border: OutlineInputBorder(
                                             borderSide:
@@ -455,7 +455,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                           });
                                         },
                                       ),
-                                      SizedBox(height: 20),
+                                      const SizedBox(height: 20),
                                       ElevatedButton(
                                         onPressed: () {
                                           if (enteredOffer.isNotEmpty) {
@@ -479,7 +479,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                           foregroundColor: Colors.white,
                                           backgroundColor: Colors.blue,
                                         ),
-                                        child: Text('Submit Offer'),
+                                        child: const Text('Submit Offer'),
                                       ),
                                     ],
                                   ),
@@ -494,13 +494,13 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue, // Text color
-                    side: BorderSide(color: Colors.blue), // Border color
+                    side: const BorderSide(color: Colors.blue), // Border color
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(10.0), // Adding border radius
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Make an Offer',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -508,12 +508,12 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                SizedBox(width: 5), // Add some spacing between icon and text
+                const SizedBox(width: 5), // Add some spacing between icon and text
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue,
-                    side: BorderSide(color: Colors.blue),
+                    side: const BorderSide(color: Colors.blue),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -528,7 +528,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     });
                     widget.onIsAvailablePressed();
                   },
-                  child: Text(
+                  child: const Text(
                     'Is This Available?',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -536,12 +536,12 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                SizedBox(width: 5), // Add some spacing between icon and text
+                const SizedBox(width: 5), // Add some spacing between icon and text
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue,
-                    side: BorderSide(color: Colors.blue),
+                    side: const BorderSide(color: Colors.blue),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -554,7 +554,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     });
                     widget.onLastPricePressed();
                   },
-                  child: Text(
+                  child: const Text(
                     'Last Price?',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -565,10 +565,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextField(
             controller: widget.textEditingController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Colors.blue), // TextField border color
@@ -576,7 +576,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
               hintText: 'Type your message...',
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // ElevatedButton(
           ElevatedButton(
             onPressed: isStartingChat
@@ -585,14 +585,14 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     sharedPreferences = await SharedPreferences.getInstance();
                     if (sharedPreferences.getString("token") == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('Please login first!'),
                           backgroundColor: Colors.green,
                         ),
                       );
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage(),
+                          builder: (BuildContext context) => const LoginPage(),
                         ),
                         (Route<dynamic> route) => false,
                       );
@@ -601,9 +601,9 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     }
                   },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              backgroundColor: WidgetStateProperty.all<Color>(Colors.orange),
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(10.0), // Border radius set to 10
@@ -611,10 +611,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
               ),
             ),
             child: isStartingChat
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
-                : Text('Start Chat'),
+                : const Text('Start Chat'),
           ),
         ],
       ),

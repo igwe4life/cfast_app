@@ -3,7 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shop_cfast/widgets/product_widgets/ad_card.dart';
 
 class AdsGrid extends StatelessWidget {
-  AdsGrid({required this.ads});
+  const AdsGrid({super.key, required this.ads});
 
   final List ads;
 
@@ -15,7 +15,7 @@ class AdsGrid extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return AdCard(ads[index]);
       },
-      staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+      staggeredTileBuilder: (int index) => const StaggeredTile.fit(2),
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
     );

@@ -26,7 +26,7 @@ class _GridSimilarState extends State<GridSimilar> {
 
   Future<List<Product>> fetchDataFromApi(String catURL) async {
     final response = await http
-        .get(Uri.parse('$baseUrl/cfastapi/similarlist.php?catid=${catURL}'));
+        .get(Uri.parse('$baseUrl/cfastapi/similarlist.php?catid=$catURL'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
@@ -66,19 +66,19 @@ class _GridSimilarState extends State<GridSimilar> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'No classified Ads found for this category',
                   style: TextStyle(
                     color: Colors.red,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     _refreshData();
                   },
-                  child: Text('Reload'),
+                  child: const Text('Reload'),
                 ),
               ],
             ),
@@ -113,7 +113,7 @@ class _GridSimilarState extends State<GridSimilar> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Color.fromARGB(255, 242, 245, 248),
+          color: const Color.fromARGB(255, 242, 245, 248),
           border: Border.all(
             color: Colors.black,
             width: 2.0,

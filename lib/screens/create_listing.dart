@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +9,27 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image/image.dart' as img;
-import 'dart:typed_data';
-import 'package:image_watermark/image_watermark.dart';
 import 'package:shop_cfast/screens/saved_listing.dart';
+import 'package:paystack_for_flutter/paystack_for_flutter.dart';
+import 'package:fl_country_code_picker/fl_country_code_picker.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shop_cfast/constants.dart';
+import 'package:shop_cfast/models/package_model.dart';
+import 'package:shop_cfast/screens/package_selection_screen.dart';
 import '../constants.dart';
 import 'login_page.dart';
+import 'package:shop_cfast/screens/main_screen.dart';
+
+// Helper class to store payment details
+class PaymentInfo {
+  final String reference;
+  final double amount;
+  PaymentInfo(this.reference, this.amount);
+}
 
 class AddListingScreen extends StatefulWidget {
+  const AddListingScreen({super.key});
+
   @override
   _AddListingScreenState createState() => _AddListingScreenState();
 }
@@ -29,13 +42,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
   List<dynamic> _subCategories = [];
   List<dynamic> _subCategories11 = [];
 
-  List<dynamic> _myState = [];
-  List<dynamic> _myCities = [];
+  final List<dynamic> _myState = [];
+  final List<dynamic> _myCities = [];
 
   List data = [];
-  int _value = 1;
+  final int _value = 1;
 
-  List<Map<String, dynamic>> _cities = [];
+  final List<Map<String, dynamic>> _cities = [];
 
   int _currentPage = 1; // Track current page
   bool _isLoadingCities = false;
@@ -55,44 +68,147 @@ class _AddListingScreenState extends State<AddListingScreen> {
   bool _isLoading = false;
   bool _isLoading2 = false;
 
-  String _selectedCategory = 'Category';
-  String _selectedCategory11 = 'Category11';
-  String _selectedSubCategory = 'SubCategory';
+  String _selectedCategory = '';
+  String _selectedCategory11 = '';
+  String _selectedSubCategory = '';
   String _selectedSubCategory11 = 'City';
-  String _selectedState = 'State';
-  String _selectedSubCity = 'City';
+  final String _selectedState = 'State';
+  final String _selectedSubCity = 'City';
   String _selectedCity = ''; // Define _selectedCity variable
 
+  // Dynamic form fields state variables
+  String _selectedCondition = 'Brand New';
+  String _selectedBrand = '';
+  final TextEditingController _modelController = TextEditingController();
+
   File? _selectedImage;
-  List<File?> _selectedImages = List.generate(5, (index) => null);
+  final List<File?> _selectedImages = List.generate(5, (index) => null);
+
+
+  
+  // Persist selected package for retries
+  Package? _savedSelectedPackage;
+
+  // IAP Variables
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   late SharedPreferences sharedPreferences;
 
-  Future<void> checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please login first!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false,
-      );
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
-    loadAuthToken();
+    // Initialize IAP Stream
+    final Stream<List<PurchaseDetails>> purchaseUpdated = _inAppPurchase.purchaseStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+       print('IAP Stream Error: $error');
+    });
+
+
+    loadAuthToken(); // Used to be _loadUserData
     loadCategories();
     loadStates();
     loadCities();
-    //getData();
+  }
+
+  // IAP Listener
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // Show pending UI if needed
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          _showErrorDialog('Purchase Error', purchaseDetails.error?.message ?? 'Unknown error');
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+                   purchaseDetails.status == PurchaseStatus.restored) {
+           
+           String productId = purchaseDetails.productID;
+           print('IAP Success: $productId');
+           
+           if (_savedSelectedPackage != null) {
+                setState(() {
+                    // Calculate amount from saved package
+                    double paidAmount = (double.parse(_savedSelectedPackage!.price) * 100).toDouble() / 100;
+                    // Use transactionID or verificationData as reference
+                    String ref = purchaseDetails.purchaseID ?? 'IAP_REF';
+                    
+                    _paidPackages[_savedSelectedPackage!.id] = PaymentInfo(ref, paidAmount);
+                });
+
+
+               // Show processing dialog immediately for iOS IAP
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return const Dialog(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(width: 20),
+                            Text("Finalizing Listing..."),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+                
+               _postListing(_savedSelectedPackage!.id);
+           } else {
+               // Fallback: Use productId to find package ID? 
+               // For now, error out if package is lost, though it shouldn't be.
+               _showErrorDialog('Error', 'Package selection lost. Please contact support with this ID: ${purchaseDetails.purchaseID}');
+           }
+        }
+        
+        if (purchaseDetails.pendingCompletePurchase) {
+          await _inAppPurchase.completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+
+  Future<void> _buyProduct(Package package) async {
+    String productId = 'package_${package.id}'; // Convention: package_{id}
+    
+    bool available = await _inAppPurchase.isAvailable();
+    if (!available) {
+        _showErrorDialog('Store Error', 'In-App Purchases are not available.');
+        return;
+    }
+    
+    // Query Product
+    final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails({productId});
+    
+    if (response.notFoundIDs.isNotEmpty) {
+        _showErrorDialog('Product Error', 'Product $productId not found in App Store.');
+        return;
+    }
+    
+    if (response.productDetails.isEmpty) {
+        _showErrorDialog('Product Error', 'No product details found.');
+        return;
+    }
+    
+    final ProductDetails productDetails = response.productDetails.first;
+    final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
+    
+    _inAppPurchase.buyConsumable(purchaseParam: purchaseParam);
+  }
+
+  @override
+  void dispose() {
+    _modelController.dispose();
+    super.dispose();
   }
 
   getData() async {
@@ -266,7 +382,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
@@ -283,61 +399,92 @@ class _AddListingScreenState extends State<AddListingScreen> {
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: labelText,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
 
   Widget _buildImagePreview() {
-    return Column(
-      children: [
-        for (File? image in _selectedImages)
-          if (image != null)
-            GestureDetector(
-              onTap: () {
-                // Show a dialog to confirm deletion
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Delete Image'),
-                      content:
-                          Text('Are you sure you want to delete this image?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
-                          },
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Remove the selected image from the list
-                            setState(() {
-                              _selectedImages.remove(image);
-                            });
-                            Navigator.of(context).pop(); // Close the dialog
-                          },
-                          child: Text('Delete'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+    return SizedBox(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _selectedImages.length,
+        itemBuilder: (context, index) {
+          if (_selectedImages[index] != null) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8.0),
               child: Stack(
-                alignment: Alignment.topRight,
                 children: [
-                  Image.file(image),
-                  Icon(
-                    Icons.delete,
-                    size: 36, // Set the size of the icon
-                    color: Colors.red, // Set the color of the icon
-                  ),
+                   Container(
+                     width: 100,
+                     height: 100,
+                     decoration: BoxDecoration(
+                       borderRadius: BorderRadius.circular(8.0),
+                       image: DecorationImage(
+                         image: FileImage(_selectedImages[index]!),
+                         fit: BoxFit.cover,
+                       ),
+                     ),
+                   ),
+                   Positioned(
+                     right: 0,
+                     top: 0,
+                     child: GestureDetector(
+                       onTap: () {
+                          // Show a dialog to confirm deletion
+                         showDialog(
+                           context: context,
+                           builder: (BuildContext context) {
+                             return AlertDialog(
+                               title: const Text('Delete Image'),
+                               content: const Text(
+                                   'Are you sure you want to delete this image?'),
+                               actions: [
+                                 TextButton(
+                                   onPressed: () {
+                                     Navigator.of(context).pop(); // Close the dialog
+                                   },
+                                   child: const Text('Cancel'),
+                                 ),
+                                 TextButton(
+                                   onPressed: () {
+                                     setState(() {
+                                       _selectedImages.removeAt(index);
+                                        // Also keep null placeholders if needed or just remove from list. 
+                                        // The original code used a fixed list size initially but then added/removed. 
+                                        // Based on usage, just removing the itme is safer if it's dynamic.
+                                     });
+                                     Navigator.of(context).pop(); // Close the dialog
+                                   },
+                                   child: const Text('Delete'),
+                                 ),
+                               ],
+                             );
+                           },
+                         );
+                       },
+                       child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle
+                          ),
+                         child: const Icon(
+                           Icons.delete,
+                           size: 24,
+                           color: Colors.red,
+                         ),
+                       ),
+                     ),
+                   ),
                 ],
               ),
-            ),
-      ],
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 
@@ -347,7 +494,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },
@@ -392,15 +539,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
         SnackBar(
           content:
               Text('Listing "${_titleController.text}" saved successfully'),
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
 
       // Navigate to saved_listing.dart after a delay
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ViewSavedPosts()),
+          MaterialPageRoute(builder: (context) => const ViewSavedPosts()),
         );
       });
     } catch (error) {
@@ -409,7 +556,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       // Show error Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An error occurred while saving the listing'),
           duration: Duration(seconds: 2),
         ),
@@ -419,10 +566,25 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  void submitSavedListing() async {
-    setState(() {
-      _isLoading2 = true; // Set loading state
-    });
+  void submitSavedListing() {
+    int packageId = 0;
+    if (_savedSelectedPackage != null) {
+      packageId = _savedSelectedPackage!.id;
+    }
+    _performSaveListing(packageId);
+  }
+
+  void _performSaveListing(int packageId) async {
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
     var request = http.MultipartRequest(
       'POST',
@@ -448,14 +610,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
     // Add form fields
     request.fields.addAll({
-      'category_id': selectedSubCategoryId,
-      'package_id': '1',
+      'category_id': selectedSubCategoryId!,
+      'package_id': packageId.toString(),
       'country_code': 'NG',
       'email': email,
       'phone': phone,
       'user_id': uid.toString(),
       'phone_country': 'NG',
-      'city_id': _selectedCity,
+      'city_id': _selectedCity!,
       'auth_field': 'email',
       'contact_name': name,
       'admin_code': '0',
@@ -476,57 +638,212 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
 
     try {
+      print('Sending Listing Request...');
       var response = await request.send();
-      if (response.statusCode == 200) {
-        var responseBody = await response.stream.bytesToString();
-        var decodedResponse = json.decode(responseBody);
+      var responseBody = await response.stream.bytesToString();
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: $responseBody');
 
+      // Dismiss loading dialog
+      Navigator.of(context).pop();
+
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(responseBody);
         if (decodedResponse['success'] == true) {
-          // Success toast and navigation to home screen
           Fluttertoast.showToast(msg: decodedResponse['message']);
-          Navigator.of(context).pop(); // Navigate back to home screen
+          Navigator.of(context).pop(); 
         } else {
-          // Failure toast
-          Fluttertoast.showToast(
-              msg:
-                  'Listing save and post later failed: ${decodedResponse['message']}');
+          _showErrorDialog('Submission Failed', decodedResponse['message'] ?? responseBody);
         }
       } else {
-        print('Request failed with status: ${response.statusCode}');
-        // Failure toast with status code
-        // if (response.statusCode == 422) {
-        //   print(await response.stream.bytesToString());
-        //   Fluttertoast.showToast(msg: decodedResponse['message']);
-        //   // Failure toast with status code
-        //   Fluttertoast.showToast(
-        //       msg:
-        //           'Listing creation failed with status code: ${response.statusCode}');
-        // }
-        if (response.statusCode == 422) {
-          final errorResponse = await response.stream.bytesToString();
-          Fluttertoast.showToast(
-              msg: 'Listing save and post later failed: $errorResponse');
-        }
-        // Fluttertoast.showToast(
-        //     msg:
-        //         'Listing creation failed with status code: ${response.statusCode}');
-        // Print response body for debugging
-        print(await response.stream.bytesToString());
+         _showErrorDialog('Server Error (${response.statusCode})', responseBody);
       }
     } catch (e) {
       print('Exception: $e');
-      // Failure toast
-      Fluttertoast.showToast(msg: 'Listing save and post later failed: $e');
-    } finally {
-      setState(() {
-        _isLoading2 = false; // Set loading state to false after submission
-      });
+      // Dismiss loading dialog
+      Navigator.of(context).pop();
+      _showErrorDialog('Exception', e.toString());
     }
   }
 
-  void submitListing() async {
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(child: Text(message)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Future<void> _recordPayment(int packageId, int postId, String transactionId, double amount) async {
+      try {
+        var url = Uri.parse('$baseUrl/cfastapi/insert_payments.php');
+        
+        // Determine payment method ID
+        int paymentMethodId = Platform.isIOS ? 10 : 9; // 10 for iOS, 9 for Paystack
+
+        var response = await http.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode({
+            'amount': amount,
+            'payment_method_id': paymentMethodId,
+            'transaction_id': transactionId,
+            'post_id': postId,
+            'package_id': packageId,
+            'active': 1
+          }),
+        );
+        print('Payment Record Status: ${response.statusCode}');
+        print('Payment Record Body: ${response.body}');
+      } catch (e) {
+        print('Error recording payment: $e');
+      }
+  }
+
+  String _getReference() {
+    var platform = (Platform.isIOS) ? 'iOS' : 'Android';
+    final thisDate = DateTime.now().millisecondsSinceEpoch;
+    return 'ChargedFrom${platform}_$thisDate';
+  }
+
+  // Stores paid package ID -> PaymentInfo
+  Map<int, PaymentInfo> _paidPackages = {};
+
+  void _handlePayment(Package package) {
+    // Check if already paid for this session
+    if (_paidPackages.containsKey(package.id)) {
+       print('Package ${package.id} already paid. Proceeding to post listing.');
+       _postListing(package.id);
+       return;
+    }
+
+    if (Platform.isIOS) {
+        _buyProduct(package);
+    } else {
+        _payWithPaystack(package);
+    }
+  }
+
+  void _payWithPaystack(Package package) async {
+    try {
+      // Amount in kobo
+      int amount = (double.parse(package.price) * 100).toInt();
+      
+
+
+      PaystackFlutter paystackFlutter = PaystackFlutter();
+      
+      paystackFlutter.pay(
+        context: context, 
+        secretKey: PAYSTACK_SECRET_KEY, 
+        callbackUrl: 'https://standard.paystack.co/close', 
+
+        email: email,
+        amount: (double.parse(package.price) * 100).toDouble(), // Corrected: price * 100 for kobo
+        // transactionRef: _getReference(), // Not supported in this package version?
+        onCancelled: (paystackCallback) {
+          Fluttertoast.showToast(msg: 'Payment cancelled');
+        },
+        onSuccess: (paystackCallback) {
+          print('Payment Successful. Ref: ${paystackCallback.reference}');
+          
+          // Show processing dialog immediately
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return const Dialog(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Finalizing Listing..."),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+
+          // Mark as paid with reference and amount
+          setState(() {
+            double paidAmount = (double.parse(package.price) * 100).toDouble() / 100; // Original amount
+            _paidPackages[package.id] = PaymentInfo(paystackCallback.reference, paidAmount);
+          });
+          _postListing(package.id);
+        },
+      );
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Payment failed: $e');
+    }
+  }
+
+  void submitListing() {
+    if (_formKey.currentState?.validate() ?? false) {
+       // Image Validation
+       bool hasImage = false;
+       for (var img in _selectedImages) {
+          if (img != null) {
+            hasImage = true;
+            if (img.lengthSync() > 2500 * 1024) {
+               Fluttertoast.showToast(msg: 'Image size must be less than 2.5MB');
+               return;
+            }
+          }
+       }
+       
+       if (!hasImage) {
+           Fluttertoast.showToast(msg: 'Please select at least one image');
+           return;
+       }
+
+       // Check if package is already selected and saved
+       if (_savedSelectedPackage != null) {
+          if (_savedSelectedPackage!.price == '0.00') {
+             _postListing(_savedSelectedPackage!.id);
+          } else {
+             _handlePayment(_savedSelectedPackage!);
+          }
+          return;
+       }
+
+       showDialog(
+          context: context,
+          builder: (context) => PackageSelectionScreen(
+            token: token,
+            onPackageSelected: (package) {
+              Navigator.of(context).pop(); // Close dialog
+              // If free package (price is 0 or "Free")
+              if (package.price == '0.00' || package.price == '0') {
+                  _savedSelectedPackage = package;
+                  _postListing(package.id);
+              } else {
+                  _savedSelectedPackage = package;
+                  _handlePayment(package);
+              }
+            },
+          ),
+       );
+    }
+  }
+
+  void _postListing(int packageId) async {
     setState(() {
-      _isLoading = true; // Set loading state
+      _isLoading = true; // Use main loading state
     });
 
     var request = http.MultipartRequest(
@@ -552,7 +869,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
     // Add form fields
     request.fields.addAll({
       'category_id': selectedSubCategoryId,
-      'package_id': '1',
+      'package_id': packageId.toString(),
       'country_code': 'NG',
       'email': email,
       'phone': phone,
@@ -578,49 +895,84 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
 
     try {
+      print('Sending Listing Request...');
       var response = await request.send();
-      if (response.statusCode == 200) {
-        var responseBody = await response.stream.bytesToString();
-        var decodedResponse = json.decode(responseBody);
+      var responseBody = await response.stream.bytesToString();
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: $responseBody');
 
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(responseBody);
+        
         if (decodedResponse['success'] == true) {
-          // Success toast and navigation to home screen
-          Fluttertoast.showToast(msg: decodedResponse['message']);
-          Navigator.of(context).pop(); // Navigate back to home screen
+           Fluttertoast.showToast(msg: decodedResponse['message']);
+           
+           // DEBUG: Print full response struct to help verify ID location
+           print('DEBUG: Decoded Response: $decodedResponse');
+
+           // Check for post_id in "result" or "data" or "id"
+           int? postId;
+           if (decodedResponse.containsKey('result') && decodedResponse['result'] is Map && decodedResponse['result'].containsKey('id')) {
+              postId = int.tryParse(decodedResponse['result']['id'].toString());
+           } else if (decodedResponse.containsKey('id')) {
+              postId = int.tryParse(decodedResponse['id'].toString());
+           } else if (decodedResponse.containsKey('data') && decodedResponse['data'] is Map && decodedResponse['data'].containsKey('id')) {
+              // Also check 'data' key just in case
+              postId = int.tryParse(decodedResponse['data']['id'].toString());
+           }
+
+           print('DEBUG: Parsed postId: $postId');
+           print('DEBUG: checking _paidPackages[$packageId]: ${_paidPackages[packageId]}');
+
+           // If payment was made, record it
+           // Check if we have a payment info for this package
+           if (_paidPackages.containsKey(packageId) && postId != null) {
+               PaymentInfo info = _paidPackages[packageId]!;
+               print('DEBUG: Recording payment with Ref: ${info.reference}, Amount: ${info.amount} ...');
+               await _recordPayment(packageId, postId, info.reference, info.amount);
+           } else {
+               print('DEBUG: Skipping payment record. Condition failed.');
+           }
+
+           // Navigate to Home immediately, removing all previous routes
+           Navigator.of(context).pushAndRemoveUntil(
+             MaterialPageRoute(builder: (context) => const MainScreen()),
+             (Route<dynamic> route) => false,
+           );
         } else {
-          // Failure toast
-          Fluttertoast.showToast(
-              msg: 'Listing creation failed: ${decodedResponse['message']}');
+           // Failure case: Close processing dialog if open
+           // Ideally we should differentiate between the processing dialog and the page
+           // For now, if we are here, we might want to stay on page or just show toast
+           // But if the processing dialog is up (barrierDismissible=false), we MUST pop it
+           if (Navigator.canPop(context)) Navigator.pop(context);
+           // Parse specific errors
+           String errorMessage = decodedResponse['message'] ?? responseBody;
+           if (decodedResponse.containsKey('errors')) {
+              var errors = decodedResponse['errors'];
+              if (errors is Map) {
+                  // Check for pictures errors
+                  List<String> picErrors = [];
+                  errors.forEach((key, value) {
+                      if (key.toString().contains('pictures') && value is List) {
+                          picErrors.addAll(value.map((e) => e.toString()));
+                      }
+                  });
+                  if (picErrors.isNotEmpty) {
+                      errorMessage = "Image Upload Error:\n${picErrors.join('\n')}\n\nPlease reduce image size or try another image.";
+                  }
+              }
+           }
+          _showErrorDialog('Submission Failed', errorMessage);
         }
       } else {
-        print('Request failed with status: ${response.statusCode}');
-        // Failure toast with status code
-        // if (response.statusCode == 422) {
-        //   print(await response.stream.bytesToString());
-        //   Fluttertoast.showToast(msg: decodedResponse['message']);
-        //   // Failure toast with status code
-        //   Fluttertoast.showToast(
-        //       msg:
-        //           'Listing creation failed with status code: ${response.statusCode}');
-        // }
-        if (response.statusCode == 422) {
-          final errorResponse = await response.stream.bytesToString();
-          Fluttertoast.showToast(
-              msg: 'Listing creation failed: $errorResponse');
-        }
-        // Fluttertoast.showToast(
-        //     msg:
-        //         'Listing creation failed with status code: ${response.statusCode}');
-        // Print response body for debugging
-        print(await response.stream.bytesToString());
+         _showErrorDialog('Server Error (${response.statusCode})', responseBody);
       }
     } catch (e) {
       print('Exception: $e');
-      // Failure toast
-      Fluttertoast.showToast(msg: 'Listing creation failed: $e');
+      _showErrorDialog('Exception', e.toString());
     } finally {
       setState(() {
-        _isLoading = false; // Set loading state to false after submission
+        _isLoading = false;
       });
     }
   }
@@ -644,73 +996,52 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  Set<String> uploadedFiles = Set(); // Maintain a set of uploaded file paths
+  Set<String> uploadedFiles = {}; // Maintain a set of uploaded file paths
 
   Future<void> addImages() async {
     final picker = ImagePicker();
-    final List<XFile>? images = await picker.pickMultiImage();
+    final List<XFile> images = await picker.pickMultiImage();
 
-    if (images != null) {
-      for (XFile image in images) {
-        // Get image file
-        File file = File(image.path);
+    for (XFile image in images) {
+      // Get image file
+      File file = File(image.path);
 
-        // Check if image is a screenshot
-        bool isScreenshot = await isImageScreenshot(file);
+      // Check if image is a screenshot
+      bool isScreenshot = await isImageScreenshot(file);
 
-        // If the image is not a screenshot
-        if (!isScreenshot) {
-          // Check if the file has already been uploaded
-          if (!uploadedFiles.contains(image.path)) {
-            // Get image dimensions
-            final decodedImage =
-                await decodeImageFromList(await file.readAsBytes());
-            int width = decodedImage.width;
+      // If the image is not a screenshot
+      if (!isScreenshot) {
+        // Check if the file has already been uploaded
+        if (!uploadedFiles.contains(image.path)) {
+          // Get image dimensions
+          final decodedImage =
+              await decodeImageFromList(await file.readAsBytes());
+          int width = decodedImage.width;
 
-            // Check if image width is greater than 600 pixels
-            if (width > 400) {
-              // Watermark the image before adding it to the list
-              File watermarkedImage = await _addWatermarkToImages(file);
-              setState(() {
-                _selectedImages.add(watermarkedImage);
-              });
-              // Add the file path of watermarked image to the uploaded files set
-              uploadedFiles.add(watermarkedImage.path);
-            } else {
-              // Remove the image from the list
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Image Width Alert'),
-                    content: Text(
-                        'Image with width less than or equal to 400 pixels is not allowed.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+          // Check if image width is greater than 600 pixels
+          if (width > 400) {
+            // Watermark the image before adding it to the list
+            File watermarkedImage = await _addWatermarkToImages(file);
+            setState(() {
+              _selectedImages.add(watermarkedImage);
+            });
+            // Add the file path of watermarked image to the uploaded files set
+            uploadedFiles.add(watermarkedImage.path);
           } else {
-            // Alert user that the file has already been uploaded
+            // Remove the image from the list
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('File Upload Alert'),
-                  content: Text('This file has already been uploaded.'),
+                  title: const Text('Image Width Alert'),
+                  content: const Text(
+                      'Image with width less than or equal to 400 pixels is not allowed.'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );
@@ -718,28 +1049,47 @@ class _AddListingScreenState extends State<AddListingScreen> {
             );
           }
         } else {
-          // Alert user that screenshot images are not allowed
+          // Alert user that the file has already been uploaded
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Screenshot Alert'),
-                content: Text('Screenshot images are not allowed.'),
+                title: const Text('File Upload Alert'),
+                content: const Text('This file has already been uploaded.'),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               );
             },
           );
         }
+      } else {
+        // Alert user that screenshot images are not allowed
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Screenshot Alert'),
+              content: const Text('Screenshot images are not allowed.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
-  }
+    }
 
   Future<File> _addWatermarkToImages(File imageFile) async {
     try {
@@ -753,7 +1103,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       // Draw the original image on the canvas
       canvas.drawImage(image, Offset.zero, Paint());
       // Define watermark text
-      String watermarkText = '${name}\n Posted on Cfast.NG';
+      String watermarkText = '$name\n Posted on Cfast.NG';
       // Calculate scaling factor for font size based on image dimensions
       double scaleFactor = 1.0;
       if (image.width <= 640) {
@@ -819,7 +1169,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       return watermarkedFile;
     } catch (e) {
       print('Error adding watermark: $e');
-      throw e; // Propagate the error
+      rethrow; // Propagate the error
     }
   }
 
@@ -834,7 +1184,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
         _selectedCategory == '54') {
       dynamicFields.add(
         _buildOutlinedDropdownButton(
-          value: 'New',
+          value: _selectedCondition,
           labelText: 'Condition*',
           items: ['Brand New', 'Foreign Used', 'Nigerian Used']
               .map(
@@ -846,7 +1196,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
               .toList(),
           onChanged: (String? newValue) {
             if (newValue != null) {
-              // Handle changes in the dropdown value here
+              setState(() {
+                _selectedCondition = newValue;
+              });
             }
           },
         ),
@@ -930,7 +1282,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       additionalFields.add(
         _buildOutlinedDropdownButton(
-          value: brands.isNotEmpty ? brands[0] : '',
+          value: _selectedBrand.isEmpty && brands.isNotEmpty ? brands[0] : _selectedBrand,
           labelText: 'Brand',
           items: brands
               .map(
@@ -942,7 +1294,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
               .toList(),
           onChanged: (String? newValue) {
             if (newValue != null) {
-              // Handle changes in the brand dropdown value here
+              setState(() {
+                _selectedBrand = newValue;
+              });
             }
           },
         ),
@@ -950,7 +1304,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       additionalFields.add(
         _buildOutlinedTextField(
-          controller: TextEditingController(),
+          controller: _modelController,
           labelText: 'Model',
         ),
       );
@@ -961,7 +1315,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
     return Scaffold(
       appBar: AppBar(
         //title: Text('Post New Ad'),
-        title: Text('Post New Ad', style: TextStyle(color: Colors.white)),
+        title: const Text('Post New Ad', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -971,7 +1325,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
           child: ListView(
             children: <Widget>[
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                value: _selectedCategory.isEmpty ? null : _selectedCategory,
                 items: _categories.map<DropdownMenuItem<String>>((category) {
                   return DropdownMenuItem<String>(
                     value: category['id'].toString(),
@@ -982,16 +1336,21 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   if (newValue != null) {
                     setState(() {
                       _selectedCategory = newValue;
-                      _selectedSubCategory = 'SubCategory';
+                      _selectedSubCategory = ''; // Reset to empty
+                      // Reset dynamic fields when category changes
+                      _selectedCondition = 'Brand New';
+                      _selectedBrand = '';
+                      _modelController.clear();
                       loadSubCategories(int.parse(newValue));
                     });
                   }
                 },
-                decoration: InputDecoration(labelText: 'Select Category'),
+                decoration: const InputDecoration(labelText: 'Select Category'),
+                isExpanded: true,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedSubCategory,
+                value: _selectedSubCategory.isEmpty ? null : _selectedSubCategory,
                 items:
                     _subCategories.map<DropdownMenuItem<String>>((subcategory) {
                   return DropdownMenuItem<String>(
@@ -1006,13 +1365,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
-                decoration: InputDecoration(labelText: 'Select Sub Category'),
+                decoration: const InputDecoration(labelText: 'Select Sub Category'),
+                isExpanded: true,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 // Title input field
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a title';
@@ -1020,9 +1380,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedCategory11,
+                value: _selectedCategory11.isEmpty ? null : _selectedCategory11,
                 items: _categories11.map<DropdownMenuItem<String>>((category) {
                   return DropdownMenuItem<String>(
                     value: category['code'].toString(),
@@ -1034,16 +1394,20 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     setState(() {
                       _selectedCategory11 = newValue;
                       _selectedSubCategory11 = 'SubCity';
+                      _selectedCity = ''; // Reset city when state changes
                       //loadSubCategories11(int.parse(newValue));
                       loadSubCities(newValue);
                     });
                   }
                 },
-                decoration: InputDecoration(labelText: 'Select State'),
+                decoration: const InputDecoration(labelText: 'Select State'),
+                isExpanded: true,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedCity,
+                value: (_selectedCity.isNotEmpty && _subCategories11.any((item) => item['id'].toString() == _selectedCity)) 
+                    ? _selectedCity 
+                    : null,
                 items: _subCategories11
                     .map<DropdownMenuItem<String>>((subcategory) {
                   return DropdownMenuItem<String>(
@@ -1058,9 +1422,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
-                decoration: InputDecoration(labelText: 'Select City'),
+                decoration: const InputDecoration(labelText: 'Select City'),
+                isExpanded: true,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 // Description input field
                 controller: _descriptionController,
@@ -1078,15 +1443,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Place the dynamicFields here after the first three existing form fields
               ...dynamicFields,
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 // Price input field
                 controller: _priceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: 'Price'),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Price'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a price';
@@ -1094,28 +1459,28 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 // Tags input field
                 controller: _tagsController,
-                decoration: InputDecoration(labelText: 'Tags'),
+                decoration: const InputDecoration(labelText: 'Tags'),
                 // Validation or other configurations for tags input
               ),
               // Image preview
               _buildImagePreview(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: addImages,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.orange, // Text color
                 ),
-                child: Text(
+                child: const Text(
                   'Select Image',
                   style: TextStyle(color: Colors.white), // Text color
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
@@ -1127,13 +1492,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   backgroundColor: Colors.blue, // Text color
                 ),
                 child: _isLoading
-                    ? CircularProgressIndicator() // Loading indicator
-                    : Text(
+                    ? const CircularProgressIndicator() // Loading indicator
+                    : const Text(
                         'Submit',
                         style: TextStyle(color: Colors.white), // Text color
                       ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
@@ -1145,8 +1510,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   backgroundColor: Colors.purple, // Text color
                 ),
                 child: _isLoading2
-                    ? CircularProgressIndicator() // Loading indicator
-                    : Text(
+                    ? const CircularProgressIndicator() // Loading indicator
+                    : const Text(
                         'Save & Post Later',
                         style: TextStyle(color: Colors.white), // Text color
                       ),

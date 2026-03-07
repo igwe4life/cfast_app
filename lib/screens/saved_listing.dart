@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewSavedPosts extends StatefulWidget {
+  const ViewSavedPosts({super.key});
+
   @override
   _ViewSavedPostsState createState() => _ViewSavedPostsState();
 }
@@ -66,7 +68,7 @@ class _ViewSavedPostsState extends State<ViewSavedPosts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved Listings'),
+        title: const Text('Saved Listings'),
       ),
       body: ListView.builder(
         itemCount: savedListings.length,
@@ -85,13 +87,13 @@ class _ViewSavedPostsState extends State<ViewSavedPosts> {
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

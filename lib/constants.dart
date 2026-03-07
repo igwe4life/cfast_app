@@ -24,3 +24,5 @@ const Color kBlueColor = Color.fromRGBO(53, 88, 205, 1);
 const Color kButtonRemoveColor = Color.fromRGBO(213, 222, 255, 1);
 
 const String baseUrl = 'https://cfast.ng';
+const String PAYSTACK_PUBLIC_KEY = 'pk_live_3b39cf7310e272918350dc3965d4071fc1293c91';
+const String PAYSTACK_SECRET_KEY = 'sk_live_01d9a8c2b68de27adc3999fea666156174c8b325';

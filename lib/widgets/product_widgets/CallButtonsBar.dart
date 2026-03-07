@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../screens/login_page.dart';
 
 class CallButtonsBar extends StatelessWidget {
@@ -40,13 +39,13 @@ class CallButtonsBar extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.blue,
-                        side: BorderSide(color: Colors.blue), // Adding border
+                        side: const BorderSide(color: Colors.blue), // Adding border
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               10.0), // Adding border radius
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.call), // Add the call icon
@@ -64,7 +63,7 @@ class CallButtonsBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                       width: 5), // Add a SizedBox with width 5 for separation
                   SizedBox(
                     width: 75, // Set a fixed width for the buttons
@@ -75,13 +74,13 @@ class CallButtonsBar extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.blue,
-                        side: BorderSide(color: Colors.blue), // Adding border
+                        side: const BorderSide(color: Colors.blue), // Adding border
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               10.0), // Adding border radius
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.call), // Add the call icon
@@ -92,7 +91,7 @@ class CallButtonsBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                       width: 5), // Add a SizedBox with width 5 for separation
                   SizedBox(
                     width: 75, // Set a fixed width for the buttons
@@ -109,7 +108,7 @@ class CallButtonsBar extends StatelessWidget {
                               10.0), // Adding border radius
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // Icon(
@@ -141,13 +140,13 @@ class CallButtonsBar extends StatelessWidget {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please login first!'),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
     } else {

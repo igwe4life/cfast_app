@@ -3,11 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
 import '../constants.dart';
 
 class AdScreen extends StatefulWidget {
+  const AdScreen({super.key});
+
   @override
   _AdScreenState createState() => _AdScreenState();
 }
@@ -45,7 +46,7 @@ class _AdScreenState extends State<AdScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Ads',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -61,11 +62,11 @@ class _AdScreenState extends State<AdScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _buildShimmerList();
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text('Error loading ads'),
             );
           } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return Center(
+            return const Center(
               child: Text('No ads posted!'),
             );
           } else {
@@ -81,7 +82,7 @@ class _AdScreenState extends State<AdScreen> {
                 String formattedPrice =
                     '₦${priceFormat.format(double.parse(ad.price))}';
                 return Card(
-                  margin: EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
                   child: ListTile(
                     leading: SizedBox(
                       width: 64, // Specify desired width
@@ -94,14 +95,14 @@ class _AdScreenState extends State<AdScreen> {
                     title: Text(
                       ad.title,
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           formattedPrice,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Colors.blue,

@@ -11,6 +11,7 @@ import 'package:shop_cfast/widgets/categories.dart';
 import 'package:shop_cfast/widgets/home_appbar.dart';
 import 'package:shop_cfast/widgets/search_field.dart';
 import 'package:shop_cfast/widgets/trending_widget.dart';
+import 'package:shop_cfast/widgets/CustomBannerAd.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../constants.dart';
 
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<ConnectivityResult> checkConnectivity() async {
+  Future<List<ConnectivityResult>> checkConnectivity() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult;
   }
@@ -88,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: kscaffoldColor,
       body: SafeArea(
-        child: FutureBuilder<ConnectivityResult>(
+        child: FutureBuilder<List<ConnectivityResult>>(
           future: checkConnectivity(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Center(
                 child: Text("Error: ${snapshot.error}"),
               );
-            } else if (snapshot.data == ConnectivityResult.none) {
+            } else if (snapshot.data!.contains(ConnectivityResult.none)) {
               // No internet connection
               return Center(
                 child: Column(
@@ -157,7 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SearchField(),
                       const SizedBox(height: 20),
                       const Categories(),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 10),
+                      const CustomBannerAd(),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

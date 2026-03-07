@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_cfast/widgets/saved_list.dart';
 
 class MessagesScreen extends StatefulWidget {
+  const MessagesScreen({super.key});
+
   @override
   _MessagesState createState() => _MessagesState();
 }
@@ -19,7 +21,7 @@ class _MessagesState extends State<MessagesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Messages',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -34,8 +36,8 @@ class _MessagesState extends State<MessagesScreen> {
         child: Column(
           children: [
             Container(
-              constraints: BoxConstraints.expand(height: 50),
-              child: TabBar(
+              constraints: const BoxConstraints.expand(height: 50),
+              child: const TabBar(
                 labelColor: Colors.blue,
                 unselectedLabelColor: Colors.blueAccent,
                 tabs: [
@@ -53,7 +55,7 @@ class _MessagesState extends State<MessagesScreen> {
                     itemCount:
                         1, // Replace with the actual number of API results
                     itemBuilder: (context, index) {
-                      return Card(
+                      return const Card(
                         margin: EdgeInsets.all(8.0),
                         child: ListTile(
                           title: Text('No new messages!'),
@@ -68,7 +70,7 @@ class _MessagesState extends State<MessagesScreen> {
                     },
                   ),
                   // Tab 2: Searches
-                  SearchesTab(),
+                  const SearchesTab(),
                 ],
               ),
             ),
@@ -80,6 +82,8 @@ class _MessagesState extends State<MessagesScreen> {
 }
 
 class SearchesTab extends StatelessWidget {
+  const SearchesTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Implement your API call and card display logic here
@@ -104,7 +108,7 @@ class SearchesTab extends StatelessWidget {
     return ListView.builder(
       itemCount: 1, // Replace with the actual number of API results
       itemBuilder: (context, index) {
-        return Card(
+        return const Card(
           margin: EdgeInsets.all(8.0),
           child: ListTile(
             title: Text('No unread messages!'),

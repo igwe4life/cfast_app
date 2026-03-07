@@ -58,7 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
               Navigator.of(context).pop();
             }),
       ),
-      body: Container(
+      body: SizedBox(
         height: height,
         child: SingleChildScrollView(
           child: Column(
@@ -66,7 +66,7 @@ class _DetailsPageState extends State<DetailsPage> {
               Hero(
                 tag: "product-image+${widget.index}",
                 child: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   height: 200.0,
                   alignment: Alignment.topCenter,
                   decoration: BoxDecoration(
@@ -96,7 +96,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     builder: (BuildContext context) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
@@ -110,7 +110,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   );
                 }).toList(),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: map<Widget>(imgList, (index, url) {
@@ -118,7 +118,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     width: 30.0,
                     height: 2.0,
                     margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10.0),

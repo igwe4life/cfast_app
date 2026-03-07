@@ -51,7 +51,7 @@ class _GridBState extends State<GridB> {
       future: fetchDataFromApi(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -59,22 +59,22 @@ class _GridBState extends State<GridB> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'No classified Ads found for this category',
                   style: TextStyle(
                     color: Colors.red,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                   },
-                  child: Text('Go to Home Screen'),
+                  child: const Text('Go to Home Screen'),
                 ),
               ],
             ),
@@ -86,7 +86,7 @@ class _GridBState extends State<GridB> {
             crossAxisCount: 2,
             crossAxisSpacing: 12.0,
             mainAxisSpacing: 12.0,
-            staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+            staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
             itemCount: snapshot.data!.length,
             itemBuilder: (_, index) {
               return _buildGridItem(context, snapshot.data![index]);
@@ -109,7 +109,7 @@ class _GridBState extends State<GridB> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Color.fromARGB(255, 242, 245, 248),
+          color: const Color.fromARGB(255, 242, 245, 248),
           border: Border.all(
             color: Colors
                 .black, // Replace this with the color you want for the border

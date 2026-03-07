@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AdCard extends StatelessWidget {
-  AdCard(this.ad);
+  const AdCard(this.ad, {super.key});
 
   final ad;
 
@@ -17,10 +17,10 @@ class AdCard extends StatelessWidget {
     if (ad["title"] != null && ad["title"] != '') {
       return Text(
         ad["title"],
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       );
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 
@@ -28,7 +28,7 @@ class AdCard extends StatelessWidget {
     if (ad["price"] != null && ad["price"] != '') {
       return Text("\$ ${ad["price"]}");
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 
@@ -36,15 +36,15 @@ class AdCard extends StatelessWidget {
     if (ad["location"] != null && ad["location"] != '') {
       return Row(
         children: <Widget>[
-          Icon(Icons.location_on),
-          SizedBox(
+          const Icon(Icons.location_on),
+          const SizedBox(
             width: 4.0,
           ),
           Expanded(child: Text(ad["location"]))
         ],
       );
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 

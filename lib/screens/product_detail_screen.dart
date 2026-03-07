@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/models/product.dart';
-import 'package:shop_cfast/widgets/product_widgets/CallButtonsBar.dart';
-import 'package:shop_cfast/widgets/product_widgets/ChatActionsWidget.dart';
 import 'package:shop_cfast/widgets/product_widgets/appbar.dart';
 import 'package:shop_cfast/widgets/product_widgets/image_slider.dart';
-import 'package:shop_cfast/widgets/product_widgets/information.dart';
-import 'package:shop_cfast/widgets/product_widgets/product_desc.dart';
-import '../constants.dart';
 
 class ProductScreen extends StatefulWidget {
   final Product product;
@@ -44,8 +39,10 @@ class _ProductScreenState extends State<ProductScreen> {
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                        widget.product.image), // Use product.image directly
+                    image: widget.product.image.isNotEmpty
+                        ? NetworkImage(widget.product.image)
+                        : const AssetImage('assets/images/placeholder.png')
+                            as ImageProvider, // Use a placeholder
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -70,19 +67,19 @@ class _ProductScreenState extends State<ProductScreen> {
                           // Placeholder widgets for price, location, date, and time
                           Text(
                             'Price: \$${widget.product.price}', // Replace with your price data
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
                           Text(
                             'Location: ${widget.product.location}', // Replace with your location data
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
                           Text(
                             'Date: ${widget.product.date}', // Replace with your date data
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
                           Text(
                             'Time: ${widget.product.time}', // Replace with your time data
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
                           // Other widgets for product details...
                           // (Your existing widgets go here)

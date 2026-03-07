@@ -10,21 +10,14 @@ import 'package:flutter_html/flutter_html.dart';
 
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/models/product.dart';
-import 'package:shop_cfast/widgets/GridHome.dart';
 import 'package:shop_cfast/widgets/GridSimilar.dart';
 import 'package:shop_cfast/widgets/product_widgets/CallButtonsBar.dart';
 import 'package:shop_cfast/widgets/product_widgets/ChatActionsWidget.dart';
-import 'package:shop_cfast/widgets/product_widgets/appbar.dart';
-import 'package:shop_cfast/widgets/product_widgets/image_slider.dart';
 import 'package:shop_cfast/widgets/product_widgets/information.dart';
-import 'package:shop_cfast/widgets/product_widgets/product_desc.dart';
-import 'package:shop_cfast/widgets/product_widgets/DescriptionWidget.dart';
-import 'package:shop_cfast/widgets/GridB.dart';
 import '../widgets/product_widgets/feedback_widget.dart';
 import 'create_listing.dart';
 import 'feedback_screen.dart';
 import 'login_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductScreen extends StatefulWidget {
   final Product product;
@@ -48,7 +41,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
   //final String url = '$baseUrl/getmessagescount.php?token=$token';
 
-  bool _isOfferLoading = false;
+  final bool _isOfferLoading = false;
   late SharedPreferences sharedPreferences;
 
   int currentImage = 0;
@@ -90,7 +83,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     try {
       var response = await http.get(
-        Uri.parse('$baseUrl/cfastapi/get_images.php?purl=${purl}'),
+        Uri.parse('$baseUrl/cfastapi/get_images.php?purl=$purl'),
       );
 
       if (response.statusCode == 200) {
@@ -137,13 +130,13 @@ class _ProductScreenState extends State<ProductScreen> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please login first!'),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
       return false; // User is not logged in
@@ -260,7 +253,7 @@ class _ProductScreenState extends State<ProductScreen> {
         var responseBody = response.body;
         print('Response Body: $responseBody');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Feedback submitted successfully!'),
             backgroundColor: Colors.green,
           ),
@@ -282,7 +275,7 @@ class _ProductScreenState extends State<ProductScreen> {
       // Error occurred during the request
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Error occurred while providing feedback'),
           backgroundColor: Colors.red,
         ),
@@ -327,7 +320,7 @@ class _ProductScreenState extends State<ProductScreen> {
         var responseBody = response.body;
         print('Response Body: $responseBody');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Abuse reported successfully!'),
             backgroundColor: Colors.green,
           ),
@@ -362,14 +355,14 @@ class _ProductScreenState extends State<ProductScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Request Call'),
-          content: Text('Are you sure you want to request a call?'),
+          title: const Text('Request Call'),
+          content: const Text('Are you sure you want to request a call?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -377,7 +370,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 Navigator.of(context).pop();
                 requestCall();
               },
-              child: Text('Confirm'),
+              child: const Text('Confirm'),
             ),
           ],
         );
@@ -417,7 +410,7 @@ class _ProductScreenState extends State<ProductScreen> {
         print('Response Body: $responseBody');
         // Fluttertoast.showToast(msg: 'Request for call sent successfully!');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Request for callback sent successfully!'),
             backgroundColor: Colors.green,
           ),
@@ -480,7 +473,7 @@ class _ProductScreenState extends State<ProductScreen> {
         var responseBody = response.body;
         print('Response Body: $responseBody');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Product marked unavailable successfully!'),
             backgroundColor: Colors.green,
           ),
@@ -542,7 +535,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     if (_isLoading) {
       // Show loading indicator if API call is in progress
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     } else {
@@ -559,7 +552,7 @@ class _ProductScreenState extends State<ProductScreen> {
               //   ),
               // ),
               flexibleSpace: isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : CarouselSlider(
                       options: CarouselOptions(
                         height: 400.0,
@@ -569,8 +562,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         enableInfiniteScroll: true,
                         reverse: false,
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 3),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
                         autoPlayCurve: Curves.fastOutSlowIn,
                         enlargeCenterPage: true,
                         onPageChanged: (index, reason) {
@@ -598,14 +591,20 @@ class _ProductScreenState extends State<ProductScreen> {
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
+                                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: const BoxDecoration(
                                     color: Colors.grey,
                                   ),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
+                                    child: imageUrl.isNotEmpty
+                                        ? Image.network(
+                                            imageUrl,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Image(
+                                            image: AssetImage(
+                                                'assets/images/placeholder.png'),
+                                            fit: BoxFit.cover,
+                                          ),
                                 ),
                               );
                             },
@@ -634,7 +633,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 PopupMenuButton<String>(
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<String>>[
-                    PopupMenuItem<String>(
+                    const PopupMenuItem<String>(
                       value: 'feedback',
                       child: Text('Feedback'),
                     ),
@@ -660,8 +659,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                       width: 64,
                                       fit: BoxFit.cover,
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
+                                    const SizedBox(height: 10),
+                                    const Text(
                                       'Are you sure you want to give feedback this product or store?',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -693,7 +692,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                     ),
                                     TextField(
                                       controller: feedbackTextFieldController,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         hintText: 'Enter your feedback here',
                                       ),
                                     ),
@@ -705,7 +704,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                       Navigator.of(context)
                                           .pop(); // Dismiss the dialog
                                     },
-                                    child: Text('Dismiss'),
+                                    child: const Text('Dismiss'),
                                   ),
                                   TextButton(
                                     onPressed: () {
@@ -715,7 +714,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                       Navigator.of(context)
                                           .pop(); // Dismiss the dialog
                                     },
-                                    child: Text('Submit'),
+                                    child: const Text('Submit'),
                                   ),
                                 ],
                               );
@@ -731,7 +730,7 @@ class _ProductScreenState extends State<ProductScreen> {
               floating: true,
             ),
             SliverPadding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
@@ -746,8 +745,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     ),
                     const SizedBox(height: 5),
-                    if (phone != null &&
-                        productData['Phone'] != phone) // Add condition here
+                    if (productData['Phone'] != phone) // Add condition here
 
                       CallButtonsBar(
                         onRequestCallPressed: () {
@@ -777,7 +775,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               'I\'m interested in your Ad listing ${productData['Title']} posted on CFAST.NG';
 
                           final Uri whatsapp = Uri.parse(
-                              "https://wa.me/${cphoneNumber}/?text=${msg}");
+                              "https://wa.me/$cphoneNumber/?text=$msg");
                           // String url =
                           //     "https://wa.me/${cphoneNumber}/?text=${msg}";
                           // launch(url);
@@ -812,7 +810,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       ),
                     const SizedBox(height: 10),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.grey[200], // Light grey color
                         borderRadius:
@@ -826,15 +824,21 @@ class _ProductScreenState extends State<ProductScreen> {
                               CircleAvatar(
                                 radius:
                                     20, // Radius half of 40 to make it 40x40
-                                backgroundImage: NetworkImage(
-                                    productData['StorePhoto'] ?? ""),
+                                backgroundImage: (productData['StorePhoto'] ?? "")
+                                        .toString()
+                                        .isNotEmpty
+                                    ? NetworkImage(
+                                        productData['StorePhoto'] ?? "")
+                                    : const AssetImage(
+                                            'assets/images/user_icon.png')
+                                        as ImageProvider,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       5), // Adding space between image and text
                               Text(
                                 productData['StoreName'] ?? "Loading...",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -843,10 +847,10 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                           Row(
                             children: [
-                              SizedBox(width: 45),
+                              const SizedBox(width: 45),
                               Text(
                                 productData['UserStatus'] ?? "Loading...",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
@@ -881,7 +885,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               10), // Border radius set to 10
                         ),
                       ),
-                      child: Text('Leave Feedback'),
+                      child: const Text('Leave Feedback'),
                     ),
                     const SizedBox(height: 5),
                     // Html(
@@ -901,8 +905,9 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: OutlinedButton(
                             onPressed: () async {
                               bool isLoggedIn = await checkLoginStatus(context);
-                              if (!isLoggedIn)
+                              if (!isLoggedIn) {
                                 return; // Return early if user is not logged in
+                              }
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -916,8 +921,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                           width: 64,
                                           fit: BoxFit.cover,
                                         ),
-                                        SizedBox(height: 10),
-                                        Text(
+                                        const SizedBox(height: 10),
+                                        const Text(
                                           'Would you like to mark this product unavailable?',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -932,7 +937,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                           Navigator.of(context)
                                               .pop(); // Dismiss the dialog
                                         },
-                                        child: Text('Dismiss'),
+                                        child: const Text('Dismiss'),
                                       ),
                                       TextButton(
                                         onPressed: () {
@@ -943,7 +948,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                           Navigator.of(context)
                                               .pop(); // Dismiss the dialog
                                         },
-                                        child: Text('Mark'),
+                                        child: const Text('Mark'),
                                       ),
                                     ],
                                   );
@@ -951,25 +956,25 @@ class _ProductScreenState extends State<ProductScreen> {
                               );
                             },
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                               ),
-                              side: MaterialStateProperty.all(
-                                BorderSide(color: Colors.blue),
+                              side: WidgetStateProperty.all(
+                                const BorderSide(color: Colors.blue),
                               ),
                               foregroundColor:
-                                  MaterialStateProperty.resolveWith(
+                                  WidgetStateProperty.resolveWith(
                                 (states) {
-                                  if (states.contains(MaterialState.pressed)) {
+                                  if (states.contains(WidgetState.pressed)) {
                                     return Colors.blueAccent;
                                   }
                                   return Colors.green;
                                 },
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Mark \nUnavailable',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -980,13 +985,14 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                         ),
 
-                        SizedBox(width: 8), // Add spacing between buttons
+                        const SizedBox(width: 8), // Add spacing between buttons
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () async {
                               bool isLoggedIn = await checkLoginStatus(context);
-                              if (!isLoggedIn)
+                              if (!isLoggedIn) {
                                 return; // Return early if user is not logged in
+                              }
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -1007,8 +1013,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                               width: 64,
                                               fit: BoxFit.cover,
                                             ),
-                                            SizedBox(height: 10),
-                                            Text(
+                                            const SizedBox(height: 10),
+                                            const Text(
                                               'Are you sure you want to report this product or store?',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -1039,7 +1045,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                             ),
                                             TextField(
                                               controller: textFieldController,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 hintText:
                                                     'Enter your reason here',
                                               ),
@@ -1052,7 +1058,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                               Navigator.of(context)
                                                   .pop(); // Dismiss the dialog
                                             },
-                                            child: Text('Dismiss'),
+                                            child: const Text('Dismiss'),
                                           ),
                                           TextButton(
                                             onPressed: () {
@@ -1062,7 +1068,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                               Navigator.of(context)
                                                   .pop(); // Dismiss the dialog
                                             },
-                                            child: Text('Report'),
+                                            child: const Text('Report'),
                                           ),
                                         ],
                                       );
@@ -1072,25 +1078,25 @@ class _ProductScreenState extends State<ProductScreen> {
                               );
                             },
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                               ),
-                              side: MaterialStateProperty.all(
-                                BorderSide(color: Colors.red),
+                              side: WidgetStateProperty.all(
+                                const BorderSide(color: Colors.red),
                               ),
                               foregroundColor:
-                                  MaterialStateProperty.resolveWith(
+                                  WidgetStateProperty.resolveWith(
                                 (states) {
-                                  if (states.contains(MaterialState.pressed)) {
+                                  if (states.contains(WidgetState.pressed)) {
                                     return Colors.redAccent;
                                   }
                                   return Colors.red;
                                 },
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Report \nAbuse',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -1110,31 +1116,31 @@ class _ProductScreenState extends State<ProductScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                AddListingScreen(), // Replace with AddListingScreen
+                                const AddListingScreen(), // Replace with AddListingScreen
                           ),
                         );
                       },
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        side: MaterialStateProperty.all(
-                          BorderSide(color: Colors.green),
+                        side: WidgetStateProperty.all(
+                          const BorderSide(color: Colors.green),
                         ),
-                        foregroundColor: MaterialStateProperty.resolveWith(
+                        foregroundColor: WidgetStateProperty.resolveWith(
                           (states) {
-                            if (states.contains(MaterialState.pressed)) {
+                            if (states.contains(WidgetState.pressed)) {
                               return Colors.greenAccent;
                             }
                             return Colors.blue;
                           },
                         ),
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
+                            WidgetStateProperty.all(Colors.white),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Post ad like this',
                         style: TextStyle(
                           fontSize: 14.0,
@@ -1144,7 +1150,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     //const SizedBox(height: 60),
                     const SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'Similar Ads',
                       style: TextStyle(
                         color: Colors.blue,
@@ -1167,7 +1173,7 @@ class _ProductScreenState extends State<ProductScreen> {
             toggleFavorite();
           },
           label: isFavoriteLoading
-              ? CircularProgressIndicator(
+              ? const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
               : Text(
@@ -1176,7 +1182,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       : (isFavorite ? 'Remove Favorite' : 'Mark Favorite'),
                 ),
           icon: isFavoriteLoading
-              ? SizedBox() // Hide icon while loading
+              ? const SizedBox() // Hide icon while loading
               : Icon(isFavorite == null
                   ? Icons.favorite_border
                   : (isFavorite ? Icons.favorite : Icons.favorite_border)),
@@ -1190,7 +1196,7 @@ class GalleryView extends StatefulWidget {
   final List<String> images;
   final int initialIndex;
 
-  GalleryView({required this.images, required this.initialIndex});
+  const GalleryView({super.key, required this.images, required this.initialIndex});
 
   @override
   _GalleryViewState createState() => _GalleryViewState();
@@ -1213,7 +1219,7 @@ class _GalleryViewState extends State<GalleryView> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text('${_currentIndex + 1}/${widget.images.length}',
-            style: TextStyle(color: Colors.white)),
+            style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Column(
@@ -1231,14 +1237,14 @@ class _GalleryViewState extends State<GalleryView> {
                 return CachedNetworkImage(
                   imageUrl: widget.images[index],
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 );
               },
             ),
           ),
-          SizedBox(height: 20),
-          Container(
+          const SizedBox(height: 20),
+          SizedBox(
             height: 100, // Adjust the height as needed
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -1251,13 +1257,13 @@ class _GalleryViewState extends State<GalleryView> {
                           index; // Update _currentIndex with the correct index
                       _pageController.animateToPage(
                         index,
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
                     });
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Image(
                       image: CachedNetworkImageProvider(widget.images[index]),
                       width: 80, // Adjust thumbnail width as needed

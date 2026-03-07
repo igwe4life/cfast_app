@@ -8,7 +8,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shop_cfast/screens/product_screen_brief.dart';
 import '../constants.dart';
 import '../models/product.dart';
-import '../services/product_storage.dart';
 
 ///import 'product_screen_brief.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,8 +23,8 @@ class ChatScreen2 extends StatefulWidget {
   final Product? product;
   final String firstImageUrl;
 
-  ChatScreen2(
-      {required this.messageId,
+  const ChatScreen2(
+      {super.key, required this.messageId,
       required this.postId,
       required this.productTitle,
       required this.price,
@@ -78,16 +77,16 @@ class _ChatScreen2State extends State<ChatScreen2> {
     fetchData();
     loadUserProfile();
     fetchMessagesChats();
-    _timers = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timers = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessagesChats();
     });
 
     defaultProduct = Product(
-      title: '${widget.productTitle}',
+      title: widget.productTitle,
       description: 'This is in good condition, tested and works like new.',
-      image: '${widget.firstImageUrl}',
+      image: widget.firstImageUrl,
       //image: 'https://cfast.ng/uk-used-microsoft-16gb-256gb/80',
-      price: '${widget.price}',
+      price: widget.price,
       date: '31st May, 2024',
       time: '8:40AM',
       itemUrl:
@@ -117,9 +116,9 @@ class _ChatScreen2State extends State<ChatScreen2> {
         });
 
         defaultProduct1 = Product(
-          title: '${widget.productTitle}',
+          title: widget.productTitle,
           description: '',
-          image: '${widget.firstImageUrl}',
+          image: widget.firstImageUrl,
           price: '${productData['Price']}',
           date: '',
           time: '',
@@ -176,7 +175,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
         leading: Row(
           children: [
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.white,
               ),
@@ -184,7 +183,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                 Navigator.pop(context);
               },
             ),
-            CircleAvatar(
+            const CircleAvatar(
               radius: 16, // You can adjust the size as needed
               backgroundImage: NetworkImage(
                   'https://cfast.ng/storage/app/default/user.png'),
@@ -196,7 +195,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
           children: [
             Text(
               widget.storeName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,
               ),
@@ -204,7 +203,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
             ),
             Text(
               productData['UserStatus'] ?? "Loading...",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 10,
                 color: Colors.white70,
               ),
@@ -228,7 +227,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                 throw 'Could not launch $telUri';
               }
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.call,
               color: Colors.white,
             ),
@@ -255,7 +254,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.blue[200], // Light grey color
                       borderRadius: BorderRadius.circular(10), // Rounded edges
@@ -285,7 +284,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 15,
                             ), // Adding
                             Expanded(
@@ -294,7 +293,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                                 children: [
                                   Text(
                                     productData['Title'] ?? "",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                     ),
                                     maxLines: 1, // Limit to 1 line
@@ -303,7 +302,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                                   Text(
                                     //productData['Price'] ?? "0.00",
                                     formatCurrency(productData['Price'] ?? "0.00"),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -339,7 +338,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
                       Stack(
                         children: [
                           ElevatedButton(
@@ -350,10 +349,10 @@ class _ChatScreen2State extends State<ChatScreen2> {
                               });
                               _sendMessage(_messageController.text);
                             },
-                            child: Text('Send'),
+                            child: const Text('Send'),
                           ),
                           if (loading)
-                            Positioned.fill(
+                            const Positioned.fill(
                               child: Center(
                                 child: CircularProgressIndicator(),
                               ),
@@ -379,7 +378,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
             : CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSentByCurrentUser ? Colors.blue : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(16),
@@ -392,7 +391,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                   style: TextStyle(
                       color: isSentByCurrentUser ? Colors.white : Colors.black),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   // Format date and time here (message['created_at'] as String)
                   message['created_at_formatted'],
@@ -422,7 +421,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
                   height: 30,
                   color: Colors.white,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Container(
                   height: 15,
                   color: Colors.white,
@@ -478,14 +477,14 @@ class _ChatScreen2State extends State<ChatScreen2> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Failed to send message'),
-            content: Text('Please try again later.'),
+            title: const Text('Failed to send message'),
+            content: const Text('Please try again later.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );

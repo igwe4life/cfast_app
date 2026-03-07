@@ -41,7 +41,7 @@ class CatSubListView extends StatefulWidget {
 
   // const CatSubListView({required this.category});
   const CatSubListView(
-      {required this.categoryName,
+      {super.key, required this.categoryName,
       required this.categorySlug,
       required this.categoryParentId});
 
@@ -160,7 +160,7 @@ class _CatSubListViewState extends State<CatSubListView> {
 class ProductListingDetailsScreen extends StatelessWidget {
   final ProductListing productListing;
 
-  const ProductListingDetailsScreen({required this.productListing});
+  const ProductListingDetailsScreen({super.key, required this.productListing});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,7 @@ class ProductListingDetailsScreen extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: CatSubListView(
       categoryName: '',
       categorySlug: '',

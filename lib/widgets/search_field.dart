@@ -15,7 +15,7 @@ class SearchField extends StatefulWidget {
 }
 
 class _SearchFieldState extends State<SearchField> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _SearchFieldState extends State<SearchField> {
                 flex: 4,
                 child: TextField(
                   controller: _searchController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Search...",
                     border: InputBorder.none,
                   ),
@@ -67,13 +67,6 @@ class _SearchFieldState extends State<SearchField> {
           ),
         ),
         const SizedBox(height: 15),
-        // Add the AdMob banner here
-        Container(
-          height: 50,
-          alignment: Alignment.center,
-          child: CustomBannerAd(), // Correctly added as a child
-        ),
-        const SizedBox(height: 15),
       ],
     );
   }
@@ -84,7 +77,7 @@ class _SearchFieldState extends State<SearchField> {
       context: context,
       barrierDismissible: false, // Prevent dialog from closing on tap outside
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(), // Circular loading indicator
         );
       },

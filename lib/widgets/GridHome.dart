@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../constants.dart';
 import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
-import 'package:shop_cfast/screens/home_screen.dart';
 
 import '../services/product_storage.dart';
 
@@ -21,7 +19,7 @@ class GridHome extends StatefulWidget {
 
 class _GridHomeState extends State<GridHome> {
   late Future<List<Product>> _futureProducts;
-  int _limit = 20;
+  final int _limit = 20;
   int _offset = 0;
 
   @override
@@ -94,11 +92,11 @@ class _GridHomeState extends State<GridHome> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(
+          return const Center(
               child: Text(
                   'Failed to load data: Please check your Internet connection and retry.'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
+          return const Center(
               // Widget for empty data
               );
         } else {
@@ -131,27 +129,18 @@ class _GridHomeState extends State<GridHome> {
   Widget _buildGridItem(BuildContext context, Product product) {
     return GestureDetector(
       onTap: () {
-        if (product != null) {
-          // Check if product is not null
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProductScreen(product: product),
-            ),
-          );
-        } else {
-          // Handle the case where product is null, such as showing a toast message
-          Fluttertoast.showToast(
-            msg: 'Product details are not available.',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-          );
-        }
-      },
+        // Check if product is not null
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductScreen(product: product),
+          ),
+        );
+            },
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Color.fromARGB(255, 242, 245, 248),
+          color: const Color.fromARGB(255, 242, 245, 248),
           border: Border.all(
             color: Colors.black,
             width: 2.0,
@@ -162,7 +151,7 @@ class _GridHomeState extends State<GridHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16.0),
                   topRight: Radius.circular(16.0),
                 ),
@@ -170,10 +159,10 @@ class _GridHomeState extends State<GridHome> {
                   future: getImageSize(product.image),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                     if (snapshot.hasError) {
-                      return Text('Error loading image');
+                      return const Text('Error loading image');
                     }
                     final Size imageSize = snapshot.data as Size;
                     final aspectRatio = imageSize.width / imageSize.height;
@@ -194,7 +183,7 @@ class _GridHomeState extends State<GridHome> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.price?.toString() ??
+                      product.price.toString() ??
                           '', // Ensure price is not null
                       style: Theme.of(context).textTheme.bodyLarge!.merge(
                             const TextStyle(
@@ -217,7 +206,7 @@ class _GridHomeState extends State<GridHome> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      product.location?.toLowerCase() ??
+                      product.location.toLowerCase() ??
                           '', // Ensure location is not null
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

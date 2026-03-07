@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class ChatScreen extends StatefulWidget {
   final Map<String, dynamic> message;
 
-  ChatScreen({required this.message});
+  const ChatScreen({super.key, required this.message});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Map<String, dynamic>> _messages = [];
-  TextEditingController _messageController = TextEditingController();
+  final List<Map<String, dynamic>> _messages = [];
+  final TextEditingController _messageController = TextEditingController();
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Text(
           widget.message['subject'],
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.blue,
@@ -53,18 +53,18 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type your message...',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 ElevatedButton(
                   onPressed: () {
                     // Handle sending the message via API
                     _sendMessage(_messageController.text);
                   },
-                  child: Text('Send'),
+                  child: const Text('Send'),
                 ),
               ],
             ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shop_cfast/models/category.dart';
-import 'package:shop_cfast/screens/CategoryDetailScreen.dart';
 import 'CatListView.dart';
 
 class Categories extends StatelessWidget {

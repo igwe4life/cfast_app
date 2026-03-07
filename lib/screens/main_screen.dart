@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content:
-                  Text('Token expired or unauthenticated. Please login again.'),
+              Text('Token expired or unauthenticated. Please login again.'),
               duration: Duration(seconds: 2),
             ),
           );
@@ -107,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
           // Navigate to login page and remove all routes from stack
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         } else {
           print('Failed to load unread message count: ${response.statusCode}');
@@ -122,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       // No internet connection, show a dialog or notification
       showDialog(
         context: context,
@@ -147,7 +147,7 @@ class _MainScreenState extends State<MainScreen> {
     if (sharedPreferences.getString("token") == null) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
       );
     }
   }
@@ -197,24 +197,24 @@ class _MainScreenState extends State<MainScreen> {
         if (isHomeScreen) {
           // If on the home screen, ask the user if they want to exit the app
           return await showDialog<bool>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Exit App?'),
-                    content: Text('Are you sure you want to exit the app?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('No'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('Yes'),
-                      ),
-                    ],
-                  );
-                },
-              ) ??
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Exit App?'),
+                content: Text('Are you sure you want to exit the app?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text('Yes'),
+                  ),
+                ],
+              );
+            },
+          ) ??
               false; // If the user dismisses the dialog, default to false
         } else {
           // If on a screen other than the home screen, switch to the home screen
@@ -228,7 +228,7 @@ class _MainScreenState extends State<MainScreen> {
             await checkLoginStatus();
 
             SharedPreferences sharedPreferences =
-                await SharedPreferences.getInstance();
+            await SharedPreferences.getInstance();
             String status = sharedPreferences.getString("status") ?? "";
 
             final token = sharedPreferences.getString("token");

@@ -10,7 +10,7 @@ class ApiService {
 
   Future<void> startChatThread(
       String name, String email, String body, int postId) async {
-    final url = '$baseUrl/cfastapi/start_chat.php';
+    const url = '$baseUrl/cfastapi/start_chat.php';
     final String? token = _prefs.getString('token');
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -40,7 +40,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> startConversation(
       String name, String email, String body, int postId) async {
-    final url = '$baseUrl/api/threads';
+    const url = '$baseUrl/api/threads';
     final String? token = _prefs.getString('token');
 
     var request = http.MultipartRequest('POST', Uri.parse(url));

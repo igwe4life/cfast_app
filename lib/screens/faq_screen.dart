@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
 class FaqScreen extends StatefulWidget {
+  const FaqScreen({super.key});
+
   @override
   _FaqScreenState createState() => _FaqScreenState();
 }
@@ -38,16 +39,7 @@ class _FaqScreenState extends State<FaqScreen> {
             });
 
             _controller
-                .runJavaScript("javascript:(function() { " +
-                    "var header = document.querySelector('.header');" +
-                    "if (header) header.parentNode.removeChild(header);" +
-                    "var prefooter = document.querySelector('.text-center mt-4 mb-4 ms-0 me-0');" +
-                    "if (prefooter) prefooter.parentNode.removeChild(prefooter);" +
-                    "var footer = document.querySelector('.main-footer');" +
-                    "if (footer) footer.parentNode.removeChild(footer);" +
-                    "var sidebar = document.querySelector('.col-md-4.reg-sidebar');" +
-                    "if (sidebar) sidebar.parentNode.removeChild(sidebar);" +
-                    "})()")
+                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var prefooter = document.querySelector('.text-center mt-4 mb-4 ms-0 me-0');if (prefooter) prefooter.parentNode.removeChild(prefooter);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
                 .then((value) =>
                     debugPrint('Header, Footer, and Sidebar removed'))
                 .catchError((onError) => debugPrint(
@@ -62,7 +54,7 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'FAQ',
           style: TextStyle(
             color: Colors.white,
@@ -76,7 +68,7 @@ class _FaqScreenState extends State<FaqScreen> {
         children: [
           WebViewWidget(controller: _controller),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 color: Colors.blue,
               ),

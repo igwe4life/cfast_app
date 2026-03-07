@@ -46,6 +46,6 @@ class _CustomBannerAdState extends State<CustomBannerAd> {
               ad: bannerAd!,
             ),
           )
-        : SizedBox();
+        : const SizedBox();
   }
 }

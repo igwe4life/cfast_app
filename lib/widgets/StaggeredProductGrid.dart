@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shop_cfast/models/product.dart';
 import 'package:shop_cfast/screens/product_screen.dart';
-import '../../constants.dart';
 
 class StaggeredProductGrid extends StatelessWidget {
   final List<Product> products;
@@ -19,7 +18,7 @@ class StaggeredProductGrid extends StatelessWidget {
         return ProductCard(product: products[index]);
       },
       staggeredTileBuilder: (int index) {
-        return StaggeredTile.fit(1); // Defines the size of each tile
+        return const StaggeredTile.fit(1); // Defines the size of each tile
       },
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,

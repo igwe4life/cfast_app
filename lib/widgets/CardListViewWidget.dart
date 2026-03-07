@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import '../../constants.dart';
 
 class CardListViewWidget extends StatefulWidget {
+  const CardListViewWidget({super.key});
+
   @override
   _CardListViewWidgetState createState() => _CardListViewWidgetState();
 }
@@ -38,7 +40,7 @@ class _CardListViewWidgetState extends State<CardListViewWidget> {
         final item = data[index];
         return Card(
           elevation: 3,
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -58,7 +60,7 @@ class _CardListViewWidgetState extends State<CardListViewWidget> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text('Title: ${item['title']}',
-                    style: TextStyle(fontSize: 10)),
+                    style: const TextStyle(fontSize: 10)),
               ),
               // Location
               Padding(

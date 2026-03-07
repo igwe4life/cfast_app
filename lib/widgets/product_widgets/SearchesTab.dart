@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 
 class SearchesTab extends StatefulWidget {
+  const SearchesTab({super.key});
+
   @override
   _SearchesTabState createState() => _SearchesTabState();
 }
@@ -38,7 +40,7 @@ class _SearchesTabState extends State<SearchesTab> {
   }
 
   Future<void> fetchSavedSearches() async {
-    final apiUrl = '$baseUrl/api/savedSearches';
+    const apiUrl = '$baseUrl/api/savedSearches';
     final queryParams = {
       'embed': 'null',
       'sort': 'created_at',
@@ -78,7 +80,7 @@ class _SearchesTabState extends State<SearchesTab> {
             itemBuilder: (context, index) {
               final search = savedSearches[index];
               return Card(
-                margin: EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(8.0),
                 child: ListTile(
                   title: Text(search.keyword),
                   subtitle: Text('Count: ${search.count}'),
@@ -86,7 +88,7 @@ class _SearchesTabState extends State<SearchesTab> {
               );
             },
           )
-        : Center(
+        : const Center(
             child: CircularProgressIndicator(),
           );
   }

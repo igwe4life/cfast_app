@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
@@ -9,8 +7,8 @@ class PremiumScreen extends StatefulWidget {
   final String uemail; // Define uemail parameter here
   final String uphone; // Define uphone parameter here
 
-  PremiumScreen(
-      {required this.uuid,
+  const PremiumScreen(
+      {super.key, required this.uuid,
       required this.uemail,
       required this.uphone}); // Constructor with named parameters
 
@@ -48,14 +46,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             });
 
             _controller
-                .runJavaScript("javascript:(function() { " +
-                    "var header = document.querySelector('.header');" +
-                    "if (header) header.parentNode.removeChild(header);" +
-                    "var footer = document.querySelector('.main-footer');" +
-                    "if (footer) footer.parentNode.removeChild(footer);" +
-                    "var sidebar = document.querySelector('.col-md-4.reg-sidebar');" +
-                    "if (sidebar) sidebar.parentNode.removeChild(sidebar);" +
-                    "})()")
+                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
                 .then((value) =>
                     debugPrint('Header, Footer, and Sidebar removed'))
                 .catchError((onError) => debugPrint(
@@ -71,7 +62,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Premium Services',
           style: TextStyle(
             color: Colors.white,
@@ -85,7 +76,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         children: [
           WebViewWidget(controller: _controller),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 color: Colors.blue,
               ),

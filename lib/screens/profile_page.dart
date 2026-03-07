@@ -32,28 +32,30 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late int uid;
-  late String name;
-  late String email;
-  late String photoUrl;
-  late String phone;
-  late String token;
+  int uid = 0;
+  String name = "Name";
+  String email = "Email";
+  String photoUrl = "";
+  String phone = "Phone";
+  String token = "token";
 
   late SharedPreferences sharedPreferences;
 
   Future<void> checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please login first!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false,
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please login first!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false,
+        );
+      }
     }
   }
 
@@ -66,14 +68,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> loadUserProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      uid = sharedPreferences.getInt("uid") ?? 0;
-      name = sharedPreferences.getString("name") ?? "Name";
-      email = sharedPreferences.getString("email") ?? "Email";
-      photoUrl = sharedPreferences.getString("photo_url") ?? "";
-      phone = sharedPreferences.getString("phone") ?? "Phone";
-      token = sharedPreferences.getString("token") ?? "token";
-    });
+    if (mounted) {
+      setState(() {
+        uid = sharedPreferences.getInt("uid") ?? 0;
+        name = sharedPreferences.getString("name") ?? "Name";
+        email = sharedPreferences.getString("email") ?? "Email";
+        photoUrl = sharedPreferences.getString("photo_url") ?? "";
+        phone = sharedPreferences.getString("phone") ?? "Phone";
+        token = sharedPreferences.getString("token") ?? "token";
+      });
+    }
   }
 
   // Method to request a call
@@ -168,7 +172,10 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(photoUrl),
+                  backgroundImage: photoUrl.isNotEmpty
+                      ? NetworkImage(photoUrl)
+                      : const AssetImage('assets/images/user_icon.png')
+                          as ImageProvider, // Default image
                 ),
               ),
               const SizedBox(height: 16),
@@ -233,18 +240,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     }),
                     _buildDivider(), // Divider
                     _buildListItem('Premium Services', Icons.workspace_premium,
-                        () {
-                      // Navigate to FAQ screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PremiumScreen(
+                            () {
+                          // Navigate to FAQ screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PremiumScreen(
                                   uuid: uid,
                                   uemail: email,
                                   uphone: phone,
                                 )),
-                      );
-                    }),
+                          );
+                        }),
                     _buildDivider(), // Divider
                     // _buildListItem('SHARE TOKEN', Icons.share, () {
                     //   // Share the token

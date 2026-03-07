@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -122,7 +121,7 @@ class _CategoryViewState extends State<CategoryView> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Search Results'),
+              title: const Text('Search Results'),
               content: SizedBox(
                 height: 300, // Set the desired height
                 child: ListView.builder(
@@ -142,7 +141,7 @@ class _CategoryViewState extends State<CategoryView> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );
@@ -226,22 +225,22 @@ class _CategoryViewState extends State<CategoryView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'No classified Ads found for this category',
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       },
-                      child: Text('Go to Home Screen'),
+                      child: const Text('Go to Home Screen'),
                     ),
                   ],
                 ),
@@ -281,7 +280,7 @@ class _CategoryViewState extends State<CategoryView> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Color.fromARGB(255, 242, 245, 248),
+          color: const Color.fromARGB(255, 242, 245, 248),
           border: Border.all(
             color: Colors.black,
             width: 2.0,

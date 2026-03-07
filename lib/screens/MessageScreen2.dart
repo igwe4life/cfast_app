@@ -12,19 +12,23 @@ import '../models/product.dart';
 import '../services/product_storage.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MessageScreen2(),
     );
   }
 }
 
 class MessageScreen2 extends StatefulWidget {
+  const MessageScreen2({super.key});
+
   @override
   _MessageScreen2State createState() => _MessageScreen2State();
 }
@@ -46,7 +50,7 @@ class _MessageScreen2State extends State<MessageScreen2> {
     super.initState();
     loadUserProfile();
     fetchMessages(); // Fetch messages initially
-    _timer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessages(); // Fetch messages every 15 seconds
     });
   }
@@ -91,7 +95,7 @@ class _MessageScreen2State extends State<MessageScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Messages',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -171,7 +175,7 @@ class _MessageScreen2State extends State<MessageScreen2> {
         itemCount: 8, // Number of shimmering list items
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            leading: CircleAvatar(
+            leading: const CircleAvatar(
               backgroundColor: Colors.white,
               radius: 30.0,
             ),
@@ -193,7 +197,7 @@ class _MessageScreen2State extends State<MessageScreen2> {
 class ChatScreen extends StatefulWidget {
   final Map<String, dynamic> message;
 
-  ChatScreen({required this.message});
+  const ChatScreen({super.key, required this.message});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -224,7 +228,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Product? product;
 
-  TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   Future<void> loadUserProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -245,7 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
     fetchData();
     fetchMessagesChats();
     getProduct();
-    _timers = Timer.periodic(Duration(seconds: 15), (timer) {
+    _timers = Timer.periodic(const Duration(seconds: 15), (timer) {
       fetchMessagesChats(); // Fetch messages every 15 seconds
     });
 
@@ -291,8 +295,8 @@ class _ChatScreenState extends State<ChatScreen> {
         defaultProduct1 = Product(
           title: '${widget.message['subject']}',
           description: '',
-          image: '${product!.image}',
-          price: '${product!.price}',
+          image: product!.image,
+          price: product!.price,
           date: '',
           time: '',
           itemUrl:
@@ -334,13 +338,13 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
+        leading: SizedBox(
           width: 50, // Adjust this width to fit your layout needs
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white, // Set the icon color to white
                 ),
@@ -348,7 +352,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Navigator.pop(context);
                 },
               ),
-              SizedBox(
+              const SizedBox(
                   width: 8), // Add some spacing between the icon and the avatar
               CircleAvatar(
                 backgroundImage:
@@ -362,14 +366,14 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Text(
               widget.message["latest_message"]["p_recipient"]["name"],
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white,
               ),
             ),
             Text(
               productData['UserStatus'] ?? "Loading...",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 10,
                 color: Colors.white70,
               ),
@@ -394,7 +398,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 throw 'Could not launch $telUri';
               }
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.call,
               color: Colors.white, // Set the icon color to white
             ),
@@ -421,7 +425,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.blue[200], // Light grey color
                       borderRadius: BorderRadius.circular(10), // Rounded edges
@@ -451,7 +455,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ), // Adding
                             Expanded(
@@ -460,7 +464,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 children: [
                                   Text(
                                     product?.title ?? "Loading...",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                     ),
                                     maxLines: 1, // Limit to 1 line
@@ -468,7 +472,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                   Text(
                                     product?.price ?? "0.00",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -499,12 +503,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       Expanded(
                         child: TextField(
                           controller: _messageController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Type your message...',
                           ),
                         ),
                       ),
-                      SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
                       /*ElevatedButton(
                         onPressed: () {
                           _sendMessage(_messageController.text);
@@ -539,10 +543,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           _sendMessage(_messageController.text);
                         },
                         child: _isSending
-                            ? CircularProgressIndicator(
+                            ? const CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         )
-                            : Text('Send'),
+                            : const Text('Send'),
                       ),
                     ],
                   ),
@@ -563,7 +567,7 @@ class _ChatScreenState extends State<ChatScreen> {
             : CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSentByCurrentUser ? Colors.blue : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(16),
@@ -576,7 +580,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: TextStyle(
                       color: isSentByCurrentUser ? Colors.white : Colors.black),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   // Format date and time here (message['created_at'] as String)
                   message['created_at_formatted'],
@@ -606,7 +610,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   height: 30,
                   color: Colors.white,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Container(
                   height: 15,
                   color: Colors.white,
@@ -668,14 +672,14 @@ class _ChatScreenState extends State<ChatScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Failed to send message'),
-            content: Text('Please try again later.'),
+            title: const Text('Failed to send message'),
+            content: const Text('Please try again later.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );

@@ -6,6 +6,8 @@ import 'dart:convert';
 import '../constants.dart';
 
 class ForgotPasswordWidget extends StatefulWidget {
+  const ForgotPasswordWidget({super.key});
+
   @override
   _ForgotPasswordWidgetState createState() => _ForgotPasswordWidgetState();
 }
@@ -39,7 +41,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
           (_) => characters.codeUnitAt(randoms.nextInt(characters.length))));
     }
 
-    final String apiUrl = '$baseUrl/api/auth/password/reset';
+    const String apiUrl = '$baseUrl/api/auth/password/reset';
 
     final Map<String, String> requestBody = {
       'email': _emailController.text,
@@ -75,7 +77,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
 
       // Show success snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Password reset successfully, please login!'),
           backgroundColor: Colors.green,
         ),
@@ -91,7 +93,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
 
       // Show error snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to reset password. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -103,7 +105,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Reset Password',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -116,46 +118,46 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
       body: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email Address'),
+                  decoration: const InputDecoration(labelText: 'Email Address'),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Enter New Password'),
+                  decoration: const InputDecoration(labelText: 'Enter New Password'),
                   obscureText: true,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _confirmPasswordController,
                   decoration:
-                      InputDecoration(labelText: 'Confirm New Password'),
+                      const InputDecoration(labelText: 'Confirm New Password'),
                   obscureText: true,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _forgotPassword,
-                  child: Text(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Colors.blue, // Set blue background color for button
+                  ),
+                  child: const Text(
                     'Reset Password',
                     style: TextStyle(
                       color: Colors.white, // Set white text color
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.blue, // Set blue background color for button
                   ),
                 ),
               ],
             ),
           ),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(),
             ),
         ],
