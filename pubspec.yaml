@@ -63,7 +63,7 @@ dependency_overrides:
   webview_flutter_wkwebview: ^3.24.2
   webview_flutter_platform_interface: ^2.15.1
   webview_flutter_android: ^4.10.15
-  win32: ^6.0.0
+  win32: ">=5.5.0 <6.0.0"
 
 flutter:
 
