@@ -61,6 +61,9 @@ dependency_overrides:
   http: ^1.1.0
   webview_flutter: ^4.10.0
   webview_flutter_wkwebview: ^3.24.2
+  webview_flutter_platform_interface: ^2.15.1
+  webview_flutter_android: ^4.10.15
+  win32: ^6.0.0
 
 flutter:
 
