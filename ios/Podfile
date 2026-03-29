@@ -31,3 +31,14 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['FRAMEWORK_SEARCH_PATHS'] ||= ['$(inherited)']
+      config.build_settings['FRAMEWORK_SEARCH_PATHS'] << '$(FLUTTER_ROOT)/bin/cache/artifacts/engine/ios'
+      config.build_settings['FRAMEWORK_SEARCH_PATHS'] << '$(FLUTTER_ROOT)/bin/cache/artifacts/engine/ios-release'
+    end
+  end
+end
