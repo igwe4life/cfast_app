@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../constants.dart';
 
 class FaqScreen extends StatefulWidget {
@@ -10,45 +10,8 @@ class FaqScreen extends StatefulWidget {
 }
 
 class _FaqScreenState extends State<FaqScreen> {
-  late final WebViewController _controller;
+  InAppWebViewController? _controller;
   bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (progress == 100) {
-              setState(() {
-                _isLoading = false;
-              });
-            } else {
-              setState(() {
-                _isLoading = true;
-              });
-            }
-          },
-          onPageFinished: (String url) {
-            setState(() {
-              _isLoading = false;
-            });
-
-            _controller
-                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var prefooter = document.querySelector('.text-center mt-4 mb-4 ms-0 me-0');if (prefooter) prefooter.parentNode.removeChild(prefooter);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
-                .then((value) =>
-                    debugPrint('Header, Footer, and Sidebar removed'))
-                .catchError((onError) => debugPrint(
-                    'Error removing Header, Footer, and Sidebar: $onError'));
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('$baseUrl/page/faq'));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +29,40 @@ class _FaqScreenState extends State<FaqScreen> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(controller: _controller),
+          InAppWebView(
+            initialUrlRequest: URLRequest(url: WebUri('$baseUrl/page/faq')),
+            initialSettings: InAppWebViewSettings(
+              transparentBackground: true,
+            ),
+            onWebViewCreated: (controller) {
+              _controller = controller;
+            },
+            onLoadStart: (controller, url) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            onLoadStop: (controller, url) async {
+              setState(() {
+                _isLoading = false;
+              });
+
+              await controller?.evaluateJavascript(source: "javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var prefooter = document.querySelector('.text-center mt-4 mb-4 ms-0 me-0');if (prefooter) prefooter.parentNode.removeChild(prefooter);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
+                  .then((value) => debugPrint('Header, Footer, and Sidebar removed'))
+                  .catchError((onError) => debugPrint('Error removing Header, Footer, and Sidebar: $onError'));
+            },
+            onProgressChanged: (controller, progress) {
+              if (progress == 100) {
+                setState(() {
+                  _isLoading = false;
+                });
+              } else {
+                setState(() {
+                  _isLoading = true;
+                });
+              }
+            },
+          ),
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(

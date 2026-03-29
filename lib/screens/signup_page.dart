@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../constants.dart';
 import 'login_page.dart';
@@ -13,60 +13,8 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  late final WebViewController _controller;
+  InAppWebViewController? _controller;
   bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (progress == 100) {
-              // When progress reaches 100%, it indicates page load is complete
-              setState(() {
-                _isLoading = false;
-              });
-            } else {
-              setState(() {
-                _isLoading = true;
-              });
-            }
-          },
-          onPageFinished: (String url) {
-            // Ensure that the loading state is set to false when the page is finished
-            setState(() {
-              _isLoading = false;
-            });
-
-            // Inject JavaScript code using evaluateJavascript
-            _controller
-                .runJavaScript("javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
-                .then((value) =>
-                    debugPrint('Header, Footer, and Sidebar removed'))
-                .catchError((onError) => debugPrint(
-                    'Error removing Header, Footer, and Sidebar: $onError'));
-          },
-          onWebResourceError: (WebResourceError error) {
-            // Handle web resource error.
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('$baseUrl/account')) {
-              _showSuccessToast();
-              _redirectToLoginScreen();
-
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('$baseUrl/register'));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +32,50 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(controller: _controller),
+          InAppWebView(
+            initialUrlRequest: URLRequest(url: WebUri('$baseUrl/register')),
+            initialSettings: InAppWebViewSettings(
+              transparentBackground: true,
+              useShouldOverrideUrlLoading: true,
+            ),
+            onWebViewCreated: (controller) {
+              _controller = controller;
+            },
+            onLoadStart: (controller, url) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            onLoadStop: (controller, url) async {
+              setState(() {
+                _isLoading = false;
+              });
+
+              await controller?.evaluateJavascript(source: "javascript:(function() { var header = document.querySelector('.header');if (header) header.parentNode.removeChild(header);var footer = document.querySelector('.main-footer');if (footer) footer.parentNode.removeChild(footer);var sidebar = document.querySelector('.col-md-4.reg-sidebar');if (sidebar) sidebar.parentNode.removeChild(sidebar);})()")
+                  .then((value) => debugPrint('Header, Footer, and Sidebar removed'))
+                  .catchError((onError) => debugPrint('Error removing Header, Footer, and Sidebar: $onError'));
+            },
+            onProgressChanged: (controller, progress) {
+              if (progress == 100) {
+                setState(() {
+                  _isLoading = false;
+                });
+              } else {
+                setState(() {
+                  _isLoading = true;
+                });
+              }
+            },
+            shouldOverrideUrlLoading: (controller, navigationAction) async {
+              var uri = navigationAction.request.url;
+              if (uri != null && uri.toString().startsWith('$baseUrl/account')) {
+                _showSuccessToast();
+                _redirectToLoginScreen();
+                return NavigationActionPolicy.CANCEL;
+              }
+              return NavigationActionPolicy.ALLOW;
+            },
+          ),
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(
