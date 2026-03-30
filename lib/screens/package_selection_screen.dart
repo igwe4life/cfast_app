@@ -141,27 +141,33 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                                Row(
                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                  children: [
-                                   Row(
-                                     children: [
-                                       CircleAvatar(
-                                         radius: 18,
-                                         backgroundColor: isFree ? Colors.grey : Colors.orange,
-                                         child: Icon(isFree ? Icons.money_off : Icons.star, color: Colors.white, size: 20),
-                                       ),
-                                       const SizedBox(width: 8),
-                                       Text(
-                                          '${package.currencyCode} ${package.price}',
-                                          style: const TextStyle(fontWeight: FontWeight.w500),
-                                       ),
-                                     ],
+                                   Expanded(
+                                     child: Row(
+                                       children: [
+                                         CircleAvatar(
+                                           radius: 18,
+                                           backgroundColor: isFree ? Colors.grey : Colors.orange,
+                                           child: Icon(isFree ? Icons.money_off : Icons.star, color: Colors.white, size: 20),
+                                         ),
+                                         const SizedBox(width: 8),
+                                         Expanded(
+                                           child: Text(
+                                              package.currencyCode == 'NGN' ? '₦${package.price.replaceAll(RegExp(r'\.00$'), '')}' : '${package.currencyCode} ${package.price.replaceAll(RegExp(r'\.00$'), '')}',
+                                              style: const TextStyle(fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                           ),
+                                         ),
+                                       ],
+                                     ),
                                    ),
+                                   const SizedBox(width: 8),
                                    ElevatedButton(
                                      onPressed: isDisabled ? null : () {
                                        widget.onPackageSelected(package);
                                      },
                                      style: ElevatedButton.styleFrom(
                                        backgroundColor: isFree ? Colors.grey : Colors.green,
-                                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                        disabledBackgroundColor: Colors.grey[300],
                                      ),
                                      child: Text(
