@@ -42,4 +42,20 @@ class Package {
       currency: json['currency'],
     );
   }
+
+  String get appleProductId {
+    final lowerName = name.toLowerCase();
+    final lowerShortName = shortName.toLowerCase();
+    
+    if (lowerName.contains('premium') || lowerShortName.contains('premium')) {
+      return 'package_3';
+    } else if (lowerName.contains('standard') || lowerShortName.contains('standard')) {
+      return 'package_2';
+    } else if (lowerName.contains('starter') || lowerShortName.contains('starter')) {
+      return 'package_5';
+    }
+    
+    // Fallback to convention if no name match
+    return 'package_$id';
+  }
 }

@@ -178,7 +178,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   Future<void> _buyProduct(Package package) async {
-    String productId = 'package_${package.id}'; // Convention: package_{id}
+    String productId = Platform.isIOS ? package.appleProductId : 'package_${package.id}'; // Use mapped ID for iOS
     
     bool available = await _inAppPurchase.isAvailable();
     if (!available) {
