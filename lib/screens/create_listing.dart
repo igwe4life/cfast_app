@@ -17,8 +17,9 @@ import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/models/package_model.dart';
 import 'package:shop_cfast/screens/package_selection_screen.dart';
 import '../constants.dart';
-import 'login_page.dart';
+import 'package:shop_cfast/screens/login_page.dart';
 import 'package:shop_cfast/screens/main_screen.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Helper class to store payment details
 class PaymentInfo {
@@ -130,7 +131,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
            String productId = purchaseDetails.productID;
            print('IAP Success: $productId');
            
-           if (_savedSelectedPackage != null) {
+               if (_savedSelectedPackage != null) {
                 setState(() {
                     // Calculate amount from saved package
                     double paidAmount = (double.parse(_savedSelectedPackage!.price) * 100).toDouble() / 100;
@@ -139,30 +140,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     
                     _paidPackages[_savedSelectedPackage!.id] = PaymentInfo(ref, paidAmount);
                 });
-
-
-               // Show processing dialog immediately for iOS IAP
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return const Dialog(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(width: 20),
-                            Text("Finalizing Listing..."),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-                
-               _postListing(_savedSelectedPackage!.id);
            } else {
                // Fallback: Use productId to find package ID? 
                // For now, error out if package is lost, though it shouldn't be.
@@ -190,6 +167,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
     final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails({productId});
     
     if (response.notFoundIDs.isNotEmpty) {
+        FirebaseCrashlytics.instance.recordError(
+          Exception('Product not found in App Store: $productId'),
+          StackTrace.current,
+          reason: 'IAP Product Not Found: ${response.notFoundIDs.join(', ')}',
+        );
         _showErrorDialog('Product Error', 'Product $productId not found in App Store.');
         return;
     }
@@ -758,33 +740,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
         onSuccess: (paystackCallback) {
           print('Payment Successful. Ref: ${paystackCallback.reference}');
           
-          // Show processing dialog immediately
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return const Dialog(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(width: 20),
-                      Text("Finalizing Listing..."),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-
           // Mark as paid with reference and amount
           setState(() {
             double paidAmount = (double.parse(package.price) * 100).toDouble() / 100; // Original amount
             _paidPackages[package.id] = PaymentInfo(paystackCallback.reference, paidAmount);
           });
-          _postListing(package.id);
         },
       );
     } catch (e) {
@@ -792,7 +752,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  void submitListing() {
+  bool _isReadyToSubmit() {
+    if (_savedSelectedPackage == null) return false;
+    if (_savedSelectedPackage!.price == '0.00' || _savedSelectedPackage!.price == '0') return true;
+    return _paidPackages.containsKey(_savedSelectedPackage!.id);
+  }
+
+  void _handleNext() {
     if (_formKey.currentState?.validate() ?? false) {
        // Image Validation
        bool hasImage = false;
@@ -811,16 +777,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
            return;
        }
 
-       // Check if package is already selected and saved
-       if (_savedSelectedPackage != null) {
-          if (_savedSelectedPackage!.price == '0.00') {
-             _postListing(_savedSelectedPackage!.id);
-          } else {
-             _handlePayment(_savedSelectedPackage!);
-          }
-          return;
-       }
-
        showDialog(
           context: context,
           builder: (context) => PackageSelectionScreen(
@@ -829,8 +785,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
               Navigator.of(context).pop(); // Close dialog
               // If free package (price is 0 or "Free")
               if (package.price == '0.00' || package.price == '0') {
-                  _savedSelectedPackage = package;
-                  _postListing(package.id);
+                  setState(() {
+                    _savedSelectedPackage = package;
+                  });
               } else {
                   _savedSelectedPackage = package;
                   _handlePayment(package);
@@ -838,6 +795,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
             },
           ),
        );
+    }
+  }
+
+  void submitListing() {
+    if (_savedSelectedPackage != null) {
+      _postListing(_savedSelectedPackage!.id);
     }
   }
 
@@ -1483,19 +1446,23 @@ class _AddListingScreenState extends State<AddListingScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    submitListing();
+                  if (_isReadyToSubmit()) {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      submitListing();
+                    }
+                  } else {
+                    _handleNext();
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue, // Text color
+                  backgroundColor: _isReadyToSubmit() ? Colors.green : Colors.blue, // Text color
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator() // Loading indicator
-                    : const Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white), // Text color
+                    : Text(
+                        _isReadyToSubmit() ? 'Submit' : 'Next',
+                        style: const TextStyle(color: Colors.white), // Text color
                       ),
               ),
               const SizedBox(height: 10),

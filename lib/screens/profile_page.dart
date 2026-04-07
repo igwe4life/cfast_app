@@ -239,20 +239,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     }),
                     _buildDivider(), // Divider
-                    _buildListItem('Premium Services', Icons.workspace_premium,
-                            () {
-                          // Navigate to FAQ screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PremiumScreen(
-                                  uuid: uid,
-                                  uemail: email,
-                                  uphone: phone,
-                                )),
-                          );
-                        }),
-                    _buildDivider(), // Divider
+                    if (!Platform.isIOS) ...[
+                      _buildListItem('Premium Services', Icons.workspace_premium,
+                              () {
+                            // Navigate to Premium screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PremiumScreen(
+                                    uuid: uid,
+                                    uemail: email,
+                                    uphone: phone,
+                                  )),
+                            );
+                          }),
+                      _buildDivider(), // Divider
+                    ],
                     // _buildListItem('SHARE TOKEN', Icons.share, () {
                     //   // Share the token
                     //   Share.share('Check out this token: $token');
