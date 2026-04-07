@@ -19,7 +19,6 @@ import 'package:shop_cfast/screens/package_selection_screen.dart';
 import '../constants.dart';
 import 'package:shop_cfast/screens/login_page.dart';
 import 'package:shop_cfast/screens/main_screen.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Helper class to store payment details
 class PaymentInfo {
@@ -167,11 +166,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
     final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails({productId});
     
     if (response.notFoundIDs.isNotEmpty) {
-        FirebaseCrashlytics.instance.recordError(
-          Exception('Product not found in App Store: $productId'),
-          StackTrace.current,
-          reason: 'IAP Product Not Found: ${response.notFoundIDs.join(', ')}',
-        );
+        print('Product not found in App Store: $productId - IAP Product Not Found: ${response.notFoundIDs.join(', ')}');
         _showErrorDialog('Product Error', 'Product $productId not found in App Store.');
         return;
     }

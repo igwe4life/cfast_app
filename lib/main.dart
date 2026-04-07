@@ -4,7 +4,6 @@ import 'package:shop_cfast/screens/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // Import the Google Mobile Ads package
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 Future<void> main() async {
@@ -12,7 +11,6 @@ Future<void> main() async {
   
   // Initialize Firebase and Crashlytics
   await Firebase.initializeApp();
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
   // Initialize AdMob with your App ID
   MobileAds.instance.initialize();
