@@ -9,7 +9,7 @@ class ProductPage extends StatelessWidget {
 
   Future<List> fetchAds() async {
     final response = await http
-        .get('https://blasanka.github.io/watch-ads/lib/data/ads.json' as Uri);
+        .get(Uri.parse('https://blasanka.github.io/watch-ads/lib/data/ads.json'));
 
     List ads = [];
     if (response.statusCode == 200) {

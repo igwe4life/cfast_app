@@ -20,7 +20,7 @@ class _CardListViewWidgetState extends State<CardListViewWidget> {
   }
 
   Future<void> fetchDataFromAPI() async {
-    final response = await http.get('$baseUrl/cfastapi/test.php' as Uri);
+    final response = await http.get(Uri.parse('$baseUrl/cfastapi/test.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);

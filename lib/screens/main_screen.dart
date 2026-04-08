@@ -48,14 +48,11 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _checkInternetConnection();
-    _initializeSharedPreferences();
-    //unreadMessageCount = 0;
-    unreadMessageCountNotifier = ValueNotifier<int>(0); // Initialize with 0
-    //_loadUnreadMessageCount();
-    Future.delayed(const Duration(milliseconds: 200), () {
+    unreadMessageCountNotifier = ValueNotifier<int>(0); 
+    _initializeSharedPreferences().then((_) {
       _loadUnreadMessageCount();
+      _startPeriodicFetch();
     });
-    _startPeriodicFetch();
   }
 
   @override
@@ -64,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  void _initializeSharedPreferences() async {
+  Future<void> _initializeSharedPreferences() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 

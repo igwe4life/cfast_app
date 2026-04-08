@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<Product>> fetchProductsFromAPI() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final response = await http.get('$baseUrl/cfastapi/homelist.php' as Uri);
+    final response = await http.get(Uri.parse('$baseUrl/cfastapi/homelist.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
