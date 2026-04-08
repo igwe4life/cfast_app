@@ -8,8 +8,8 @@ plugins {
 
 android {
     namespace "com.example.shop_example"
-    compileSdkVersion 35
-    ndkVersion "25.1.8937393"
+    compileSdkVersion 36
+    ndkVersion "26.1.10909125"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId "com.cfast.ng"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutter.versionCode
         versionName flutter.versionName
         multiDexEnabled true
