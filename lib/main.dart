@@ -9,16 +9,29 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Firebase and Crashlytics
-  await Firebase.initializeApp();
+  // Initialize Firebase — wrapped in try-catch so a failure
+  // (e.g. missing config on iOS) doesn't prevent the app from launching.
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase init failed: $e');
+  }
 
   // Initialize AdMob with your App ID
-  MobileAds.instance.initialize();
-  // Remove this method to stop OneSignal Debugging
-  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-  OneSignal.initialize("722ef7af-cf8d-4858-98ec-8f5db0a58de2");
-  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.Notifications.requestPermission(true);
+  try {
+    MobileAds.instance.initialize();
+  } catch (e) {
+    debugPrint('AdMob init failed: $e');
+  }
+
+  // OneSignal setup
+  try {
+    OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+    OneSignal.initialize("722ef7af-cf8d-4858-98ec-8f5db0a58de2");
+    OneSignal.Notifications.requestPermission(true);
+  } catch (e) {
+    debugPrint('OneSignal init failed: $e');
+  }
 
   runApp(const MyApp());
 }

@@ -24,10 +24,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Product>> products;
-  late String name;
-  late String email;
-  late String photoUrl;
-  late String phone;
+  String name = "User";
+  String email = "Email";
+  String photoUrl = "";
+  String phone = "Phone";
 
   @override
   void initState() {
