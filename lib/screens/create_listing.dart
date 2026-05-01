@@ -1567,6 +1567,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
