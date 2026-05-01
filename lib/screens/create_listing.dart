@@ -75,6 +75,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final String _selectedState = 'State';
   final String _selectedSubCity = 'City';
   String _selectedCity = ''; // Define _selectedCity variable
+  String _loadingMessage = ''; // Added for progress feedback
+
 
   // Dynamic form fields state variables
   String _selectedCondition = 'Brand New';
@@ -113,7 +115,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
     loadAuthToken(); // Used to be _loadUserData
     loadCategories();
     loadStates();
-    loadCities();
   }
 
   // IAP Listener
@@ -307,49 +308,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  Future<void> loadCities() async {
-    try {
-      setState(() {
-        _isLoadingCities = true; // Set loading state
-      });
+  // Removed loadCities as it is redundant and slow. 
+  // Cities are loaded dynamically via loadSubCities when a state is selected.
 
-      bool fetchNextPage = true;
-
-      while (fetchNextPage) {
-        var response = await http.get(
-          Uri.parse('$baseUrl/api/countries/NG/cities?page=$_currentPage'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Content-Language': 'en',
-            'X-AppType': 'docs',
-            'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw='
-          },
-        );
-
-        if (response.statusCode == 200) {
-          var citiesData = json.decode(response.body)['result']['data'];
-          if (citiesData.isNotEmpty) {
-            setState(() {
-              _cities.addAll(List<Map<String, dynamic>>.from(citiesData));
-              _currentPage++; // Move to next page
-            });
-          } else {
-            fetchNextPage = false; // Stop if no more data available
-          }
-        } else {
-          print('Failed to load cities');
-          fetchNextPage = false; // Stop on failure
-        }
-      }
-    } catch (e) {
-      print('Exception while loading cities: $e');
-    } finally {
-      setState(() {
-        _isLoadingCities = false; // Set loading state to false after completion
-      });
-    }
-  }
 
   Widget _buildOutlinedTextField({
     required TextEditingController controller,
@@ -1024,96 +985,63 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   Future<void> addImages() async {
     final picker = ImagePicker();
-    final List<XFile> images = await picker.pickMultiImage();
+    final List<XFile> images = await picker.pickMultiImage(imageQuality: 70);
 
-    for (XFile image in images) {
-      // Get image file
-      File file = File(image.path);
+    if (images.isEmpty) return;
 
-      // Check if image is a screenshot
-      bool isScreenshot = await isImageScreenshot(file);
+    setState(() => _loadingMessage = 'Preparing images...');
 
-      // If the image is not a screenshot
-      if (!isScreenshot) {
-        // Check if the file has already been uploaded
-        if (!uploadedFiles.contains(image.path)) {
-          // Get image dimensions
-          final decodedImage =
-              await decodeImageFromList(await file.readAsBytes());
-          int width = decodedImage.width;
-
-          // Check if image width is greater than 600 pixels
-          if (width > 400) {
-            // Watermark the image before adding it to the list
-            File watermarkedImage = await _addWatermarkToImages(file);
-            setState(() {
-              _selectedImages.add(watermarkedImage);
-            });
-            // Add the file path of watermarked image to the uploaded files set
-            uploadedFiles.add(watermarkedImage.path);
-          } else {
-            // Remove the image from the list
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Image Width Alert'),
-                  content: const Text(
-                      'Image with width less than or equal to 400 pixels is not allowed.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-        } else {
-          // Alert user that the file has already been uploaded
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('File Upload Alert'),
-                content: const Text('This file has already been uploaded.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      } else {
-        // Alert user that screenshot images are not allowed
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Screenshot Alert'),
-              content: const Text('Screenshot images are not allowed.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(strokeWidth: 3),
+                const SizedBox(height: 20),
+                Text(
+                  _loadingMessage,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
               ],
-            );
-          },
-        );
-      }
+            ),
+          );
+        },
+      ),
+    );
+
+    int processedCount = 0;
+    int totalCount = images.length;
+
+    try {
+      await Future.wait(images.map((image) async {
+        File file = File(image.path);
+        bool isScreenshot = await isImageScreenshot(file);
+        if (isScreenshot) return;
+        if (uploadedFiles.contains(image.path)) return;
+        final decodedImage = await decodeImageFromList(await file.readAsBytes());
+        if (decodedImage.width > 400) {
+          File watermarkedImage = await _addWatermarkToImages(file);
+          setState(() {
+            _selectedImages.add(watermarkedImage);
+            uploadedFiles.add(image.path);
+            processedCount++;
+            _loadingMessage = 'Processed $processedCount of $totalCount images...';
+          });
+        }
+      }));
+    } catch (e) {
+      print('Error in addImages: $e');
+    } finally {
+      Navigator.pop(context);
+      setState(() => _loadingMessage = '');
     }
-    }
+  }
 
   Future<File> _addWatermarkToImages(File imageFile) async {
     try {
@@ -1493,20 +1421,44 @@ class _AddListingScreenState extends State<AddListingScreen> {
               // Image preview
               _buildImagePreview(),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: addImages,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.orange, // Text color
-                ),
-                child: const Text(
-                  'Select Image',
-                  style: TextStyle(color: Colors.white), // Text color
+              _buildImagePreview(),
+              const SizedBox(height: 30),
+              
+              // SELECT IMAGE BUTTON - Modern Card-like Style
+              GestureDetector(
+                onTap: addImages,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Select Images',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
+              
+              const SizedBox(height: 16),
+              
+              // SUBMIT / NEXT BUTTON - Modern Card-like Style
+              GestureDetector(
+                onTap: () {
                   if (_isReadyToSubmit()) {
                     if (_formKey.currentState?.validate() ?? false) {
                       submitListing();
@@ -1515,35 +1467,75 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     _handleNext();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: _isReadyToSubmit() ? Colors.green : Colors.blue, // Text color
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator() // Loading indicator
-                    : Text(
-                        _isReadyToSubmit() ? 'Submit' : 'Next',
-                        style: const TextStyle(color: Colors.white), // Text color
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  decoration: BoxDecoration(
+                    color: _isReadyToSubmit() ? Colors.green : Colors.blue,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: (_isReadyToSubmit() ? Colors.green : Colors.blue).withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
+                    ],
+                  ),
+                  child: Center(
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            _isReadyToSubmit() ? 'SUBMIT LISTING' : 'CONTINUE TO NEXT STEP',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
+              
+              const SizedBox(height: 16),
+              
+              // SAVE & POST LATER BUTTON - Subtler Modern Style
+              GestureDetector(
+                onTap: () {
                   if (_formKey.currentState?.validate() ?? false) {
                     submitSavedListing();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.purple, // Text color
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.purple.shade200, width: 1.5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: _isLoading2
+                        ? CircularProgressIndicator(color: Colors.purple.shade300)
+                        : Text(
+                            'Save & Post Later',
+                            style: TextStyle(
+                              color: Colors.purple.shade700,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  ),
                 ),
-                child: _isLoading2
-                    ? const CircularProgressIndicator() // Loading indicator
-                    : const Text(
-                        'Save & Post Later',
-                        style: TextStyle(color: Colors.white), // Text color
-                      ),
               ),
+              const SizedBox(height: 30),
+
             ],
           ),
         ),
