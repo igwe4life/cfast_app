@@ -55,7 +55,6 @@ class Package {
       return 'package_5';
     }
     
-    // Fallback to convention if no name match
     return 'package_$id';
   }
 }

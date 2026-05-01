@@ -150,6 +150,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
         if (purchaseDetails.pendingCompletePurchase) {
           await _inAppPurchase.completePurchase(purchaseDetails);
         }
+        
+        // Ensure keyboard is dismissed after payment interaction
+        FocusScope.of(context).unfocus();
       }
     });
   }
@@ -789,6 +792,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
     print('DEBUG _handleNext: All validation passed, showing package dialog');
     
+    // Dismiss keyboard before showing dialog
+    FocusScope.of(context).unfocus();
+    
     showDialog(
        context: context,
        builder: (dialogContext) => PackageSelectionScreen(
@@ -918,6 +924,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
            } else {
                print('DEBUG: Skipping payment record. Condition failed.');
            }
+
+           // Brief delay so user can see success toast before redirect
+           await Future.delayed(const Duration(seconds: 2));
 
            // Navigate to Home immediately, removing all previous routes
            Navigator.of(context).pushAndRemoveUntil(
@@ -1056,6 +1065,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
     } finally {
       Navigator.pop(context);
       setState(() => _loadingMessage = '');
+      // Dismiss keyboard after image selection
+      FocusScope.of(context).unfocus();
     }
   }
 
@@ -1280,8 +1291,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
       dynamicFields.addAll(additionalFields);
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
         //title: Text('Post New Ad'),
         title: const Text('Post New Ad', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
