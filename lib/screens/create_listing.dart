@@ -754,43 +754,109 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   void _handleNext() {
-    if (_formKey.currentState?.validate() ?? false) {
-       // Image Validation
-       bool hasImage = false;
-       for (var img in _selectedImages) {
-          if (img != null) {
-            hasImage = true;
-            if (img.lengthSync() > 2500 * 1024) {
-               Fluttertoast.showToast(msg: 'Image size must be less than 2.5MB');
-               return;
-            }
-          }
-       }
-       
-       if (!hasImage) {
-           Fluttertoast.showToast(msg: 'Please select at least one image');
-           return;
-       }
-
-       showDialog(
-          context: context,
-          builder: (context) => PackageSelectionScreen(
-            token: token,
-            onPackageSelected: (package) {
-              Navigator.of(context).pop(); // Close dialog
-              // If free package (price is 0 or "Free")
-              if (package.price == '0.00' || package.price == '0') {
-                  setState(() {
-                    _savedSelectedPackage = package;
-                  });
-              } else {
-                  _savedSelectedPackage = package;
-                  _handlePayment(package);
-              }
-            },
-          ),
-       );
+    print('DEBUG _handleNext: called');
+    
+    // Form validation
+    bool isFormValid = _formKey.currentState?.validate() ?? false;
+    print('DEBUG _handleNext: form valid = $isFormValid');
+    
+    if (!isFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all required fields'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
     }
+    
+    // Category validation
+    if (_selectedCategory.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a category'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    
+    // City validation
+    if (_selectedCity.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a city'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    
+    // Image Validation
+    bool hasImage = false;
+    for (var img in _selectedImages) {
+       if (img != null) {
+         hasImage = true;
+         if (img.lengthSync() > 2500 * 1024) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Image size must be less than 2.5MB'),
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 2),
+              ),
+            );
+            return;
+         }
+       }
+    }
+    
+    print('DEBUG _handleNext: hasImage = $hasImage, images count = ${_selectedImages.where((img) => img != null).length}');
+    
+    if (!hasImage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select at least one image'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        return;
+    }
+
+    print('DEBUG _handleNext: All validation passed, showing package dialog');
+    
+    showDialog(
+       context: context,
+       builder: (dialogContext) => PackageSelectionScreen(
+         token: token,
+         onPackageSelected: (package) {
+           Navigator.of(dialogContext).pop(); // Close dialog
+           print('DEBUG _handleNext: Package selected: ${package.name}, price: ${package.price}');
+           // If free package (price is 0 or "Free")
+           if (package.price == '0.00' || package.price == '0') {
+               setState(() {
+                 _savedSelectedPackage = package;
+               });
+               // Automatically submit for free packages
+               ScaffoldMessenger.of(context).showSnackBar(
+                 const SnackBar(
+                   content: Text('Free package selected. Tap Submit to post your ad.'),
+                   backgroundColor: Colors.green,
+                   duration: Duration(seconds: 2),
+                 ),
+               );
+           } else {
+               setState(() {
+                 _savedSelectedPackage = package;
+               });
+               _handlePayment(package);
+           }
+         },
+       ),
+    );
   }
 
   void submitListing() {
