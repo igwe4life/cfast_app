@@ -84,7 +84,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final TextEditingController _modelController = TextEditingController();
 
   File? _selectedImage;
-  final List<File?> _selectedImages = List.generate(5, (index) => null);
+  final List<File?> _selectedImages = [];
 
 
   
@@ -1017,24 +1017,40 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
     int processedCount = 0;
     int totalCount = images.length;
+    List<File> newlyProcessed = [];
 
     try {
+      // Process all images in parallel for maximum speed
       await Future.wait(images.map((image) async {
         File file = File(image.path);
+        
         bool isScreenshot = await isImageScreenshot(file);
         if (isScreenshot) return;
+
         if (uploadedFiles.contains(image.path)) return;
+
         final decodedImage = await decodeImageFromList(await file.readAsBytes());
+        
         if (decodedImage.width > 400) {
           File watermarkedImage = await _addWatermarkToImages(file);
+          
+          newlyProcessed.add(watermarkedImage);
+          uploadedFiles.add(image.path);
+          
+          processedCount++;
+          // Use setState for progress only
           setState(() {
-            _selectedImages.add(watermarkedImage);
-            uploadedFiles.add(image.path);
-            processedCount++;
             _loadingMessage = 'Processed $processedCount of $totalCount images...';
           });
         }
       }));
+
+      // Add all processed images at once to avoid list fragmentation and redundant builds
+      if (newlyProcessed.isNotEmpty) {
+        setState(() {
+          _selectedImages.addAll(newlyProcessed);
+        });
+      }
     } catch (e) {
       print('Error in addImages: $e');
     } finally {
@@ -1418,9 +1434,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 decoration: const InputDecoration(labelText: 'Tags'),
                 // Validation or other configurations for tags input
               ),
-              // Image preview
-              _buildImagePreview(),
-              const SizedBox(height: 20),
+               // Image preview
               _buildImagePreview(),
               const SizedBox(height: 30),
               
