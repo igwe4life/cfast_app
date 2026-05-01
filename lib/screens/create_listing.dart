@@ -516,16 +516,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   void _performSaveListing(int packageId) async {
-    // Show loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    setState(() {
+      _isLoading2 = true;
+    });
 
     var request = http.MultipartRequest(
       'POST',
@@ -585,9 +578,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
       print('Response Status: ${response.statusCode}');
       print('Response Body: $responseBody');
 
-      // Dismiss loading dialog
-      Navigator.of(context).pop();
-
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(responseBody);
         if (decodedResponse['success'] == true) {
@@ -601,9 +591,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
       }
     } catch (e) {
       print('Exception: $e');
-      // Dismiss loading dialog
-      Navigator.of(context).pop();
       _showErrorDialog('Exception', e.toString());
+    } finally {
+      setState(() {
+        _isLoading2 = false;
+      });
     }
   }
 
@@ -1551,7 +1543,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     child: _isLoading2
                         ? CircularProgressIndicator(color: Colors.purple.shade300)
                         : Text(
-                            'Save & Post Later',
+                            'SAVE & POST LATER',
                             style: TextStyle(
                               color: Colors.purple.shade700,
                               fontSize: 15,
