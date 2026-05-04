@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'dart:async';
+import 'package:image/image.dart' as img;
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -814,15 +815,25 @@ class _EditPostScreenState extends State<EditPostScreen> {
             image.width,
             image.height,
           );
-      // Convert image to byte data
+      
+      // Convert to JPEG for much smaller file size (prevents TLS errors on large uploads)
       ByteData? byteData = await watermarkedImage.toByteData(
-        format: ui.ImageByteFormat.png,
+        format: ui.ImageByteFormat.rawRgba,
       );
-      // Write byte data to buffer
-      Uint8List watermarkedImageBytes = byteData!.buffer.asUint8List();
+      
+      if (byteData == null) throw Exception("Failed to get byte data from image");
+
+      img.Image libImage = img.Image.fromBytes(
+        watermarkedImage.width,
+        watermarkedImage.height,
+        byteData.buffer.asUint8List(),
+      );
+
+      Uint8List watermarkedImageBytes = Uint8List.fromList(img.encodeJpg(libImage, quality: 85));
+
       // Save the watermarked image to a new file with a timestamp
       DateTime now = DateTime.now();
-      String timestamp = now.toIso8601String();
+      String timestamp = now.toIso8601String().replaceAll(':', '-');
       File watermarkedFile = File('${imageFile.path}_$timestamp.jpg');
       await watermarkedFile.writeAsBytes(watermarkedImageBytes);
       return watermarkedFile;
