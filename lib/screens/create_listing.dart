@@ -268,9 +268,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
       if (response.statusCode == 200) {
         setState(() {
           _subCategories = json.decode(response.body)['result']['data'];
-          _selectedSubCategory = _subCategories.isNotEmpty
-              ? _subCategories[0]['id'].toString()
-              : 'No Subcategory';
+          if (_subCategories.isNotEmpty) {
+            _selectedSubCategory = _subCategories[0]['id'].toString();
+          } else {
+            _selectedSubCategory = '';
+          }
         });
       } else {
         print('Failed to load subcategories');
@@ -297,9 +299,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
         //Fluttertoast.showToast(msg: response.body);
         setState(() {
           _subCategories11 = json.decode(response.body)['result']['data'];
-          _selectedSubCategory11 = _subCategories11.isNotEmpty
-              ? _subCategories11[0]['id'].toString()
-              : 'No Subcategory';
+          if (_subCategories11.isNotEmpty) {
+             _selectedCity = _subCategories11[0]['id'].toString();
+          } else {
+             _selectedCity = '';
+          }
         });
       } else {
         print('Failed to load sub cities');
@@ -528,7 +532,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
     // Add headers
     request.headers.addAll({
       'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Content-Language': 'en',
       'X-AppType': 'docs',
@@ -1295,6 +1298,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: ListView(
             children: <Widget>[
               DropdownButtonFormField<String>(
@@ -1318,12 +1322,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
+                validator: (value) => (value == null || value.isEmpty) ? 'Please select a category' : null,
                 decoration: const InputDecoration(labelText: 'Select Category'),
                 isExpanded: true,
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedSubCategory.isEmpty ? null : _selectedSubCategory,
+                value: (_selectedSubCategory.isNotEmpty && _subCategories.any((item) => item['id'].toString() == _selectedSubCategory)) 
+                    ? _selectedSubCategory 
+                    : null,
                 items:
                     _subCategories.map<DropdownMenuItem<String>>((subcategory) {
                   return DropdownMenuItem<String>(
@@ -1338,6 +1345,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
+                validator: (value) => (value == null || value.isEmpty) ? 'Please select a sub-category' : null,
                 decoration: const InputDecoration(labelText: 'Select Sub Category'),
                 isExpanded: true,
               ),
@@ -1373,6 +1381,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
+                validator: (value) => (value == null || value.isEmpty) ? 'Please select a state' : null,
                 decoration: const InputDecoration(labelText: 'Select State'),
                 isExpanded: true,
               ),
@@ -1395,6 +1404,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     });
                   }
                 },
+                validator: (value) => (value == null || value.isEmpty) ? 'Please select a city' : null,
                 decoration: const InputDecoration(labelText: 'Select City'),
                 isExpanded: true,
               ),
@@ -1439,11 +1449,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 decoration: const InputDecoration(labelText: 'Tags'),
                 // Validation or other configurations for tags input
               ),
-               // Image preview
-              _buildImagePreview(),
-              const SizedBox(height: 30),
-              
-              // SELECT IMAGE BUTTON - Modern Card-like Style
+               // SELECT IMAGE BUTTON - Modern Card-like Style
               GestureDetector(
                 onTap: addImages,
                 child: Container(
@@ -1472,6 +1478,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              // Image preview
+              _buildImagePreview(),
+              const SizedBox(height: 30),
               
               const SizedBox(height: 16),
               

@@ -66,6 +66,8 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
           final List<dynamic> results = data['result']['data'];
             setState(() {
               _packages = results.map((json) => Package.fromJson(json)).toList();
+              // Sort packages so free ones come first
+              _packages.sort((a, b) => double.parse(a.price).compareTo(double.parse(b.price)));
               _isLoading = false;
             });
         } else {
