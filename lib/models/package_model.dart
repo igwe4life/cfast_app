@@ -49,9 +49,9 @@ class Package {
     
     if (lowerName.contains('premium') || lowerShortName.contains('premium')) {
       return 'package_3';
-    } else if (lowerName.contains('standard') || lowerShortName.contains('standard')) {
+    } else if (lowerName.contains('top') || lowerShortName.contains('top')) {
       return 'package_2';
-    } else if (lowerName.contains('starter') || lowerShortName.contains('starter')) {
+    } else if (lowerName.contains('standard') || lowerShortName.contains('standard')) {
       return 'package_5';
     }
     
