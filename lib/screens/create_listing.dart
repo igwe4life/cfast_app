@@ -1286,6 +1286,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
         ),
       );
 
+      additionalFields.add(const SizedBox(height: 16.0));
+
       additionalFields.add(
         _buildOutlinedTextField(
           controller: _modelController,
@@ -1333,10 +1335,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a category' : null,
-                decoration: const InputDecoration(labelText: 'Select Category'),
+                decoration: const InputDecoration(labelText: 'Select Category', border: OutlineInputBorder()),
                 isExpanded: true,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 value: (_selectedSubCategory.isNotEmpty && _subCategories.any((item) => item['id'].toString() == _selectedSubCategory)) 
                     ? _selectedSubCategory 
@@ -1356,14 +1358,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a sub-category' : null,
-                decoration: const InputDecoration(labelText: 'Select Sub Category'),
+                decoration: const InputDecoration(labelText: 'Select Sub Category', border: OutlineInputBorder()),
                 isExpanded: true,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               TextFormField(
                 // Title input field
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title', border: OutlineInputBorder()),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a title';
@@ -1371,7 +1373,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 value: _selectedCategory11.isEmpty ? null : _selectedCategory11,
                 items: _categories11.map<DropdownMenuItem<String>>((category) {
@@ -1392,10 +1394,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a state' : null,
-                decoration: const InputDecoration(labelText: 'Select State'),
+                decoration: const InputDecoration(labelText: 'Select State', border: OutlineInputBorder()),
                 isExpanded: true,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 value: (_selectedCity.isNotEmpty && _subCategories11.any((item) => item['id'].toString() == _selectedCity)) 
                     ? _selectedCity 
@@ -1415,10 +1417,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a city' : null,
-                decoration: const InputDecoration(labelText: 'Select City'),
+                decoration: const InputDecoration(labelText: 'Select City', border: OutlineInputBorder()),
                 isExpanded: true,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               TextFormField(
                 // Description input field
                 controller: _descriptionController,
@@ -1436,15 +1438,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               // Place the dynamicFields here after the first three existing form fields
               ...dynamicFields,
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               TextFormField(
                 // Price input field
                 controller: _priceController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Price'),
+                decoration: const InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a price';
@@ -1452,13 +1454,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16.0),
               TextFormField(
                 // Tags input field
                 controller: _tagsController,
-                decoration: const InputDecoration(labelText: 'Tags'),
+                decoration: const InputDecoration(labelText: 'Tags', border: OutlineInputBorder()),
                 // Validation or other configurations for tags input
               ),
+              const SizedBox(height: 24.0),
                // SELECT IMAGE BUTTON - Modern Card-like Style
               GestureDetector(
                 onTap: addImages,

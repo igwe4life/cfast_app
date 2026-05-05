@@ -45,7 +45,18 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
     Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      try {
+        var decoded = json.decode(response.body);
+        if (decoded is List) {
+          return decoded;
+        } else if (decoded is Map && decoded.containsKey('data') && decoded['data'] is List) {
+          return decoded['data'];
+        } else {
+          return [];
+        }
+      } catch (e) {
+        return [];
+      }
     } else {
       throw Exception('Failed to load data');
     }
@@ -88,7 +99,14 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
                     itemBuilder: (context, index) {
                       final item = snapshot.data![index];
                       final leadingText = (index + 1).toString();
-                      DateTime date = DateTime.parse(item['created_at']);
+                      
+                      DateTime date;
+                      String createdAtStr = item['created_at']?.toString() ?? '';
+                      try {
+                        date = createdAtStr.isNotEmpty ? DateTime.parse(createdAtStr) : DateTime.now();
+                      } catch (e) {
+                        date = DateTime.now();
+                      }
                       String formattedDate =
                       DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
                       return GestureDetector(

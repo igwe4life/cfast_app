@@ -373,27 +373,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // READ-ONLY CATEGORY & LOCATION DISPLAY
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildReadOnlyItem('Category', _categoryName),
-                        const Divider(),
-                        _buildReadOnlyItem('Sub-Category', _subCategoryName),
-                        const Divider(),
-                        _buildReadOnlyItem('State', _stateName),
-                        const Divider(),
-                        _buildReadOnlyItem('City', _cityName),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+
 
                   TextFormField(
                     controller: _titleController,
