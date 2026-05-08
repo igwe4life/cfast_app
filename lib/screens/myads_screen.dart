@@ -176,14 +176,15 @@ class _AdScreenState extends State<AdScreen> {
 }
 
 Future<List<Ad>> fetchAds(token) async {
-  final apiUrl = '$baseUrl/cfastapi/my_ads.php?token=$token';
+  // Use Uri.https to properly encode the token (contains | character)
+  final uri = Uri.https('cfast.ng', '/cfastapi/my_ads.php', {'token': token});
   
   try {
-    print('Fetching ads from: $apiUrl');
+    print('Fetching ads from: $uri');
     
     final response = await http.get(
-      Uri.parse(apiUrl),
-    ).timeout(const Duration(seconds: 30));
+      uri,
+    ).timeout(const Duration(seconds: 60));
     
     print('Response status code: ${response.statusCode}');
     print('Response body length: ${response.body.length}');
