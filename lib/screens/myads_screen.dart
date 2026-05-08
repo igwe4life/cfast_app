@@ -37,9 +37,12 @@ class _AdScreenState extends State<AdScreen> {
   @override
   void initState() {
     super.initState();
-    loadUserProfile().then((_) {
-      _fetchAds = fetchAds(token);
-    });
+    _fetchAds = _loadAndFetchAds();
+  }
+
+  Future<List<Ad>> _loadAndFetchAds() async {
+    await loadUserProfile();
+    return fetchAds(token);
   }
 
   @override
@@ -258,9 +261,9 @@ class Ad {
 
   factory Ad.fromJson(Map<String, dynamic> json) {
     return Ad(
-      postId: json['post_id'] ?? 0,
-      userId: json['user_id'] ?? 0,
-      categoryId: json['category_id'] ?? 0,
+      postId: json['post_id'] is int ? json['post_id'] : int.tryParse(json['post_id']?.toString() ?? '') ?? 0,
+      userId: json['user_id'] is int ? json['user_id'] : int.tryParse(json['user_id']?.toString() ?? '') ?? 0,
+      categoryId: json['category_id'] is int ? json['category_id'] : int.tryParse(json['category_id']?.toString() ?? '') ?? 0,
       title: json['title'] ?? '',
       price: json['price']?.toString() ?? '0',
       contactName: json['contact_name'] ?? '',

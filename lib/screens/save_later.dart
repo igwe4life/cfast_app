@@ -13,36 +13,25 @@ class ApiListViewScreen extends StatefulWidget {
 }
 
 class _ApiListViewScreenState extends State<ApiListViewScreen> {
-  Future<List<dynamic>>? _futureData;
+  late Future<List<dynamic>> _futureData;
   int uid = 0;
 
   @override
   void initState() {
     super.initState();
-    loadAuthToken();
+    _futureData = _loadAndFetchData();
   }
 
-  Future<void> loadAuthToken() async {
+  Future<List<dynamic>> _loadAndFetchData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        uid = sharedPreferences.getInt("uid") ?? 0;
-      });
+    uid = sharedPreferences.getInt("uid") ?? 0;
 
-      // Call fetchData() here after setting uid
-      _futureData = fetchData();
+    if (uid == 0) {
+      return [];
     }
-  }
-
-  Future<List<dynamic>> fetchData() async {
-    // if (uid == null || uid == 0) {
-    //   print('UID is null or invalid: $uid');
-    //   Fluttertoast.showToast(msg: 'UID is null or invalid: $uid');
-    //   return []; // Return empty list if UID is invalid
-    // }
 
     final url =
-    Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
+        Uri.parse('$baseUrl/cfastapi/fetch_saved_posts.php?user_id=$uid');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       try {
@@ -81,11 +70,7 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(
-              child: Text('No data or still loading...'),
-            );
-          } else if (snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text('No results found'),
             );
