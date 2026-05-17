@@ -45,6 +45,45 @@ class _AdScreenState extends State<AdScreen> {
     return fetchAds(token);
   }
 
+  Future<void> _refreshAds() async {
+    setState(() {
+      _fetchAds = _loadAndFetchAds();
+    });
+  }
+
+  /// Returns the image URL to display for the ad.
+  /// Prefers user_photo_url (listing thumbnail) since photo_url is often empty.
+  String _getAdImageUrl(Ad ad) {
+    if (ad.userPhotoUrl.isNotEmpty) {
+      return ad.userPhotoUrl;
+    }
+    if (ad.photoUrl != null && ad.photoUrl!.isNotEmpty) {
+      return ad.photoUrl!;
+    }
+    return '';
+  }
+
+  /// Formats the date in a readable way, e.g. "Aug 3, 2025"
+  String _formatDate(String dateStr) {
+    try {
+      DateTime date = DateTime.parse(dateStr);
+      return DateFormat('MMM d, yyyy').format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  /// Formats price with Naira symbol and commas
+  String _formatPrice(String priceStr) {
+    try {
+      final priceFormat = NumberFormat("#,##0", "en_US");
+      double price = double.parse(priceStr);
+      return '₦${priceFormat.format(price)}';
+    } catch (e) {
+      return '₦$priceStr';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,82 +104,208 @@ class _AdScreenState extends State<AdScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _buildShimmerList();
           } else if (snapshot.hasError) {
-            // Show the actual error message for debugging
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            return _buildErrorView(snapshot.error.toString());
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return _buildEmptyView();
+          } else {
+            return _buildAdsList(snapshot.data!);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildAdsList(List<Ad> ads) {
+    return RefreshIndicator(
+      onRefresh: _refreshAds,
+      color: Colors.blue,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        itemCount: ads.length,
+        itemBuilder: (context, index) {
+          final ad = ads[index];
+          final imageUrl = _getAdImageUrl(ad);
+          final formattedDate = _formatDate(ad.createdAt);
+          final formattedPrice = _formatPrice(ad.price);
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 10),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text('Error loading ads: ${snapshot.error}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _fetchAds = fetchAds(token);
-                      });
-                    },
-                    child: const Text('Retry'),
+                  // Image section
+                  SizedBox(
+                    width: 110,
+                    child: imageUrl.isNotEmpty
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image_not_supported_outlined,
+                                  size: 36,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Colors.grey[200],
+                            child: const Icon(
+                              Icons.image_outlined,
+                              size: 36,
+                              color: Colors.grey,
+                            ),
+                          ),
+                  ),
+                  // Content section
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            ad.title,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2E3E5C),
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            formattedPrice,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time,
+                                size: 14,
+                                color: Colors.grey[500],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                formattedDate,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-            );
-          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No ads posted!'),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final ad = snapshot.data![index];
-                DateTime date = DateTime.parse(ad.createdAt);
-                String formattedDate =
-                    DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
-                // Format price with commas
-                final priceFormat = NumberFormat("#,##0", "en_US");
-                String formattedPrice = '₦${priceFormat.format(double.parse(ad.price))}';
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: Image.network(
-                        ad.userPhotoUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.error),
-                          );
-                        },
-                      ),
-                    ),
-                    title: Text(
-                      ad.title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          formattedPrice,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(formattedDate),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          }
+            ),
+          );
         },
+      ),
+    );
+  }
+
+  Widget _buildEmptyView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.campaign_outlined, size: 64, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            'No ads posted yet',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Your listings will appear here',
+            style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorView(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error loading ads',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: Colors.grey[500]),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  _fetchAds = _loadAndFetchAds();
+                });
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -150,23 +315,50 @@ class _AdScreenState extends State<AdScreen> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         itemCount: 5,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: SizedBox(
-              width: 64,
-              height: 64,
-              child: Container(
-                color: Colors.white,
-              ),
+          return Card(
+            margin: const EdgeInsets.only(bottom: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            title: Container(
-              height: 20,
-              color: Colors.white,
-            ),
-            subtitle: Container(
-              height: 20,
-              color: Colors.white,
+            clipBehavior: Clip.antiAlias,
+            child: Row(
+              children: [
+                Container(
+                  width: 110,
+                  height: 90,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 14,
+                          width: double.infinity,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 14,
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 12,
+                          width: 130,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -177,7 +369,7 @@ class _AdScreenState extends State<AdScreen> {
 
 Future<List<Ad>> fetchAds(token) async {
   // Use Uri.https to properly encode the token (contains | character)
-  final uri = Uri.https('cfast.ng', '/cfastapi/my_ads.php', {'token': token});
+  final uri = Uri.https('cfast.ng', '/public/cfastapi/my_ads.php', {'token': token});
   
   try {
     print('Fetching ads from: $uri');
