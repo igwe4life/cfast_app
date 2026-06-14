@@ -34,17 +34,17 @@ class DetailViewBody extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium!.merge(
                         const TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: Colors.blue,
+                          color: Color(0xFF1D4ED8),
                         ),
                       ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  item['location'],
-                  style: Theme.of(context).textTheme.titleMedium!.merge(
-                        const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.blue,
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      item['location'],
+                      style: Theme.of(context).textTheme.titleMedium!.merge(
+                            const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1D4ED8),
                         ),
                       ),
                 ),

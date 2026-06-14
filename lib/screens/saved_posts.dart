@@ -49,9 +49,12 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Saved Posts', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        title: const Text('Saved Posts', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF1D4ED8),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: _isLoading
           ? const Center(
@@ -61,24 +64,29 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
               itemCount: _savedPosts.length,
               itemBuilder: (context, index) {
                 final post = _savedPosts[index];
-                return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditPostScreen(post)),
-                    );
-                  },
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    child: Text(
-                      '${index + 1}',
-                      style: const TextStyle(color: Colors.white),
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 2,
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditPostScreen(post)),
+                      );
+                    },
+                    leading: CircleAvatar(
+                      backgroundColor: const Color(0xFF1D4ED8),
+                      child: Text(
+                        '${index + 1}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
+                    title: Text(post['title']),
+                    subtitle: Text(
+                        post['date'] ?? ''),
                   ),
-                  title: Text(post['title']),
-                  subtitle: Text(
-                      post['date'] ?? ''), // Assuming 'date' is a field in your data
                 );
               },
             ),

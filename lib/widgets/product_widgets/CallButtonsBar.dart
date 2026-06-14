@@ -37,47 +37,43 @@ class CallButtonsBar extends StatelessWidget {
                         checkLoginStatus(context, onRequestCallPressed);
                       },
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.blue,
-                        side: const BorderSide(color: Colors.blue), // Adding border
+                        backgroundColor: const Color(0xFF1D4ED8),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              10.0), // Adding border radius
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.call), // Add the call icon
+                          Icon(Icons.call),
                           SizedBox(
                               width:
-                                  5), // Add some spacing between icon and text
+                                  5),
                           Text(
                             'Request',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12),
+                            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(
-                      width: 5), // Add a SizedBox with width 5 for separation
+                      width: 5),
                   SizedBox(
-                    width: 75, // Set a fixed width for the buttons
+                    width: 75,
                     child: ElevatedButton(
                       onPressed: () {
                         checkLoginStatus(context, onMakeCallPressed);
                       },
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.blue,
-                        side: const BorderSide(color: Colors.blue), // Adding border
+                        backgroundColor: const Color(0xFF1D4ED8),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              10.0), // Adding border radius
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       child: const Row(
@@ -100,12 +96,10 @@ class CallButtonsBar extends StatelessWidget {
                         checkLoginStatus(context, onWhatsappPressed);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors
-                            .green, // Green background color for WhatsApp button
-                        foregroundColor: Colors.white, // Text color
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              10.0), // Adding border radius
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       child: const Row(

@@ -102,60 +102,104 @@ class _MessageScreenState extends State<MessageScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: _isLoading
           ? _buildShimmerEffect()
           : ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
                 bool isUnread = message["p_is_unread"] ?? false;
-                return Card(
-                  color: isUnread ? Colors.blue : null,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(message["p_creator"]["photo_url"]),
-                    ),
-                    title: Text(
-                      message["subject"],
-                      style: TextStyle(
-                        fontWeight:
-                            isUnread ? FontWeight.bold : FontWeight.normal,
-                      ),
-                      maxLines: 2, // Limit to 2 lines
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      message["latest_message"]["body"],
-                      style: TextStyle(
-                        fontWeight:
-                            isUnread ? FontWeight.bold : FontWeight.normal,
-                      ),
-                      maxLines: 2, // Limit to 2 lines
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                            messageId: message['id'],
-                            postId: message['postId'],
-                            productTitle: '',
-                            price: '',
-                            description: '',
-                            storeName: '',
-                            phoneNumber: '',
-                            product: null,
-                            firstImageUrl: 'firstImageUrl',
-                            //product: widget.product,
-                          ),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                          messageId: message['id'],
+                          postId: message['postId'],
+                          productTitle: '',
+                          price: '',
+                          description: '',
+                          storeName: '',
+                          phoneNumber: '',
+                          product: null,
+                          firstImageUrl: '',
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: isUnread
+                          ? Border.all(
+                              color: const Color(0xFF1D4ED8).withOpacity(0.2),
+                              width: 1.5)
+                          : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 6),
+                      leading: CircleAvatar(
+                        radius: 24,
+                        backgroundColor:
+                            const Color(0xFF1D4ED8).withOpacity(0.08),
+                        backgroundImage: NetworkImage(
+                            message["p_creator"]["photo_url"]),
+                        onBackgroundImageError: (_, __) {},
+                      ),
+                      title: Text(
+                        message["subject"],
+                        style: TextStyle(
+                          fontWeight: isUnread
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          fontSize: 15,
+                          color: const Color(0xFF111827),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          message["latest_message"]["body"],
+                          style: TextStyle(
+                            fontWeight: isUnread
+                                ? FontWeight.w500
+                                : FontWeight.normal,
+                            fontSize: 13,
+                            color: Colors.grey[600],
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      trailing: isUnread
+                          ? Container(
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF1D4ED8),
+                                shape: BoxShape.circle,
+                              ),
+                            )
+                          : null,
+                    ),
                   ),
                 );
               },
@@ -168,20 +212,33 @@ class _MessageScreenState extends State<MessageScreen> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.builder(
-        itemCount: 8, // Number of shimmering list items
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        itemCount: 6,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 30.0,
-            ),
-            title: Container(
-              height: 15.0,
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
             ),
-            subtitle: Container(
-              height: 10.0,
-              color: Colors.white,
+            child: ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 24,
+              ),
+              title: Container(
+                height: 14,
+                color: Colors.white,
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Container(
+                  height: 12,
+                  color: Colors.white,
+                ),
+              ),
             ),
           );
         },

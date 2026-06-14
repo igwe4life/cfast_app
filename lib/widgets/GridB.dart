@@ -142,7 +142,7 @@ class _GridBState extends State<GridB> {
                       style: Theme.of(context).textTheme.bodyLarge!.merge(
                             const TextStyle(
                               fontWeight: FontWeight.w700,
-                              color: Colors.blue,
+                              color: Color(0xFF1D4ED8),
                             ),
                           ),
                     ),

@@ -8,11 +8,13 @@ class Categories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 280,
+      height: 264,
       child: GridView.count(
-        crossAxisCount: 4, // 4 columns
-        crossAxisSpacing: 15.0, // spacing between columns
-        mainAxisSpacing: 20.0, // spacing between rows
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 4,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 14,
+        childAspectRatio: 0.92,
         children: List.generate(categories.length, (index) {
           return GestureDetector(
             onTap: () {
@@ -28,12 +30,11 @@ class Categories extends StatelessWidget {
               );
             },
             child: Column(
-              mainAxisSize:
-                  MainAxisSize.min, // Ensures the column takes minimum space
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 44,
+                  width: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -42,12 +43,18 @@ class Categories extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  categories[index].title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 9,
+                const SizedBox(height: 6),
+                Expanded(
+                  child: Text(
+                    categories[index].title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 8.5,
+                      height: 1.15,
+                    ),
                   ),
                 ),
               ],

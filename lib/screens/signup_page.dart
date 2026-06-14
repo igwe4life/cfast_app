@@ -27,7 +27,8 @@ class _SignupScreenState extends State<SignupScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue, // Set the background color to blue
+        backgroundColor: const Color(0xFF1D4ED8),
+        elevation: 0,
         centerTitle: true,
       ),
       body: Stack(
@@ -79,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(
-                color: Colors.blue, // Set the loading indicator color
+                color: const Color(0xFF1D4ED8),
               ),
             ),
         ],

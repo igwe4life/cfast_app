@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shop_cfast/screens/product_screen_brief.dart';
 import '../constants.dart';
 import '../models/product.dart';
+import 'product_screen.dart';
 
 ///import 'product_screen_brief.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,25 +107,44 @@ class _ChatScreen2State extends State<ChatScreen2> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-          Uri.parse('$baseUrl/cfastapi/post_details.php?pid=${widget.postId}'));
+        Uri.parse('$baseUrl/api/posts/${widget.postId}?detailed=1'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Language': 'en',
+          'X-AppApiToken': 'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw=',
+          'X-AppType': 'docs',
+        },
+      );
 
       if (response.statusCode == 200) {
         final decodedResponse = json.decode(response.body);
+        final result = decodedResponse['result'] as Map<String, dynamic>? ?? {};
+
+        final pictures = result['pictures'] as List? ?? [];
+        final imageUrl = pictures.isNotEmpty
+            ? (pictures[0] as Map<String, dynamic>)['filename_url_big'] ??
+                (pictures[0] as Map<String, dynamic>)['filename_url']
+            : result['listing_image'] ?? '';
+
         setState(() {
-          productData = decodedResponse;
+          productData = {
+            'Title': result['title'] ?? '',
+            'Price': (result['price'] ?? 0).toString(),
+            'StorePhoto': result['user_photo_url'] ?? '',
+            'UserStatus': 'Online',
+          };
         });
 
         defaultProduct1 = Product(
           title: widget.productTitle,
-          description: '',
-          image: widget.firstImageUrl,
-          price: '${productData['Price']}',
-          date: '',
+          description: result['description'] ?? '',
+          image: imageUrl.toString(),
+          price: (result['price'] ?? 0).toString(),
+          date: result['created_at'] ?? '',
           time: '',
-          itemUrl:
-          'https://cfast.ng/uk-used-microsoft-surface-pro-4-6th-gen-core-i7-16gb-256gb/80',
+          itemUrl: '',
           classID: '${widget.postId}',
-          location: '',
+          location: result['city_name'] ?? '',
           catURL: '',
         );
 
@@ -171,24 +190,11 @@ class _ChatScreen2State extends State<ChatScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 100, // Adjust this width to fit your layout needs
-        leading: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            const CircleAvatar(
-              radius: 16, // You can adjust the size as needed
-              backgroundImage: NetworkImage(
-                  'https://cfast.ng/storage/app/default/user.png'),
-            ),
-          ],
+        backgroundColor: const Color(0xFF1D4ED8),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,6 +204,7 @@ class _ChatScreen2State extends State<ChatScreen2> {
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -220,21 +227,15 @@ class _ChatScreen2State extends State<ChatScreen2> {
                 scheme: 'tel',
                 path: nuphoneNumber,
               );
-
               if (await canLaunchUrl(telUri)) {
                 await launchUrl(telUri);
               } else {
                 throw 'Could not launch $telUri';
               }
             },
-            icon: const Icon(
-              Icons.call,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.call, color: Colors.white),
           ),
         ],
-        backgroundColor: Colors.blue,
-        centerTitle: true,
       ),
       body: _isLoading
           ? _buildShimmerEffect()
@@ -242,76 +243,83 @@ class _ChatScreen2State extends State<ChatScreen2> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductScreenBrief(
-                          product:
-                          defaultProduct1, // Pass the actual Product instance
+                        builder: (context) => ProductScreen(
+                          product: defaultProduct1,
                         ),
                       ),
                     );
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.blue[200], // Light grey color
-                      borderRadius: BorderRadius.circular(10), // Rounded edges
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            // CircleAvatar(
-                            //   radius: 25, // Radius half of 40 to make it 40x40
-                            //   backgroundImage:
-                            //       NetworkImage(productData['StorePhoto'] ?? ""),
-                            // ),
-                            // SizedBox(
-                            //     width:
-                            //         5), // Adding space between image and text
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(productData['StorePhoto'] ?? ""),
-                                  fit: BoxFit.cover,
-                                ),
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ), // Adding
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    productData['Title'] ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                    maxLines: 1, // Limit to 1 line
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    //productData['Price'] ?? "0.00",
-                                    formatCurrency(productData['Price'] ?? "0.00"),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey[100],
+                          ),
+                          child: (productData['StorePhoto'] != null &&
+                                  (productData['StorePhoto'] as String).isNotEmpty)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    productData['StorePhoto'],
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => const Icon(
+                                        Icons.image_outlined,
+                                        size: 24,
+                                        color: Colors.grey),
+                                  ),
+                                )
+                              : const Icon(Icons.image_outlined,
+                                  size: 24, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                productData['Title'] ?? "",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                formatCurrency(
+                                    productData['Price'] ?? "0.00"),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1D4ED8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right,
+                            color: Colors.grey[400], size: 20),
                       ],
                     ),
                   ),
@@ -326,38 +334,53 @@ class _ChatScreen2State extends State<ChatScreen2> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Row(
                     children: [
                       Expanded(
                         child: TextField(
                           controller: _messageController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: 'Type your message...',
+                            filled: true,
+                            fillColor: const Color(0xFFF3F6FB),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 14),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8.0),
-                      Stack(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // Toggle loading state
-                              setState(() {
-                                loading = true;
-                              });
-                              _sendMessage(_messageController.text);
-                            },
-                            child: const Text('Send'),
-                          ),
-                          if (loading)
-                            const Positioned.fill(
-                              child: Center(
-                                child: CircularProgressIndicator(),
+                      const SizedBox(width: 8),
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF1D4ED8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: loading
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: () {
+                                  setState(() => loading = true);
+                                  _sendMessage(_messageController.text);
+                                },
+                                icon: const Icon(Icons.send_rounded,
+                                    color: Colors.white),
                               ),
-                            ),
-                        ],
                       ),
                     ],
                   ),

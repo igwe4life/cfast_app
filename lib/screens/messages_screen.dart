@@ -28,8 +28,9 @@ class _MessagesState extends State<MessagesScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: DefaultTabController(
         length: 2,
@@ -37,9 +38,25 @@ class _MessagesState extends State<MessagesScreen> {
           children: [
             Container(
               constraints: const BoxConstraints.expand(height: 50),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: const TabBar(
-                labelColor: Colors.blue,
-                unselectedLabelColor: Colors.blueAccent,
+                labelColor: Color(0xFF1D4ED8),
+                unselectedLabelColor: Color(0xFF9CA3AF),
+                indicatorColor: Color(0xFF1D4ED8),
+                indicatorWeight: 3,
+                labelStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
                 tabs: [
                   Tab(text: 'Read'),
                   Tab(text: 'Unread'),
@@ -49,78 +66,74 @@ class _MessagesState extends State<MessagesScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  // Tab 1: Ads
-                  // _gridHome,
-                  ListView.builder(
-                    itemCount:
-                        1, // Replace with the actual number of API results
-                    itemBuilder: (context, index) {
-                      return const Card(
-                        margin: EdgeInsets.all(8.0),
-                        child: ListTile(
-                          title: Text('No new messages!'),
-                          // trailing: ElevatedButton(
-                          //   onPressed: () {
-                          //     // Implement the logic to view ads for the selected search
-                          //   },
-                          //   child: Text('View Ads'),
-                          // ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1D4ED8).withOpacity(0.08),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.mark_email_read_outlined,
+                              size: 40, color: Color(0xFF1D4ED8)),
                         ),
-                      );
-                    },
+                        const SizedBox(height: 20),
+                        const Text(
+                          'No read messages',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Your read messages will appear here',
+                          style: TextStyle(
+                              fontSize: 14, color: Colors.grey[500]),
+                        ),
+                      ],
+                    ),
                   ),
-                  // Tab 2: Searches
-                  const SearchesTab(),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1D4ED8).withOpacity(0.08),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.mark_email_unread_outlined,
+                              size: 40, color: Color(0xFF1D4ED8)),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'No unread messages',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Your unread messages will appear here',
+                          style: TextStyle(
+                              fontSize: 14, color: Colors.grey[500]),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class SearchesTab extends StatelessWidget {
-  const SearchesTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Implement your API call and card display logic here
-    // You can replace this with your actual implementation
-    // return ListView.builder(
-    //   itemCount: 5, // Replace with the actual number of API results
-    //   itemBuilder: (context, index) {
-    //     return Card(
-    //       margin: EdgeInsets.all(8.0),
-    //       child: ListTile(
-    //         title: Text('Search Term $index'),
-    //         trailing: ElevatedButton(
-    //           onPressed: () {
-    //             // Implement the logic to view ads for the selected search
-    //           },
-    //           child: Text('View Ads'),
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
-    return ListView.builder(
-      itemCount: 1, // Replace with the actual number of API results
-      itemBuilder: (context, index) {
-        return const Card(
-          margin: EdgeInsets.all(8.0),
-          child: ListTile(
-            title: Text('No unread messages!'),
-            // trailing: ElevatedButton(
-            //   onPressed: () {
-            //     // Implement the logic to view ads for the selected search
-            //   },
-            //   child: Text('View Ads'),
-            // ),
-          ),
-        );
-      },
     );
   }
 }

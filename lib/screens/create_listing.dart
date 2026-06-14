@@ -328,7 +328,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        border: const OutlineInputBorder(),
+        filled: true,
+        fillColor: Colors.grey[100],
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }
@@ -345,7 +348,10 @@ class _AddListingScreenState extends State<AddListingScreen> {
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: labelText,
-        border: const OutlineInputBorder(),
+        filled: true,
+        fillColor: Colors.grey[100],
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }
@@ -1301,10 +1307,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
-        //title: Text('Post New Ad'),
-        title: const Text('Post New Ad', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        title: const Text('Post New Ad', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF1D4ED8),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -1335,7 +1343,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a category' : null,
-                decoration: const InputDecoration(labelText: 'Select Category', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Select Category',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 isExpanded: true,
               ),
               const SizedBox(height: 16.0),
@@ -1358,14 +1372,26 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a sub-category' : null,
-                decoration: const InputDecoration(labelText: 'Select Sub Category', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Select Sub Category',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 isExpanded: true,
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 // Title input field
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a title';
@@ -1394,7 +1420,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a state' : null,
-                decoration: const InputDecoration(labelText: 'Select State', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Select State',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 isExpanded: true,
               ),
               const SizedBox(height: 16.0),
@@ -1417,7 +1449,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   }
                 },
                 validator: (value) => (value == null || value.isEmpty) ? 'Please select a city' : null,
-                decoration: const InputDecoration(labelText: 'Select City', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Select City',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 isExpanded: true,
               ),
               const SizedBox(height: 16.0),
@@ -1425,11 +1463,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 // Description input field
                 controller: _descriptionController,
                 maxLines: null, // Allows for multiple lines
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Description',
-                  alignLabelWithHint:
-                      true, // Aligns label with the multiline input
-                  border: OutlineInputBorder(), // Optional, adds a border
+                  alignLabelWithHint: true,
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -1446,7 +1486,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 // Price input field
                 controller: _priceController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Price',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a price';
@@ -1458,7 +1504,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
               TextFormField(
                 // Tags input field
                 controller: _tagsController,
-                decoration: const InputDecoration(labelText: 'Tags', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'Tags',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
                 // Validation or other configurations for tags input
               ),
               const SizedBox(height: 24.0),
@@ -1469,13 +1521,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFF1D4ED8),
+                    borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.orange.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        color: const Color(0xFF1D4ED8).withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -1513,13 +1565,13 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   decoration: BoxDecoration(
-                    color: _isReadyToSubmit() ? Colors.green : Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFF1D4ED8),
+                    borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: (_isReadyToSubmit() ? Colors.green : Colors.blue).withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        color: const Color(0xFF1D4ED8).withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -1559,16 +1611,16 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(color: Colors.purple.shade200, width: 1.5),
-                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFF1D4ED8), width: 1.5),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: Center(
                     child: _isLoading2
-                        ? CircularProgressIndicator(color: Colors.purple.shade300)
-                        : Text(
+                        ? const CircularProgressIndicator(color: Color(0xFF1D4ED8))
+                        : const Text(
                             'SAVE & POST LATER',
                             style: TextStyle(
-                              color: Colors.purple.shade700,
+                              color: Color(0xFF1D4ED8),
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),

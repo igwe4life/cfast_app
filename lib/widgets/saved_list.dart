@@ -97,7 +97,7 @@ class _SavedListState extends State<SavedList> {
             Text(
               product.price.toString(),
               style: const TextStyle(
-                color: Colors.blue,
+                color: Color(0xFF1D4ED8),
                 fontWeight: FontWeight.w700,
               ),
             ),

@@ -72,7 +72,7 @@ class ProductInfo extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+                    color: Color(0xFF1D4ED8),
                   ),
                 ),
                 const SizedBox(height: 5),

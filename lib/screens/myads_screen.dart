@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart'; // Import Shimmer package
+import 'package:shimmer/shimmer.dart';
+import 'package:shop_cfast/models/product.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
 import '../constants.dart';
 
 class AdScreen extends StatefulWidget {
@@ -95,8 +97,9 @@ class _AdScreenState extends State<AdScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: FutureBuilder<List<Ad>>(
         future: _fetchAds,
@@ -118,9 +121,9 @@ class _AdScreenState extends State<AdScreen> {
   Widget _buildAdsList(List<Ad> ads) {
     return RefreshIndicator(
       onRefresh: _refreshAds,
-      color: Colors.blue,
+      color: const Color(0xFF1D4ED8),
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         itemCount: ads.length,
         itemBuilder: (context, index) {
           final ad = ads[index];
@@ -128,109 +131,129 @@ class _AdScreenState extends State<AdScreen> {
           final formattedDate = _formatDate(ad.createdAt);
           final formattedPrice = _formatPrice(ad.price);
 
-          return Card(
-            margin: const EdgeInsets.only(bottom: 10),
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Image section
-                  SizedBox(
-                    width: 110,
-                    child: imageUrl.isNotEmpty
-                        ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: Colors.grey[200],
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Icon(
-                                  Icons.image_not_supported_outlined,
-                                  size: 36,
-                                  color: Colors.grey,
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            color: Colors.grey[200],
-                            child: const Icon(
-                              Icons.image_outlined,
-                              size: 36,
-                              color: Colors.grey,
-                            ),
-                          ),
-                  ),
-                  // Content section
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            ad.title,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF2E3E5C),
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            formattedPrice,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                size: 14,
-                                color: Colors.grey[500],
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                formattedDate,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+          return GestureDetector(
+            onTap: () {
+              final product = ad.toProduct();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductScreen(product: product)),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                   ),
                 ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      width: 110,
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      value: loadingProgress
+                                                  .expectedTotalBytes !=
+                                              null
+                                          ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
+                                          : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 36,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.image_outlined,
+                                size: 36,
+                                color: Colors.grey,
+                              ),
+                            ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ad.title,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF2E3E5C),
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              formattedPrice,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1D4ED8),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 14,
+                                  color: Colors.grey[500],
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  formattedDate,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -244,20 +267,28 @@ class _AdScreenState extends State<AdScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.campaign_outlined, size: 64, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1D4ED8).withOpacity(0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.campaign_outlined,
+                size: 48, color: Color(0xFF1D4ED8)),
+          ),
+          const SizedBox(height: 20),
+          const Text(
             'No ads posted yet',
             style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+              fontSize: 17,
+              color: Color(0xFF111827),
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Your listings will appear here',
-            style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
         ],
       ),
@@ -271,14 +302,22 @@ class _AdScreenState extends State<AdScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.error_outline,
+                  size: 40, color: Colors.red),
+            ),
+            const SizedBox(height: 20),
+            const Text(
               'Error loading ads',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: Color(0xFF111827),
               ),
             ),
             const SizedBox(height: 8),
@@ -287,7 +326,7 @@ class _AdScreenState extends State<AdScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: Colors.grey[500]),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () {
                 setState(() {
@@ -297,11 +336,13 @@ class _AdScreenState extends State<AdScreen> {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color(0xFF1D4ED8),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -315,25 +356,26 @@ class _AdScreenState extends State<AdScreen> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         itemCount: 5,
         itemBuilder: (BuildContext context, int index) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
             ),
             clipBehavior: Clip.antiAlias,
             child: Row(
               children: [
                 Container(
                   width: 110,
-                  height: 90,
+                  height: 110,
                   color: Colors.white,
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -342,13 +384,13 @@ class _AdScreenState extends State<AdScreen> {
                           width: double.infinity,
                           color: Colors.white,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Container(
                           height: 14,
                           width: 100,
                           color: Colors.white,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Container(
                           height: 12,
                           width: 130,
@@ -465,6 +507,21 @@ class Ad {
       createdAt: json['created_at'] ?? '',
       userPhotoUrl: json['user_photo_url'] ?? '',
       photoUrl: json['photo_url'] ?? '',
+    );
+  }
+
+  Product toProduct() {
+    return Product(
+      title: title,
+      description: '',
+      image: userPhotoUrl.isNotEmpty ? userPhotoUrl : (photoUrl ?? ''),
+      price: price,
+      date: createdAt,
+      time: '',
+      itemUrl: '',
+      classID: postId.toString(),
+      location: '',
+      catURL: '',
     );
   }
 }

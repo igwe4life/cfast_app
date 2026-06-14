@@ -154,13 +154,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
           'Leave Feedback',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -193,7 +195,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ),
                       const Text(
                         'Positive',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Color(0xFF1D4ED8)),
                       ),
                     ],
                   ),
@@ -215,7 +217,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ),
                       const Text(
                         'Neutral',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Color(0xFF1D4ED8)),
                       ),
                     ],
                   ),
@@ -237,7 +239,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ),
                       const Text(
                         'Negative',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Color(0xFF1D4ED8)),
                       ),
                     ],
                   ),
@@ -246,9 +248,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Select an option',
-                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
               value: _selectedOption.isNotEmpty ? _selectedOption : null,
               onChanged: (String? newValue) {
@@ -276,9 +281,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               controller: _feedbackController,
               minLines: 3,
               maxLines: 5,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Detailed Comment',
-                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
             const SizedBox(height: 20),
@@ -298,14 +306,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   );
                 }
               },
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.blue),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1D4ED8),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               child: _isLoadingFeedback
                   ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
-                  : const Text('Send Feedback'),
+                  : const Text('Send Feedback', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -321,14 +331,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color(0xFF1D4ED8),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // Border radius set to 10
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              child: const Text('View Feedback'),
+              child: const Text('View Feedback', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ],
         ),

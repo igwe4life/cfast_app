@@ -100,7 +100,7 @@ class _ViewSavedPostsState extends State<ViewSavedPosts> {
                     Text(
                       'Category: $categoryName',
                       style: TextStyle(
-                        color: Colors.blue.shade900, // Adjust color as needed
+                        color: const Color(0xFF1D4ED8),
                       ),
                     ),
                     Text(

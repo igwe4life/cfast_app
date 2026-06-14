@@ -23,6 +23,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
           'Premium Services',
@@ -31,8 +32,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Stack(
         children: [
@@ -73,7 +75,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(
-                color: Colors.blue,
+                color: Color(0xFF1D4ED8),
               ),
             ),
         ],

@@ -16,6 +16,7 @@ class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
           'FAQ',
@@ -24,8 +25,9 @@ class _FaqScreenState extends State<FaqScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Stack(
         children: [
@@ -66,7 +68,7 @@ class _FaqScreenState extends State<FaqScreen> {
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(
-                color: Colors.blue,
+                color: Color(0xFF1D4ED8),
               ),
             ),
         ],

@@ -9,14 +9,8 @@ import 'package:http/http.dart' as http;
 
 ///import 'package:share/share.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shop_cfast/screens/post_list.dart';
 import 'package:shop_cfast/screens/save_later.dart';
-import 'package:shop_cfast/screens/saved_listing.dart';
-
-///import 'package:shop_example/screens/saved_later.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../widgets/GridSimilar.dart';
 import 'faq_screen.dart';
 import 'premium_screen.dart';
 import 'get_feedback.dart';
@@ -102,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
         }),
       );
 
-      showToast('Starting Response Body: ${response.body}');
+      ///showToast('Starting Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         // Request successful
@@ -141,280 +135,109 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget _buildDivider() {
-    return Divider(
-      height: 1,
-      color: Colors.grey,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        // Wrap the Column with SingleChildScrollView
+        child: Column(
+          children: [
+            _buildProfileHeader(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  _buildMenuSection(),
+                  const SizedBox(height: 24),
+                  _buildLogoutSection(),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader() {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Color(0xFF1D4ED8),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32),
+          bottomRight: Radius.circular(32),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: photoUrl.isNotEmpty
-                      ? NetworkImage(photoUrl)
-                      : const AssetImage('assets/images/user_icon.png')
-                          as ImageProvider, // Default image
+              CircleAvatar(
+                radius: 46,
+                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundImage: photoUrl.isNotEmpty
+                    ? NetworkImage(photoUrl)
+                    : null,
+                child: photoUrl.isEmpty
+                    ? const Icon(Icons.person, size: 46, color: Colors.white)
+                    : null,
+              ),
+              const SizedBox(height: 14),
+              Text(
+                name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 16),
-              Text('Name: $name'),
-              Text('Email: $email'),
-              Text('Phone: $phone'),
-              // Text('Auth Token: $token'),
-              const SizedBox(height: 32),
-              Card(
-                elevation: 4.0,
-                child: Column(
-                  children: [
-                    _buildListItem('Manager\'s Call', Icons.adjust, () {
-                      requestCall();
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('My Live Ads', Icons.adjust, () {
-                      // Navigate to My Ads screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AdScreen()),
-                      );
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('My Saved Ads', Icons.adjust, () {
-                      // Navigate to My Ads screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ApiListViewScreen()),
-                      );
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('My Feedback', Icons.assignment, () {
-                      // Navigate to Feedback screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GetFeedbackScreen(
-                            //uid: uid,
-                            storeName: name,
-                          ),
-                        ),
-                      );
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('Make money', Icons.money, () {
-                      // Navigate to FAQ screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MakemoneyScreen()),
-                      );
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('FAQ', Icons.help_center_outlined, () {
-                      // Navigate to FAQ screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FaqScreen()),
-                      );
-                    }),
-                    _buildDivider(), // Divider
-                    if (!Platform.isIOS) ...[
-                      _buildListItem('Premium Services', Icons.workspace_premium,
-                              () {
-                            // Navigate to Premium screen
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PremiumScreen(
-                                    uuid: uid,
-                                    uemail: email,
-                                    uphone: phone,
-                                  )),
-                            );
-                          }),
-                      _buildDivider(), // Divider
-                    ],
-                    // _buildListItem('SHARE TOKEN', Icons.share, () {
-                    //   // Share the token
-                    //   Share.share('Check out this token: $token');
-                    // }),
-                    // _buildDivider(), // Divider
-                    // _buildListItem('SHARE APP', Icons.share, () async {
-                    //   // Share the app link
-                    //   String appLink =
-                    //       'https://play.google.com/store/apps/details?id=com.cfast.ng'; // Replace with your app link
-                    //   String message = 'Check out this awesome app:\n$appLink';
-                    //
-                    //   // Open the appropriate app store link based on the platform
-                    //   String platform =
-                    //       Theme.of(context).platform.toString().toLowerCase();
-                    //   String storeLink = platform == 'targetplatform.android'
-                    //       ? 'https://play.google.com/store/apps/details?id=com.cfast.ng'
-                    //       : 'https://apps.apple.com/us/app/cfast/id1234567890';
-                    //
-                    //   await launch(storeLink);
-                    //
-                    //   // Share the app link and message
-                    //   Share.share(message);
-                    // }),
-                    _buildListItem('SHARE APP', Icons.share, () async {
-                      // Share the app link
-                      String androidAppLink =
-                          'https://play.google.com/store/apps/details?id=com.cfast.ng';
-                      String iosAppLink =
-                          'https://apps.apple.com/app/id6496972740';
-                      String message = 'Check out this awesome app:\n';
-
-                      // Determine the appropriate app store link based on the platform
-                      String storeLink;
-                      if (Platform.isAndroid) {
-                        storeLink = androidAppLink;
-                        message += androidAppLink;
-                      } else if (Platform.isIOS) {
-                        storeLink = iosAppLink;
-                        message += iosAppLink;
-                      } else {
-                        throw 'Unsupported platform';
-                      }
-
-                      if (await canLaunch(storeLink)) {
-                        await launch(storeLink);
-                      } else {
-                        throw 'Could not launch $storeLink';
-                      }
-
-                      // Share the app link and message
-                      Share.share(message);
-                    }),
-                    _buildDivider(), // Divider
-                    _buildListItem('Logout', Icons.logout, () async {
-                      // Show an alert to confirm logout
-                      bool confirmLogout = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Confirm Logout'),
-                            content: Text('Are you sure you want to logout?'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  // Dismiss the alert and return false
-                                  Navigator.of(context).pop(false);
-                                },
-                                child: Text('No'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  // Dismiss the alert and return true
-                                  Navigator.of(context).pop(true);
-                                },
-                                child: Text('Yes'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-
-                      // If the user confirms logout, call the signOut method
-                      if (confirmLogout == true) {
-                        signOut(uid, token);
-                      }
-                    }),
-                    _buildDivider(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, bottom: 15.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.all(15.0),
-                        ),
-                        onPressed: () async {
-                          bool confirmDelete = await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Confirm Delete'),
-                                content: Text('Are you sure you want to delete your account and all associated data?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                    child: Text('No'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                    child: Text('Yes'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-
-                          if (confirmDelete == true) {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                        SizedBox(height: 16),
-                                        Text('Deleting account...'),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-
-                            // await signOut(uid, token);
-                            await deleteAccount(uid, token);
-                            Navigator.pop(context); // Close the progress dialog
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => GoodbyeScreen()),
-                            );
-                          }
-                        },
-                        // child: Text('Delete Account'),
-                        child: Text(
-                          "Delete Account",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.email_outlined,
+                      size: 14, color: Colors.white70),
+                  const SizedBox(width: 6),
+                  Text(
+                    email,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.phone_outlined,
+                      size: 14, color: Colors.white70),
+                  const SizedBox(width: 6),
+                  Text(
+                    phone,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -422,11 +245,342 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildListItem(String title, IconData icon, VoidCallback onTap) {
+  Widget _buildMenuSection() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildMenuItem(
+            icon: Icons.phone_in_talk,
+            title: "Manager's Call",
+            subtitle: 'Request a callback from our team',
+            color: const Color(0xFF4F46E5),
+            onTap: requestCall,
+          ),
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.wallet_rounded,
+            title: 'My Live Ads',
+            subtitle: 'View your active listings',
+            color: const Color(0xFF059669),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdScreen()),
+              );
+            },
+          ),
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.bookmark_rounded,
+            title: 'My Saved Ads',
+            subtitle: 'Ads you have bookmarked',
+            color: const Color(0xFF2563EB),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ApiListViewScreen()),
+              );
+            },
+          ),
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.feedback_outlined,
+            title: 'My Feedback',
+            subtitle: 'Ratings & reviews you have given',
+            color: const Color(0xFFD97706),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GetFeedbackScreen(
+                    storeName: name,
+                  ),
+                ),
+              );
+            },
+          ),
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.trending_up_rounded,
+            title: 'Make Money',
+            subtitle: 'Learn how to earn with us',
+            color: const Color(0xFFDC2626),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MakemoneyScreen()),
+              );
+            },
+          ),
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.help_center_outlined,
+            title: 'FAQ',
+            subtitle: 'Frequently asked questions',
+            color: const Color(0xFF7C3AED),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FaqScreen()),
+              );
+            },
+          ),
+          if (!Platform.isIOS) ...[
+            _divider(),
+            _buildMenuItem(
+              icon: Icons.workspace_premium,
+              title: 'Premium Services',
+              subtitle: 'Unlock exclusive features',
+              color: const Color(0xFFF59E0B),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PremiumScreen(
+                        uuid: uid,
+                        uemail: email,
+                        uphone: phone,
+                      )),
+                );
+              },
+            ),
+          ],
+          _divider(),
+          _buildMenuItem(
+            icon: Icons.share_rounded,
+            title: 'Share App',
+            subtitle: 'Tell your friends about us',
+            color: const Color(0xFF0891B2),
+            onTap: () async {
+              String androidAppLink =
+                  'https://play.google.com/store/apps/details?id=com.cfast.ng';
+              String iosAppLink =
+                  'https://apps.apple.com/app/id6496972740';
+              String message = 'Check out this awesome app:\n';
+              String storeLink;
+              if (Platform.isAndroid) {
+                storeLink = androidAppLink;
+                message += androidAppLink;
+              } else if (Platform.isIOS) {
+                storeLink = iosAppLink;
+                message += iosAppLink;
+              } else {
+                throw 'Unsupported platform';
+              }
+              if (await canLaunch(storeLink)) {
+                await launch(storeLink);
+              } else {
+                throw 'Could not launch $storeLink';
+              }
+              Share.share(message);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildMenuItem(
+            icon: Icons.logout_rounded,
+            title: 'Logout',
+            subtitle: 'Sign out of your account',
+            color: const Color(0xFFDC2626),
+            onTap: () async {
+              bool confirmLogout = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: const Text('Confirm Logout'),
+                    content:
+                        const Text('Are you sure you want to logout?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text('No'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('Yes'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (confirmLogout == true) {
+                signOut(uid, token);
+              }
+            },
+          ),
+          _divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  bool confirmDelete = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: const Text('Confirm Delete'),
+                        content: const Text(
+                          'Are you sure you want to delete your account and all associated data?',
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('Yes'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (confirmDelete == true) {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text('Deleting account...'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                    await deleteAccount(uid, token);
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GoodbyeScreen()),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.delete_forever_rounded,
+                    color: Colors.redAccent),
+                label: const Text(
+                  'Delete Account',
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.redAccent),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: color, size: 22),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: Color(0xFF111827),
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey[500],
+        ),
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: Colors.grey[400],
+        size: 20,
+      ),
       onTap: onTap,
+    );
+  }
+
+  Widget _divider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(height: 1, color: Colors.grey[100]),
     );
   }
 

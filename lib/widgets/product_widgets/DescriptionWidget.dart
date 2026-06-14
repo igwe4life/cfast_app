@@ -91,13 +91,12 @@ class _ExpandableDescriptionWidgetState
                 if (!isExpanded)
                   const TextSpan(
                     text: '...', // Adding ellipsis for the collapsed text
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: Color(0xFF1D4ED8)),
                   ),
                 TextSpan(
                   text: isExpanded ? ' Hide' : ' Show more',
-                  // Changed 'Show less' to 'Show more'
                   style: const TextStyle(
-                    color: Colors.blue,
+                    color: Color(0xFF1D4ED8),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

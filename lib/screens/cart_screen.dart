@@ -16,25 +16,27 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kcontentColor,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: kcontentColor,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
         title: const Text(
           "My Cart",
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        leadingWidth: 60,
         leading: Padding(
           padding: const EdgeInsets.only(left: 5),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_rounded),
             style: IconButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.white.withOpacity(0.15),
+              foregroundColor: Colors.white,
             ),
-            icon: const Icon(Ionicons.chevron_back),
           ),
         ),
       ),

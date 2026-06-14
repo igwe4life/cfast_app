@@ -148,8 +148,8 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                                        children: [
                                          CircleAvatar(
                                            radius: 18,
-                                           backgroundColor: isFree ? Colors.grey : Colors.orange,
-                                           child: Icon(isFree ? Icons.money_off : Icons.star, color: Colors.white, size: 20),
+                                            backgroundColor: isFree ? Colors.grey : const Color(0xFF1D4ED8),
+                                            child: Icon(isFree ? Icons.money_off : Icons.star, color: Colors.white, size: 20),
                                          ),
                                          const SizedBox(width: 8),
                                          Expanded(
@@ -168,9 +168,10 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                                        widget.onPackageSelected(package);
                                      },
                                      style: ElevatedButton.styleFrom(
-                                       backgroundColor: isFree ? Colors.grey : Colors.green,
-                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                       disabledBackgroundColor: Colors.grey[300],
+                                      backgroundColor: isFree ? Colors.grey : const Color(0xFF1D4ED8),
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                        disabledBackgroundColor: Colors.grey[300],
                                      ),
                                      child: Text(
                                          isDisabled ? "Limit Reached" : (isFree ? "Select" : "Pay"),

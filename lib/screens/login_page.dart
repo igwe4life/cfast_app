@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
           'Login',
@@ -54,57 +55,84 @@ class _LoginPageState extends State<LoginPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 40.0),
-                    Container(
-                      height: 80,
-                      width: 120,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/logo.png'),
-                          fit: BoxFit.contain,
+                    const SizedBox(height: 32),
+                    Image.asset(
+                      'assets/logo.png',
+                      height: 64,
+                      alignment: Alignment.center,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Welcome back',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF111827),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Sign in to continue',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF1D4ED8), width: 2),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      controller: emailController,
-                      cursorColor: Colors.white,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.email, color: Colors.black),
-                        hintText: "Email",
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    const SizedBox(height: 30.0),
-                    TextFormField(
+                    const SizedBox(height: 16),
+                    TextField(
                       controller: passwordController,
-                      cursorColor: Colors.white,
                       obscureText: true,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.lock, color: Colors.black),
-                        hintText: "Password",
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
-                        hintStyle: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outlined),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF1D4ED8), width: 2),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 30.0),
+                    const SizedBox(height: 28),
                     ElevatedButton(
                       onPressed: emailController.text.trim().isEmpty ||
                               passwordController.text.trim().isEmpty
@@ -117,16 +145,23 @@ class _LoginPageState extends State<LoginPage> {
                                   passwordController.text.trim());
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.all(15.0),
+                        backgroundColor: const Color(0xFF1D4ED8),
+                        disabledBackgroundColor: Colors.grey[300],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 0,
                       ),
                       child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
+                        'Login',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
-                    const SizedBox(height: 15.0),
-                    ElevatedButton(
+                    const SizedBox(height: 16),
+                    OutlinedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -135,17 +170,22 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.all(15.0),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF1D4ED8),
+                        side: const BorderSide(color: Color(0xFF1D4ED8)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       child: const Text(
-                        "Register",
-                        style: TextStyle(color: Colors.white),
+                        'Create Account',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
-                    const SizedBox(height: 15.0),
-                    ElevatedButton(
+                    const SizedBox(height: 12),
+                    TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -154,19 +194,19 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        padding: const EdgeInsets.all(15.0),
-                      ),
-                      child: const Text(
-                        "Forgot Password",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 24),
                   ],
                 ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 

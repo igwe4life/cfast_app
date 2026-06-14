@@ -92,22 +92,25 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
-          'Chat Screen',
+          'Chat',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               reverse: true,
+              padding: const EdgeInsets.all(16),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
@@ -115,24 +118,39 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Type your message...',
+                      filled: true,
+                      fillColor: const Color(0xFFF3F6FB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 14),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8.0),
-                ElevatedButton(
-                  onPressed: () {
-                    _sendMessage(_messageController.text);
-                  },
-                  child: const Text('Send'),
+                const SizedBox(width: 8),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF1D4ED8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    onPressed: () =>
+                        _sendMessage(_messageController.text),
+                    icon: const Icon(Icons.send_rounded,
+                        color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -144,33 +162,52 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildMessageBubble(Map<String, dynamic> message, uid) {
     final isSentByCurrentUser =
-        message['user_id'] == uid; // Adjust with your user ID
+        message['user_id'] == uid;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: isSentByCurrentUser
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: isSentByCurrentUser ? Colors.blue : Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(16),
+              color: isSentByCurrentUser
+                  ? const Color(0xFF1D4ED8)
+                  : Colors.grey.shade200,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(16),
+                topRight: const Radius.circular(16),
+                bottomLeft: isSentByCurrentUser
+                    ? const Radius.circular(16)
+                    : Radius.zero,
+                bottomRight: isSentByCurrentUser
+                    ? Radius.zero
+                    : const Radius.circular(16),
+              ),
             ),
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.75),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  message['body'],
+                  message['body'] ?? '',
                   style: TextStyle(
-                      color: isSentByCurrentUser ? Colors.white : Colors.black),
+                    color: isSentByCurrentUser ? Colors.white : Colors.black87,
+                    fontSize: 15,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  // Format date and time here (message['created_at'] as String)
-                  message['created_at_formatted'],
-                  style: const TextStyle(fontSize: 9, color: Colors.grey),
+                  message['created_at_formatted'] ?? '',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: isSentByCurrentUser
+                        ? Colors.white60
+                        : Colors.grey[600],
+                  ),
                 ),
               ],
             ),

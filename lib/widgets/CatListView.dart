@@ -229,10 +229,11 @@ class _CatListViewState extends State<CatListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60.0),
         child: AppBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: const Color(0xFF1D4ED8),
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -262,13 +263,13 @@ class _CatListViewState extends State<CatListView> {
                     },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  color: Colors.blue,
-                  onPressed: () {
-                    search();
-                  },
-                ),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    color: const Color(0xFF1D4ED8),
+                    onPressed: () {
+                      search();
+                    },
+                  ),
               ],
             ),
           ),

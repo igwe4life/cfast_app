@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_cfast/models/product.dart'; // Import your Product model
 import 'package:shimmer/shimmer.dart'; // Import Shimmer package
 import '../constants.dart';
+import 'package:shop_cfast/screens/product_screen.dart';
+import 'package:shop_cfast/screens/search_results_screen.dart';
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -57,8 +59,9 @@ class _SavedScreenState extends State<SavedScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: DefaultTabController(
         length: 2,
@@ -66,9 +69,25 @@ class _SavedScreenState extends State<SavedScreen> {
           children: [
             Container(
               constraints: const BoxConstraints.expand(height: 50),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: const TabBar(
-                labelColor: Colors.blue,
-                unselectedLabelColor: Colors.blueAccent,
+                labelColor: Color(0xFF1D4ED8),
+                unselectedLabelColor: Color(0xFF9CA3AF),
+                indicatorColor: Color(0xFF1D4ED8),
+                indicatorWeight: 3,
+                labelStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
                 tabs: [
                   Tab(text: 'Ads'),
                   Tab(text: 'Searches'),
@@ -109,8 +128,36 @@ class _SavedScreenState extends State<SavedScreen> {
                           ),
                         );
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                          child: Text('No ads saved!'),
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1D4ED8).withOpacity(0.08),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.bookmark_outline,
+                                    size: 40, color: Color(0xFF1D4ED8)),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'No ads saved',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF111827),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Ads you save will appear here',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
                         );
                       } else {
                         return AdsTab(ads: snapshot.data!);
@@ -128,8 +175,36 @@ class _SavedScreenState extends State<SavedScreen> {
                         );
                       } else if (snapshot.data == null ||
                           snapshot.data!.isEmpty) {
-                        return const Center(
-                          child: Text('No searches saved!'),
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1D4ED8).withOpacity(0.08),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.search_rounded,
+                                    size: 40, color: Color(0xFF1D4ED8)),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'No searches saved',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF111827),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Your saved searches will appear here',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
                         );
                       } else {
                         return SearchesTab(savedSearches: snapshot.data!);
@@ -150,27 +225,56 @@ class _SavedScreenState extends State<SavedScreen> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.builder(
-        itemCount: 5, // Number of shimmering list items
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        itemCount: 5,
         itemBuilder: (BuildContext context, int index) {
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: Container(
-                width: 56,
-                height: 56,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16),
+                    ),
+                  ),
                 ),
-              ),
-              title: Container(
-                height: 20,
-                color: Colors.white,
-              ),
-              subtitle: Container(
-                height: 20,
-                color: Colors.white,
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 14,
+                          width: double.infinity,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 14,
+                          width: 80,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 12,
+                          width: 120,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -260,14 +364,108 @@ class SearchesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       itemCount: savedSearches.length,
       itemBuilder: (context, index) {
         final search = savedSearches[index];
-        return Card(
-          margin: const EdgeInsets.all(8.0),
+        return Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
           child: ListTile(
-            title: Text(search.keyword),
-            subtitle: Text('Search count: ${search.count}'),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            leading: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.search_rounded,
+                  color: Color(0xFF1D4ED8), size: 22),
+            ),
+            title: Text(
+              search.keyword,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+                color: Color(0xFF111827),
+              ),
+            ),
+            subtitle: Text(
+              '${search.count} results',
+              style: TextStyle(fontSize: 13, color: Colors.grey[500]),
+            ),
+            trailing: Icon(Icons.chevron_right,
+                color: Colors.grey[400], size: 20),
+            onTap: () async {
+              final query = search.keyword;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) =>
+                    const Center(child: CircularProgressIndicator()),
+              );
+              try {
+                final response = await http.get(
+                  Uri.parse('$baseUrl/cfastapi/search.php?q=$query'),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Content-Language': 'en',
+                    'X-AppType': 'docs',
+                    'X-AppApiToken':
+                        'WXhEdVFMT3VuVHRWTlFRQWQyMzdVSHN5ZnRZWlJEOEw=',
+                  },
+                );
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                if (response.statusCode == 200) {
+                  final Map<String, dynamic>? jsonResponse =
+                      json.decode(response.body);
+                  if (jsonResponse != null &&
+                      jsonResponse.containsKey('listings')) {
+                    final List<dynamic> listings = jsonResponse['listings'];
+                    List<Product> products = listings.map((item) {
+                      return Product(
+                        title: item['title'] ?? '',
+                        description: item['title'] ?? '',
+                        image: item['image'] ?? '',
+                        price: item['price'] ?? '',
+                        date: item['date'] ?? '',
+                        time: item['time'] ?? '',
+                        itemUrl: item['url'] ?? '',
+                        classID: item['classID'] ?? '',
+                        location: item['location'] ?? '',
+                        catURL: item['url'] ?? '',
+                      );
+                    }).toList();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchResultsScreen(
+                          products: products,
+                          query: query,
+                        ),
+                      ),
+                    );
+                  }
+                }
+              } catch (e) {
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+              }
+            },
           ),
         );
       },
@@ -312,62 +510,114 @@ class AdsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       itemCount: ads.length,
       itemBuilder: (context, index) {
         final ad = ads[index];
-        final product = ad.toProduct(); // Convert Ad to Product
+        final product = ad.toProduct();
 
-        DateTime date = DateTime.parse(ad.createdAt);
+        DateTime date = DateTime.tryParse(ad.createdAt) ?? DateTime.now();
         String formattedDate =
             DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
 
-        // Format price with commas
         final priceFormat = NumberFormat("#,##0", "en_US");
         String formattedPrice =
-            '₦${priceFormat.format(double.parse(ad.price))}';
+            '₦${priceFormat.format(double.tryParse(ad.price) ?? 0)}';
 
-        return Card(
-          margin: const EdgeInsets.all(8.0),
-          child: ListTile(
-            leading: SizedBox(
-              width: 64, // Specify desired width
-              height: 64, // Specify desired height
-              child: product.image.isNotEmpty
-                  ? Image.network(
-                      product.image,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.error);
-                      },
-                    )
-                  : const Icon(Icons.image), // Placeholder for missing image
-            ),
-            title: Text(
-              product.title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  formattedPrice,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProductScreen(product: product)),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
                 ),
-                Text(formattedDate),
               ],
             ),
-            // onTap: () {
-            //   // Add onTap here
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => ProductScreenBrief(product: product)),
-            //   );
-            // },
+            clipBehavior: Clip.antiAlias,
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: product.image.isNotEmpty
+                        ? Image.network(
+                            product.image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[100],
+                                child: const Icon(
+                                    Icons.image_outlined,
+                                    size: 32,
+                                    color: Colors.grey),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Colors.grey[100],
+                            child: const Icon(Icons.image_outlined,
+                                size: 32, color: Colors.grey),
+                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            product.title,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF111827),
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            formattedPrice,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1D4ED8),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(Icons.access_time,
+                                  size: 14, color: Colors.grey[500]),
+                              const SizedBox(width: 4),
+                              Text(
+                                formattedDate,
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -403,37 +653,43 @@ class Ad {
   });
 
   factory Ad.fromJson(Map<String, dynamic> json) {
+    String? bestPhotoUrl;
+    if (json['listing_image'] != null) {
+      bestPhotoUrl = json['listing_image'].toString();
+    } else if (json['photo_url'] != null) {
+      bestPhotoUrl = json['photo_url'].toString();
+    } else if (json['pictures'] is List && (json['pictures'] as List).isNotEmpty) {
+      final firstPic = (json['pictures'] as List)[0] as Map<String, dynamic>;
+      bestPhotoUrl = (firstPic['filename_url_big'] ?? firstPic['filename_url'] ?? '').toString();
+    }
+
     return Ad(
-      postId: int.tryParse(json['post_id'].toString()) ?? 0,
+      postId: int.tryParse((json['post_id'] ?? json['id']).toString()) ?? 0,
       userId: int.tryParse(json['user_id'].toString()),
-      categoryId: int.tryParse(json['category_id'].toString()) ?? 0,
+      categoryId: int.tryParse((json['category_id'] ?? '').toString()) ?? 0,
       title: json['title'] ?? '',
-      price: json['price'].toString(),
+      price: (json['price'] ?? '0').toString(),
       contactName: json['contact_name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
       createdAt: json['created_at'] ?? '',
       userPhotoUrl: json['user_photo_url'] ?? '',
-      photoUrl: json['photo_url'],
+      photoUrl: bestPhotoUrl,
     );
   }
 
   Product toProduct() {
     return Product(
       title: title,
-      description:
-          '', // Add a default value or provide a description if available in Ad
-      image: photoUrl ??
-          '', // Use photoUrl if available, otherwise provide a default value
+      description: '',
+      image: photoUrl ?? '',
       price: price,
       date: createdAt,
-      time: '', // Add a default value or provide a time if available in Ad
-      itemUrl: '', // Add a default value or provide a URL if available in Ad
-      classID: categoryId
-          .toString(), // Convert categoryId to String and use it as classID
-      location:
-          '', // Add a default value or provide a location if available in Ad
-      catURL: '', // Add a default value or provide a URL if available in Ad
+      time: '',
+      itemUrl: '',
+      classID: postId.toString(),
+      location: '',
+      catURL: '',
     );
   }
 }

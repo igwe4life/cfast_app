@@ -104,6 +104,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text(
           'Reset Password',
@@ -112,8 +113,9 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Stack(
         children: [
@@ -124,32 +126,52 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
               children: [
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email Address'),
+                  decoration: InputDecoration(
+                    labelText: 'Email Address',
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Enter New Password'),
+                  decoration: InputDecoration(
+                    labelText: 'Enter New Password',
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
                   obscureText: true,
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _confirmPasswordController,
-                  decoration:
-                      const InputDecoration(labelText: 'Confirm New Password'),
+                  decoration: InputDecoration(
+                    labelText: 'Confirm New Password',
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
                   obscureText: true,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _forgotPassword,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.blue, // Set blue background color for button
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   child: const Text(
                     'Reset Password',
                     style: TextStyle(
-                      color: Colors.white, // Set white text color
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

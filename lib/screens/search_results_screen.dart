@@ -22,6 +22,12 @@ class SearchResultsScreen extends StatefulWidget {
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadAuthToken();
+  }
   final String _selectedLocation = 'Location';
   final String _selectedCategory = 'Category';
   final String _selectedPrice = 'Price';
@@ -33,7 +39,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   late String email;
   late String photoUrl;
   late String phone;
-  late String token;
+  String token = '';
 
   Future<void> _performSearch(BuildContext context) async {
     // Show loading indicator
@@ -119,8 +125,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF1D4ED8),
+        elevation: 0,
         title: const Text(
           'Search Results',
           style: TextStyle(
@@ -131,24 +139,45 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Enter search term...',
+                      prefixIcon: const Icon(Icons.search_rounded,
+                          color: Colors.grey),
+                      filled: true,
+                      fillColor: const Color(0xFFF3F6FB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     _performSearch(context);
                   },
-                  child: const Text('Go'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
+                    elevation: 0,
+                  ),
+                  child: const Text('Search',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ],
             ),
@@ -180,100 +209,157 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Found ${widget.products.length} results for ',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  widget.query,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.blue,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    _saveSearchQuery(widget.query, widget.products.length);
-                  },
-                  icon: const Icon(Icons.save),
-                  color: Colors.blue,
-                ),
-              ],
-            )),
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.products.length,
-            itemBuilder: (context, index) {
-              Product product = widget.products[index];
-              return Card(
-                elevation: 3,
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  title: Text(
-                    product.price ?? 'Price not available',
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Found ',
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.blue,
+                      fontSize: 14,
+                      color: Color(0xFF6B7280),
                     ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        product.title ?? 'Title not available',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.blueGrey.shade900,
+                      TextSpan(
+                        text: '${widget.products.length}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1D4ED8),
                         ),
                       ),
-                      const SizedBox(height: 4), // Added SizedBox for spacing
-                      Text(
-                        product.location ?? 'Location not available',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.blueGrey.shade700,
+                      const TextSpan(text: ' results for '),
+                      TextSpan(
+                        text: '"${widget.query}"',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF111827),
                         ),
                       ),
                     ],
                   ),
-                  leading: product.image != null
-                      ? Image.network(
-                          product.image,
-                          width: 100, // Reduced the width for better layout
-                          height: double
-                              .infinity, // Set the height to occupy full height
-                          fit: BoxFit
-                              .cover, // Cover the container with the image
-                          alignment: Alignment
-                              .centerLeft, // Align the image to the left
-                        )
-                      : const Placeholder(), // Placeholder or default image if image URL is null
-                  onTap: () {
-                    // Add onTap here
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductScreenBrief(product: product),
-                      ),
-                    );
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    _saveSearchQuery(widget.query, widget.products.length);
                   },
-                  dense: true, // Reduced the vertical size of the ListTile
-                  // Add more details or actions if needed
+                  icon: const Icon(Icons.bookmark_border),
+                  color: const Color(0xFF1D4ED8),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: widget.products.length,
+            itemBuilder: (context, index) {
+              Product product = widget.products[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductScreenBrief(product: product),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          width: 110,
+                          child: (product.image != null &&
+                                  product.image.isNotEmpty)
+                              ? Image.network(
+                                  product.image,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: Colors.grey[100],
+                                    child: const Icon(
+                                        Icons.image_outlined,
+                                        size: 32,
+                                        color: Colors.grey),
+                                  ),
+                                )
+                              : Container(
+                                  color: Colors.grey[100],
+                                  child: const Icon(Icons.image_outlined,
+                                      size: 32, color: Colors.grey),
+                                ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  product.price ?? 'Price not available',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Color(0xFF1D4ED8),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  product.title ?? 'Title not available',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFF111827),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(Icons.location_on_outlined,
+                                        size: 14, color: Colors.grey[500]),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      product.location ??
+                                          'Location not available',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[500],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },

@@ -360,9 +360,12 @@ class _EditPostScreenState extends State<EditPostScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
-          title: const Text('Edit Ad Listing', style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.blue,
+          title: const Text('Edit Ad Listing', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          backgroundColor: const Color(0xFF1D4ED8),
+          centerTitle: true,
+          elevation: 0,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -377,36 +380,62 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
                   TextFormField(
                     controller: _titleController,
-                    decoration: const InputDecoration(labelText: 'Title', border: OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
                     validator: (value) => (value == null || value.isEmpty) ? 'Please enter a title' : null,
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description', border: OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
                     maxLines: 3,
                     validator: (value) => (value == null || value.isEmpty) ? 'Please enter a description' : null,
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _tagsController,
-                    decoration: const InputDecoration(labelText: 'Tags', border: OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      labelText: 'Tags',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _priceController,
-                    decoration: const InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      labelText: 'Price',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
                     keyboardType: TextInputType.number,
                     validator: (value) => (value == null || value.isEmpty) ? 'Please enter a price' : null,
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Phone Number (Required)',
-                      //prefixText: '+234 ',
                       prefixText: '',
-                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) => (value == null || value.isEmpty) ? 'Please enter a phone number' : null,

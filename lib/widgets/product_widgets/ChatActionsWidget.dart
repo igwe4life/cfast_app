@@ -382,19 +382,25 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[200], // Light grey color
-        borderRadius: BorderRadius.circular(10), // Rounded edges
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Column(
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Text widget for 'Start cfast chat with seller'
           const Text(
             'Start cfast chat with seller',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.orange, // Text color set to orange
+              color: Color(0xFF1D4ED8),
             ),
           ),
           const SizedBox(height: 10),
@@ -436,14 +442,15 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                       ),
                                       const SizedBox(height: 20),
                                       TextFormField(
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           labelText: '₦ Enter your bid',
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
                                           border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.blue),
+                                            borderRadius: BorderRadius.circular(14),
+                                            borderSide: BorderSide.none,
                                           ),
-                                          prefixText:
-                                              '\u20A6', // Prefix text to display at all times
+                                          prefixText: '\u20A6',
                                         ),
                                         keyboardType: TextInputType.number,
                                         onChanged: (value) {
@@ -476,10 +483,11 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: Colors.blue,
+                                          backgroundColor: const Color(0xFF1D4ED8),
+                                          padding: const EdgeInsets.symmetric(vertical: 16),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                                         ),
-                                        child: const Text('Submit Offer'),
+                                        child: const Text('Submit Offer', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                                       ),
                                     ],
                                   ),
@@ -492,12 +500,10 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue, // Text color
-                    side: const BorderSide(color: Colors.blue), // Border color
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(10.0), // Adding border radius
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   child: const Text(
@@ -505,25 +511,21 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(width: 5), // Add some spacing between icon and text
+                const SizedBox(width: 5),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                    side: const BorderSide(color: Colors.blue),
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: () {
-                    // Fluttertoast.showToast(
-                    //     msg: 'Is this available button clicked!');
-                    checkLoginStatus(); // Call checkLoginStatus() on button click
+                    checkLoginStatus();
                     setState(() {
-                      // Set the text content within the setState method
                       widget.textEditingController.text = 'Is This Available?';
                     });
                     widget.onIsAvailablePressed();
@@ -533,23 +535,21 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(width: 5), // Add some spacing between icon and text
+                const SizedBox(width: 5),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                    side: const BorderSide(color: Colors.blue),
+                    backgroundColor: const Color(0xFF1D4ED8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: () {
-                    checkLoginStatus(); // Call checkLoginStatus() on button click
+                    checkLoginStatus();
                     setState(() {
-                      // Set the text content within the setState method
                       widget.textEditingController.text = 'Last Price?';
                     });
                     widget.onLastPricePressed();
@@ -559,7 +559,7 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -568,12 +568,15 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
           const SizedBox(height: 10),
           TextField(
             controller: widget.textEditingController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
               border: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Colors.blue), // TextField border color
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
               ),
               hintText: 'Type your message...',
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
           ),
           const SizedBox(height: 10),
@@ -600,14 +603,11 @@ class _ChatActionsWidgetState extends State<ChatActionsWidget> {
                       checkChatStatus();
                     }
                   },
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all<Color>(Colors.orange),
-              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Border radius set to 10
-                ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1D4ED8),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: isStartingChat

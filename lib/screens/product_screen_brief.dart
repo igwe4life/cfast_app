@@ -527,9 +527,9 @@ class _ProductScreenBriefState extends State<ProductScreenBrief> {
             SliverAppBar(
               expandedHeight: 200.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: product!.image.isNotEmpty
+                background: widget.product.image.isNotEmpty
                     ? Image.network(
-                        product!.image,
+                        widget.product.image,
                         fit: BoxFit.cover,
                       )
                     : const Image(

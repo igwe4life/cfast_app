@@ -54,89 +54,140 @@ class _ApiListViewScreenState extends State<ApiListViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text('Saved Posts', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        title: const Text('Saved Posts', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF1D4ED8),
         centerTitle: true,
+        elevation: 0,
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF1D4ED8)),
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text('Something went wrong', style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+                ],
+              ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-              child: Text('No results found'),
-            );
-          } else {
-            return SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final item = snapshot.data![index];
-                      final leadingText = (index + 1).toString();
-                      
-                      DateTime date;
-                      String createdAtStr = item['created_at']?.toString() ?? '';
-                      try {
-                        date = createdAtStr.isNotEmpty ? DateTime.parse(createdAtStr) : DateTime.now();
-                      } catch (e) {
-                        date = DateTime.now();
-                      }
-                      String formattedDate =
-                      DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditPostScreen(item),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          margin: EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: Container(
-                              width: 40,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.blue,
-                              ),
-                              child: Text(
-                                leadingText,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              item['title'] ?? '',
-                              style: TextStyle(
-                                fontWeight:
-                                FontWeight.bold, // Make the title bold
-                              ),
-                            ),
-                            subtitle: Text(formattedDate),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  Icon(Icons.bookmark_border, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text('No saved posts yet', style: TextStyle(fontSize: 16, color: Colors.grey[600])),
                 ],
               ),
+            );
+          } else {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final item = snapshot.data![index];
+                
+                DateTime date;
+                String createdAtStr = item['created_at']?.toString() ?? '';
+                try {
+                  date = createdAtStr.isNotEmpty ? DateTime.parse(createdAtStr) : DateTime.now();
+                } catch (e) {
+                  date = DateTime.now();
+                }
+                String formattedDate =
+                DateFormat('MMM d\'th\', yyyy hh:mm a').format(date);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditPostScreen(item),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.06),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            width: 6,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Color(0xFF1D4ED8), Color(0xFF2563EB)],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item['title'] ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF111827),
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.access_time,
+                                          size: 14, color: Colors.grey[500]),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        formattedDate,
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey[500]),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 36,
+                            alignment: Alignment.center,
+                            child: Icon(Icons.chevron_right,
+                                color: Colors.grey[400], size: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             );
           }
         },

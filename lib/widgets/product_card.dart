@@ -40,7 +40,7 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: Color(0xFF1D4ED8),
                     ),
                   ),
                   const SizedBox(height: 2.0),
