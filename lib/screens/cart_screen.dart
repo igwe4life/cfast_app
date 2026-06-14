@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:kmbal_ionicons/kmbal_ionicons.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/models/cart_item.dart';
 import 'package:shop_cfast/widgets/cart_tile.dart';

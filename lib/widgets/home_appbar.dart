@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:kmbal_ionicons/kmbal_ionicons.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shop_cfast/screens/profile_page.dart';

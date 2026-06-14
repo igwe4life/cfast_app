@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:kmbal_ionicons/kmbal_ionicons.dart';
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
 
