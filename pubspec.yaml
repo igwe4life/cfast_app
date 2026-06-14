@@ -65,7 +65,8 @@ dependency_overrides:
   win32: ">=5.5.0 <6.0.0"
 
 flutter:
-  disable-swift-package-manager: true
+  config:
+    enable-swift-package-manager: false
 
   uses-material-design: true
 
