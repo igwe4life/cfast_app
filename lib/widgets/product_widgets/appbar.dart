@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kmbal_ionicons/kmbal_ionicons.dart';
+
 
 class ProductAppBar extends StatelessWidget {
   final bool isFavorite;
@@ -25,7 +25,7 @@ class ProductAppBar extends StatelessWidget {
               backgroundColor: Colors.white,
               padding: const EdgeInsets.all(15),
             ),
-            icon: const Icon(Ionicons.chevron_back),
+            icon: const Icon(Icons.arrow_back),
           ),
           const Spacer(),
           IconButton(
@@ -34,12 +34,12 @@ class ProductAppBar extends StatelessWidget {
               backgroundColor: Colors.white,
               padding: const EdgeInsets.all(15),
             ),
-            icon: const Icon(Ionicons.share_social_outline),
+            icon: const Icon(Icons.share),
           ),
           const SizedBox(width: 5),
           IconButton(
             icon: Icon(
-              isFavorite ? Ionicons.heart : Ionicons.heart_circle_outline,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
               color: isFavorite
                   ? Colors.red
                   : null, // Optional: Change icon color when favorited

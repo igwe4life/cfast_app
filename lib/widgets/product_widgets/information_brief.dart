@@ -44,7 +44,7 @@ class ProductInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // const Icon(
-        //   Ionicons.locate_outline,
+        //   Icons.location_on,
         //   size: 64,
         // ),
         // Text(
@@ -94,7 +94,7 @@ class ProductInfo extends StatelessWidget {
                     //   child: Row(
                     //     children: [
                     //       const Icon(
-                    //         Ionicons.star,
+                    //         Icons.star,
                     //         size: 13,
                     //         color: Colors.white,
                     //       ),

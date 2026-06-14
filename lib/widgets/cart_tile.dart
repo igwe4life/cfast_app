@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kmbal_ionicons/kmbal_ionicons.dart';
+
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/models/cart_item.dart';
 
@@ -80,7 +80,7 @@ class CartTile extends StatelessWidget {
               IconButton(
                 onPressed: () {},
                 icon: const Icon(
-                  Ionicons.trash_outline,
+                  Icons.delete_outline,
                   color: Colors.red,
                   size: 20,
                 ),
@@ -101,7 +101,7 @@ class CartTile extends StatelessWidget {
                       onPressed: onRemove,
                       iconSize: 18,
                       icon: const Icon(
-                        Ionicons.remove_outline,
+                        Icons.remove,
                         color: Colors.black,
                       ),
                     ),
@@ -116,7 +116,7 @@ class CartTile extends StatelessWidget {
                       onPressed: onAdd,
                       iconSize: 18,
                       icon: const Icon(
-                        Ionicons.add_outline,
+                        Icons.add,
                         color: Colors.black,
                       ),
                     ),

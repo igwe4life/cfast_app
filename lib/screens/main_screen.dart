@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:kmbal_ionicons/kmbal_ionicons.dart';
+
 import 'package:shop_cfast/constants.dart';
 import 'package:shop_cfast/screens/home_screen.dart';
 
@@ -268,14 +268,14 @@ class _MainScreenState extends State<MainScreen> {
               IconButton(
                 onPressed: () => _handleTabTap(0), // Home tab
                 icon: Icon(
-                  Ionicons.grid_outline,
+                  Icons.grid_view,
                   color: currentTab == 0 ? kprimaryColor : Colors.grey.shade400,
                 ),
               ),
               IconButton(
                 onPressed: () => _handleTabTap(1), // Wishlist tab
                 icon: Icon(
-                  Ionicons.heart_outline,
+                  Icons.favorite_border,
                   color: currentTab == 1 ? kprimaryColor : Colors.grey.shade400,
                 ),
               ),
@@ -300,7 +300,7 @@ class _MainScreenState extends State<MainScreen> {
               IconButton(
                 onPressed: () => _handleTabTap(4), // Profile tab
                 icon: Icon(
-                  Ionicons.person_outline,
+                  Icons.person,
                   color: currentTab == 4 ? kprimaryColor : Colors.grey.shade400,
                 ),
               ),

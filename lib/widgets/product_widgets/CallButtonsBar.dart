@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kmbal_ionicons/kmbal_ionicons.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../screens/login_page.dart';
 
@@ -110,7 +110,7 @@ class CallButtonsBar extends StatelessWidget {
                           //   size: 20, // Adjust the size of the icon
                           // ),
                           Icon(
-                            Ionicons.logo_whatsapp,
+                            Icons.chat,
                             size: 20,
                           ),
                           SizedBox(

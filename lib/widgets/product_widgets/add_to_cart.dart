@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kmbal_ionicons/kmbal_ionicons.dart';
+
 import 'package:shop_cfast/constants.dart';
 
 class AddToCart extends StatelessWidget {
@@ -44,7 +44,7 @@ class AddToCart extends StatelessWidget {
                     onPressed: onRemove,
                     iconSize: 18,
                     icon: const Icon(
-                      Ionicons.remove_outline,
+                      Icons.remove,
                       color: Colors.white,
                     ),
                   ),
@@ -58,7 +58,7 @@ class AddToCart extends StatelessWidget {
                     onPressed: onAdd,
                     iconSize: 18,
                     icon: const Icon(
-                      Ionicons.add_outline,
+                      Icons.add,
                       color: Colors.white,
                     ),
                   ),
