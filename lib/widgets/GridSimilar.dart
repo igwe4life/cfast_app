@@ -108,7 +108,7 @@ class _GridSimilarState extends State<GridSimilar>
       title: item['title']?.toString() ?? 'Untitled product',
       description:
           item['description']?.toString() ?? item['title']?.toString() ?? '',
-      image: item['listing_image']?.toString() ?? '',
+      image: _extractImageUrl(item),
       price: rawPrice == null || rawPrice.toString().isEmpty
           ? 'Price on request'
           : rawPrice.toString(),
@@ -116,12 +116,38 @@ class _GridSimilarState extends State<GridSimilar>
       time: item['created_at_formatted']?.toString() ?? '',
       itemUrl: itemUrl,
       classID: productId,
-      location: city is Map<String, dynamic>
+      location: item['city_name']?.toString() ?? (city is Map<String, dynamic>
           ? city['name']?.toString() ?? ''
-          : item['location']?.toString() ?? '',
+          : item['location']?.toString() ?? ''),
       catURL:
           item['category_id']?.toString() ?? item['catURL']?.toString() ?? '',
     );
+  }
+
+  String _extractImageUrl(Map<String, dynamic> item) {
+    final pictures = item['pictures'] as List? ?? [];
+    if (pictures.isNotEmpty) {
+      final pic = pictures.first as Map<String, dynamic>;
+      final url = pic['filename_url_big']?.toString() ??
+          pic['filename_url']?.toString() ??
+          pic['filename_url_medium']?.toString() ??
+          '';
+      if (url.isNotEmpty) {
+        final result = url.startsWith('/') ? '$baseUrl$url' : url;
+        debugPrint('CFAST_IMAGES GridSimilar from pictures: $result');
+        return result;
+      }
+    }
+    for (final key in ['listing_image', 'image', 'photo_url', 'user_photo_url', 'picture_url']) {
+      final val = item[key]?.toString() ?? '';
+      if (val.isNotEmpty) {
+        final result = val.startsWith('/') ? '$baseUrl$val' : val;
+        debugPrint('CFAST_IMAGES GridSimilar from $key: $result');
+        return result;
+      }
+    }
+    debugPrint('CFAST_IMAGES GridSimilar no image found for: ${item['title']}');
+    return '';
   }
 
   String _fullProductUrl(String rawUrl, String productId) {
@@ -351,7 +377,7 @@ class _GridSimilarState extends State<GridSimilar>
                       Expanded(
                         child: Text(
                           product.location.isEmpty
-                              ? 'Location not set'
+                              ? ''
                               : product.location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

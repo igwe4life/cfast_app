@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
@@ -246,6 +245,7 @@ class _GridHomeState extends State<GridHome> {
   }
 
   Product _productFromApiItem(Map<String, dynamic> item) {
+    debugPrint('ITEM_DEBUG: ${const JsonEncoder.withIndent('  ').convert(item)}');
     final rawPrice = item['price'];
     final city = item['city'];
     final productId = item['id']?.toString() ?? '';
@@ -254,11 +254,13 @@ class _GridHomeState extends State<GridHome> {
       productId,
     );
 
+    debugPrint('LOCATION_DEBUG city_name=${item['city_name']} city=${item['city']} location=${item['location']}');
+
     return Product(
       title: item['title']?.toString() ?? 'Untitled product',
       description:
           item['description']?.toString() ?? item['title']?.toString() ?? '',
-      image: item['listing_image']?.toString() ?? '',
+      image: _extractImageUrl(item),
       price: rawPrice == null || rawPrice.toString().isEmpty
           ? 'Price on request'
           : rawPrice.toString(),
@@ -266,12 +268,38 @@ class _GridHomeState extends State<GridHome> {
       time: item['created_at_formatted']?.toString() ?? '',
       itemUrl: itemUrl,
       classID: productId,
-      location: city is Map<String, dynamic>
+      location: item['city_name']?.toString() ?? (city is Map<String, dynamic>
           ? city['name']?.toString() ?? ''
-          : item['location']?.toString() ?? '',
+          : item['location']?.toString() ?? ''),
       catURL:
           item['category_id']?.toString() ?? item['catURL']?.toString() ?? '',
     );
+  }
+
+  String _extractImageUrl(Map<String, dynamic> item) {
+    final pictures = item['pictures'] as List? ?? [];
+    if (pictures.isNotEmpty) {
+      final pic = pictures.first as Map<String, dynamic>;
+      final url = pic['filename_url_big']?.toString() ??
+          pic['filename_url']?.toString() ??
+          pic['filename_url_medium']?.toString() ??
+          '';
+      if (url.isNotEmpty) {
+        final result = url.startsWith('/') ? '$baseUrl$url' : url;
+        debugPrint('CFAST_IMAGES GridHome from pictures: $result');
+        return result;
+      }
+    }
+    for (final key in ['listing_image', 'image', 'photo_url', 'user_photo_url', 'picture_url']) {
+      final val = item[key]?.toString() ?? '';
+      if (val.isNotEmpty) {
+        final result = val.startsWith('/') ? '$baseUrl$val' : val;
+        debugPrint('CFAST_IMAGES GridHome from $key: $result');
+        return result;
+      }
+    }
+    debugPrint('CFAST_IMAGES GridHome no image found for: ${item['title']}');
+    return '';
   }
 
   String _fullProductUrl(String rawUrl, String productId) {
@@ -604,20 +632,11 @@ class _GridHomeState extends State<GridHome> {
                       alignment: Alignment.center,
                       child: const Icon(Icons.image_not_supported_outlined),
                     )
-                  : CachedNetworkImage(
-                      imageUrl: product.image,
+                  : Image.network(
+                      product.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey.shade100,
-                        alignment: Alignment.center,
-                        child: const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey.shade200,
                         alignment: Alignment.center,
                         child: const Icon(Icons.broken_image_outlined),
@@ -667,7 +686,7 @@ class _GridHomeState extends State<GridHome> {
                       Expanded(
                         child: Text(
                           product.location.isEmpty
-                              ? 'Location not set'
+                              ? ''
                               : product.location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

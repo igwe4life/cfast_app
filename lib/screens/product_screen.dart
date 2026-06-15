@@ -517,6 +517,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
       if (response.statusCode == 200) {
         final decodedResponse = json.decode(response.body);
+        debugPrint('CFAST_JSON product detail: ${response.body}');
         final result = decodedResponse['result'] as Map<String, dynamic>? ?? {};
 
         final mappedData = <String, dynamic>{
@@ -1256,6 +1257,8 @@ class _PremiumImageCarouselState extends State<_PremiumImageCarousel> {
         .where((imageUrl) => imageUrl.trim().isNotEmpty)
         .toList();
 
+    debugPrint('CFAST_IMAGES carousel URLs: ${displayImages.take(3).toList()}');
+
     if (displayImages.isEmpty) {
       return Container(
         decoration: const BoxDecoration(
@@ -1337,22 +1340,31 @@ class _PremiumImageCarouselState extends State<_PremiumImageCarousel> {
                     ),
                   ],
                 ),
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
+                child: Image.network(
+                  imageUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  placeholder: (context, url) => Container(
-                    color: const Color(0xFFE2E8F0),
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: const Color(0xFFE2E8F0),
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.broken_image_outlined),
-                  ),
-                ),
-              ),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    debugPrint('NETWORK IMAGE ERROR');
+                    debugPrint('URL: $imageUrl');
+                    debugPrint('ERROR: $error');
+
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        color: Colors.red,
+                        size: 40,
+                      ),
+                    );
+                  },
+                ),              ),
             );
           },
         ),

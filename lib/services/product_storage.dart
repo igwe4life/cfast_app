@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 
 class ProductStorage {
-  static const String _key = 'products';
+  static const String _key = 'products_v2';
 
   static Future<void> saveProducts(List<Product> products) async {
     final prefs = await SharedPreferences.getInstance();
