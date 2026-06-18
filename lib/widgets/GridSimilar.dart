@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
@@ -314,20 +313,11 @@ class _GridSimilarState extends State<GridSimilar>
                       alignment: Alignment.center,
                       child: const Icon(Icons.image_not_supported_outlined),
                     )
-                  : CachedNetworkImage(
-                      imageUrl: product.image,
+                  : Image.network(
+                      product.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey.shade100,
-                        alignment: Alignment.center,
-                        child: const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey.shade200,
                         alignment: Alignment.center,
                         child: const Icon(Icons.broken_image_outlined),

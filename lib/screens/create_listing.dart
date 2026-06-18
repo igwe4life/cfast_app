@@ -399,18 +399,20 @@ class _AddListingScreenState extends State<AddListingScreen> {
                                    },
                                    child: const Text('Cancel'),
                                  ),
-                                 TextButton(
-                                   onPressed: () {
-                                     setState(() {
-                                       _selectedImages.removeAt(index);
-                                        // Also keep null placeholders if needed or just remove from list. 
-                                        // The original code used a fixed list size initially but then added/removed. 
-                                        // Based on usage, just removing the itme is safer if it's dynamic.
-                                     });
-                                     Navigator.of(context).pop(); // Close the dialog
-                                   },
-                                   child: const Text('Delete'),
-                                 ),
+                                  TextButton(
+                                    onPressed: () {
+                                      final removed = _selectedImages[index];
+                                      setState(() {
+                                        _selectedImages.removeAt(index);
+                                      });
+                                      if (removed != null) {
+                                        uploadedFiles.remove(removed.path);
+                                        _watermarkedCache.remove(removed.path);
+                                      }
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Delete'),
+                                  ),
                                ],
                              );
                            },
@@ -991,7 +993,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  Set<String> uploadedFiles = {}; // Maintain a set of uploaded file paths
+  Set<String> uploadedFiles = {};
+  final Map<String, File> _watermarkedCache = {};
 
   Future<void> addImages() async {
     final picker = ImagePicker();
@@ -1030,32 +1033,35 @@ class _AddListingScreenState extends State<AddListingScreen> {
     List<File> newlyProcessed = [];
 
     try {
-      // Process all images in parallel for maximum speed
-      await Future.wait(images.map((image) async {
+      for (final image in images) {
         File file = File(image.path);
-        
-        bool isScreenshot = await isImageScreenshot(file);
-        if (isScreenshot) return;
 
-        if (uploadedFiles.contains(image.path)) return;
+        if (uploadedFiles.contains(image.path)) continue;
+
+        bool isScreenshot = await isImageScreenshot(file);
+        if (isScreenshot) continue;
 
         final decodedImage = await decodeImageFromList(await file.readAsBytes());
-        
+
         if (decodedImage.width > 400) {
-          File watermarkedImage = await _addWatermarkToImages(file);
-          
+          File watermarkedImage;
+          if (_watermarkedCache.containsKey(image.path)) {
+            watermarkedImage = _watermarkedCache[image.path]!;
+          } else {
+            watermarkedImage = await _addWatermarkToImages(file);
+            _watermarkedCache[image.path] = watermarkedImage;
+          }
+
           newlyProcessed.add(watermarkedImage);
           uploadedFiles.add(image.path);
-          
+
           processedCount++;
-          // Use setState for progress only
           setState(() {
             _loadingMessage = 'Processed $processedCount of $totalCount images...';
           });
         }
-      }));
+      }
 
-      // Add all processed images at once to avoid list fragmentation and redundant builds
       if (newlyProcessed.isNotEmpty) {
         setState(() {
           _selectedImages.addAll(newlyProcessed);
