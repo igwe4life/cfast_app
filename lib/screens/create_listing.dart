@@ -1079,62 +1079,36 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   Future<File> _addWatermarkToImages(File imageFile) async {
     try {
-      // Read image bytes
       Uint8List imageBytes = await imageFile.readAsBytes();
 
-      // Create image object
       ui.Image image = await decodeImageFromList(imageBytes);
 
-      // Create canvas
       ui.PictureRecorder recorder = ui.PictureRecorder();
       ui.Canvas canvas = ui.Canvas(recorder);
 
-      // Draw original image
       canvas.drawImage(image, Offset.zero, Paint());
 
-      // Watermark text
       String watermarkText = '$name\nPosted on Cfast.NG';
 
-      // Calculate scaling factor
-      double scaleFactor = 1.0;
-
-      if (image.width <= 640) {
-        scaleFactor = 0.8;
-      } else if (image.width <= 1024) {
-        scaleFactor = 1.0;
-      } else if (image.width <= 1900) {
-        scaleFactor = 1.25;
-      } else if (image.width <= 2048) {
-        scaleFactor = 2.25;
-      } else if (image.width <= 3072) {
-        scaleFactor = 3.25;
-      } else {
-        scaleFactor = 4.5;
+      // Match website sizing
+      double fontSize = image.width * 0.05;
+      if (fontSize < 24) {
+        fontSize = 24;
       }
 
-      // Font size
-      double fontSize = 50.0 * scaleFactor;
-
-      // Light grey watermark like first image
-      final watermarkColor =
-          const Color(0xFFD3D3D3).withOpacity(0.45);
-
-      // Build paragraph
-      ui.ParagraphBuilder builder = ui.ParagraphBuilder(
+      final builder = ui.ParagraphBuilder(
         ui.ParagraphStyle(
           textAlign: TextAlign.center,
           fontWeight: FontWeight.bold,
           fontSize: fontSize,
-          lineHeight: 0.75, // tighter spacing between lines
         ),
       );
 
       builder.pushStyle(
         ui.TextStyle(
-          color: watermarkColor,
+          color: const Color.fromARGB(115, 210, 210, 210),
           fontSize: fontSize,
           fontWeight: ui.FontWeight.bold,
-          height: 0.75,
         ),
       );
 
@@ -1148,24 +1122,27 @@ class _AddListingScreenState extends State<AddListingScreen> {
         ),
       );
 
-      // Position watermark around 75% down image
-      double yOffset = image.height * 0.75 - paragraph.height;
+      // Similar position to website
+      double centerY =
+          (image.height / 2) + (image.height * 0.15);
+
+      double yOffset =
+          centerY - (paragraph.height / 2);
 
       canvas.drawParagraph(
         paragraph,
         Offset(
-          (image.width - paragraph.width) / 2,
+          0,
           yOffset,
         ),
       );
 
-      // Convert canvas back to image
       ui.Image watermarkedImage = await recorder
           .endRecording()
           .toImage(
-            image.width,
-            image.height,
-          );
+        image.width,
+        image.height,
+      );
 
       ByteData? byteData = await watermarkedImage.toByteData(
         format: ui.ImageByteFormat.rawRgba,
@@ -1175,11 +1152,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
         throw Exception('Failed to get image bytes');
       }
 
+      // Compatible with older image package versions
       img.Image libImage = img.Image.fromBytes(
-        width: watermarkedImage.width,
-        height: watermarkedImage.height,
-        bytes: byteData.buffer,
-        numChannels: 4,
+        watermarkedImage.width,
+        watermarkedImage.height,
+        byteData.buffer.asUint8List(),
       );
 
       Uint8List watermarkedBytes = Uint8List.fromList(
@@ -1189,13 +1166,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
         ),
       );
 
-      // Save file
-      DateTime now = DateTime.now();
-      String timestamp =
-          now.toIso8601String().replaceAll(':', '-');
+      String timestamp = DateTime.now()
+          .toIso8601String()
+          .replaceAll(':', '-');
 
       File watermarkedFile =
-          File('${imageFile.path}_$timestamp.jpg');
+      File('${imageFile.path}_$timestamp.jpg');
 
       await watermarkedFile.writeAsBytes(
         watermarkedBytes,
