@@ -1081,54 +1081,76 @@ class _AddListingScreenState extends State<AddListingScreen> {
     try {
       // Read image bytes
       Uint8List imageBytes = await imageFile.readAsBytes();
-      // Create an image object from bytes
+
+      // Create image object
       ui.Image image = await decodeImageFromList(imageBytes);
-      // Create a blank image to draw on
+
+      // Create canvas
       ui.PictureRecorder recorder = ui.PictureRecorder();
       ui.Canvas canvas = ui.Canvas(recorder);
-      // Draw the original image on the canvas
+
+      // Draw original image
       canvas.drawImage(image, Offset.zero, Paint());
-      // Define watermark text
-      String watermarkText = '$name\n Posted on Cfast.NG';
-      // Calculate scaling factor for font size based on image dimensions
+
+      // Watermark text
+      String watermarkText = '$name\nPosted on Cfast.NG';
+
+      // Calculate scaling factor
       double scaleFactor = 1.0;
+
       if (image.width <= 640) {
         scaleFactor = 0.8;
-      } else if (image.width >= 641 && image.width <= 1024) {
+      } else if (image.width <= 1024) {
         scaleFactor = 1.0;
-      } else if (image.width >= 1025 && image.width <= 1900) {
+      } else if (image.width <= 1900) {
         scaleFactor = 1.25;
-      } else if (image.width >= 1920 && image.width <= 2048) {
+      } else if (image.width <= 2048) {
         scaleFactor = 2.25;
-      } else if (image.width >= 2048 && image.width <= 3072) {
+      } else if (image.width <= 3072) {
         scaleFactor = 3.25;
-      } else if (image.width > 3072) {
+      } else {
         scaleFactor = 4.5;
       }
 
-      // Calculate font size based on the scaling factor
+      // Font size
       double fontSize = 50.0 * scaleFactor;
-      // Define text style with calculated font size
-      ui.TextStyle textStyle = ui.TextStyle(
-        color: Colors.white.withOpacity(0.3), // Set opacity to 30%
-        fontSize: fontSize, // Font size based on image dimensions
-        fontWeight: ui.FontWeight.bold, // Customize font weight if needed
+
+      // Light grey watermark like first image
+      final watermarkColor =
+          const Color(0xFFD3D3D3).withOpacity(0.45);
+
+      // Build paragraph
+      ui.ParagraphBuilder builder = ui.ParagraphBuilder(
+        ui.ParagraphStyle(
+          textAlign: TextAlign.center,
+          fontWeight: FontWeight.bold,
+          fontSize: fontSize,
+          lineHeight: 0.75, // tighter spacing between lines
+        ),
       );
-      // Create ParagraphBuilder to build text layout
-      ui.ParagraphBuilder builder = ui.ParagraphBuilder(ui.ParagraphStyle(
-        textAlign: TextAlign.center,
-        fontWeight: FontWeight.bold,
-        fontSize: fontSize, // Same as the calculated font size
-      ));
-      // Add text to ParagraphBuilder
-      builder.pushStyle(textStyle);
+
+      builder.pushStyle(
+        ui.TextStyle(
+          color: watermarkColor,
+          fontSize: fontSize,
+          fontWeight: ui.FontWeight.bold,
+          height: 0.75,
+        ),
+      );
+
       builder.addText(watermarkText);
-      // Build the Paragraph
+
       ui.Paragraph paragraph = builder.build();
-      paragraph.layout(ui.ParagraphConstraints(width: image.width.toDouble()));
-      // Calculate the Y offset to position the watermark 25% from the bottom
+
+      paragraph.layout(
+        ui.ParagraphConstraints(
+          width: image.width.toDouble(),
+        ),
+      );
+
+      // Position watermark around 75% down image
       double yOffset = image.height * 0.75 - paragraph.height;
-      // Draw text on canvas with the adjusted Y offset
+
       canvas.drawParagraph(
         paragraph,
         Offset(
@@ -1136,36 +1158,53 @@ class _AddListingScreenState extends State<AddListingScreen> {
           yOffset,
         ),
       );
-      // Convert the canvas to an image
-      ui.Image watermarkedImage = await recorder.endRecording().toImage(
+
+      // Convert canvas back to image
+      ui.Image watermarkedImage = await recorder
+          .endRecording()
+          .toImage(
             image.width,
             image.height,
           );
-      
-      // Convert to JPEG for much smaller file size (prevents TLS errors on large uploads)
+
       ByteData? byteData = await watermarkedImage.toByteData(
         format: ui.ImageByteFormat.rawRgba,
       );
-      
-      if (byteData == null) throw Exception("Failed to get byte data from image");
+
+      if (byteData == null) {
+        throw Exception('Failed to get image bytes');
+      }
 
       img.Image libImage = img.Image.fromBytes(
-        watermarkedImage.width,
-        watermarkedImage.height,
-        byteData.buffer.asUint8List(),
+        width: watermarkedImage.width,
+        height: watermarkedImage.height,
+        bytes: byteData.buffer,
+        numChannels: 4,
       );
 
-      Uint8List watermarkedImageBytes = Uint8List.fromList(img.encodeJpg(libImage, quality: 85));
+      Uint8List watermarkedBytes = Uint8List.fromList(
+        img.encodeJpg(
+          libImage,
+          quality: 85,
+        ),
+      );
 
-      // Save the watermarked image to a new file with a timestamp
+      // Save file
       DateTime now = DateTime.now();
-      String timestamp = now.toIso8601String().replaceAll(':', '-');
-      File watermarkedFile = File('${imageFile.path}_$timestamp.jpg');
-      await watermarkedFile.writeAsBytes(watermarkedImageBytes);
+      String timestamp =
+          now.toIso8601String().replaceAll(':', '-');
+
+      File watermarkedFile =
+          File('${imageFile.path}_$timestamp.jpg');
+
+      await watermarkedFile.writeAsBytes(
+        watermarkedBytes,
+      );
+
       return watermarkedFile;
     } catch (e) {
       print('Error adding watermark: $e');
-      rethrow; // Propagate the error
+      rethrow;
     }
   }
 
