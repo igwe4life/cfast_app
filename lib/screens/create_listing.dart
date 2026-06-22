@@ -1088,54 +1088,54 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
       canvas.drawImage(image, Offset.zero, Paint());
 
-      String watermarkText = '$name\nPosted on Cfast.NG';
-
-      // Match website sizing
-      double fontSize = image.width * 0.05;
-      if (fontSize < 24) {
-        fontSize = 24;
-      }
-
-      final builder = ui.ParagraphBuilder(
-        ui.ParagraphStyle(
-          textAlign: TextAlign.center,
-          fontWeight: FontWeight.bold,
-          fontSize: fontSize,
-        ),
-      );
-
-      builder.pushStyle(
-        ui.TextStyle(
-          color: const Color.fromARGB(115, 210, 210, 210),
-          fontSize: fontSize,
-          fontWeight: ui.FontWeight.bold,
-        ),
-      );
-
-      builder.addText(watermarkText);
-
-      ui.Paragraph paragraph = builder.build();
-
-      paragraph.layout(
-        ui.ParagraphConstraints(
-          width: image.width.toDouble(),
-        ),
-      );
-
-      // Similar position to website
-      double centerY =
-          (image.height / 2) + (image.height * 0.15);
-
-      double yOffset =
-          centerY - (paragraph.height / 2);
-
-      canvas.drawParagraph(
-        paragraph,
-        Offset(
-          0,
-          yOffset,
-        ),
-      );
+      // String watermarkText = '$name\nPosted on Cfast.NG';
+      //
+      // // Match website sizing
+      // double fontSize = image.width * 0.05;
+      // if (fontSize < 24) {
+      //   fontSize = 24;
+      // }
+      //
+      // final builder = ui.ParagraphBuilder(
+      //   ui.ParagraphStyle(
+      //     textAlign: TextAlign.center,
+      //     fontWeight: FontWeight.bold,
+      //     fontSize: fontSize,
+      //   ),
+      // );
+      //
+      // builder.pushStyle(
+      //   ui.TextStyle(
+      //     color: const Color.fromARGB(115, 210, 210, 210),
+      //     fontSize: fontSize,
+      //     fontWeight: ui.FontWeight.bold,
+      //   ),
+      // );
+      //
+      // builder.addText(watermarkText);
+      //
+      // ui.Paragraph paragraph = builder.build();
+      //
+      // paragraph.layout(
+      //   ui.ParagraphConstraints(
+      //     width: image.width.toDouble(),
+      //   ),
+      // );
+      //
+      // // Similar position to website
+      // double centerY =
+      //     (image.height / 2) + (image.height * 0.15);
+      //
+      // double yOffset =
+      //     centerY - (paragraph.height / 2);
+      //
+      // canvas.drawParagraph(
+      //   paragraph,
+      //   Offset(
+      //     0,
+      //     yOffset,
+      //   ),
+      // );
 
       ui.Image watermarkedImage = await recorder
           .endRecording()
@@ -1183,7 +1183,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
       rethrow;
     }
   }
-
   @override
   Widget build(BuildContext context) {
     List<Widget> dynamicFields = [];
