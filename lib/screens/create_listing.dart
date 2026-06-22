@@ -399,20 +399,26 @@ class _AddListingScreenState extends State<AddListingScreen> {
                                    },
                                    child: const Text('Cancel'),
                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      final removed = _selectedImages[index];
-                                      setState(() {
-                                        _selectedImages.removeAt(index);
-                                      });
-                                      if (removed != null) {
-                                        uploadedFiles.remove(removed.path);
-                                        _watermarkedCache.remove(removed.path);
-                                      }
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Delete'),
-                                  ),
+                                   TextButton(
+                                     onPressed: () {
+                                       final removed = _selectedImages[index];
+                                       setState(() {
+                                         _selectedImages.removeAt(index);
+                                       });
+                                       if (removed != null) {
+                                         final originalPath = _watermarkedToOriginal.remove(removed.path);
+                                         if (originalPath != null) {
+                                           uploadedFiles.remove(originalPath);
+                                           _watermarkedCache.remove(originalPath);
+                                         }
+                                         try {
+                                           File(removed.path).deleteSync();
+                                         } catch (_) {}
+                                       }
+                                       Navigator.of(context).pop();
+                                     },
+                                     child: const Text('Delete'),
+                                   ),
                                ],
                              );
                            },
@@ -995,14 +1001,15 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   Set<String> uploadedFiles = {};
   final Map<String, File> _watermarkedCache = {};
+  final Map<String, String> _watermarkedToOriginal = {};
 
   Future<void> addImages() async {
     final picker = ImagePicker();
-    final List<XFile> images = await picker.pickMultiImage(imageQuality: 70);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
-    if (images.isEmpty) return;
+    if (image == null) return;
 
-    setState(() => _loadingMessage = 'Preparing images...');
+    setState(() => _loadingMessage = 'Preparing image...');
 
     showDialog(
       context: context,
@@ -1028,51 +1035,56 @@ class _AddListingScreenState extends State<AddListingScreen> {
       ),
     );
 
-    int processedCount = 0;
-    int totalCount = images.length;
-    List<File> newlyProcessed = [];
-
     try {
-      for (final image in images) {
-        File file = File(image.path);
+      File file = File(image.path);
 
-        if (uploadedFiles.contains(image.path)) continue;
-
-        bool isScreenshot = await isImageScreenshot(file);
-        if (isScreenshot) continue;
-
-        final decodedImage = await decodeImageFromList(await file.readAsBytes());
-
-        if (decodedImage.width > 400) {
-          File watermarkedImage;
-          if (_watermarkedCache.containsKey(image.path)) {
-            watermarkedImage = _watermarkedCache[image.path]!;
-          } else {
-            watermarkedImage = await _addWatermarkToImages(file);
-            _watermarkedCache[image.path] = watermarkedImage;
-          }
-
-          newlyProcessed.add(watermarkedImage);
-          uploadedFiles.add(image.path);
-
-          processedCount++;
-          setState(() {
-            _loadingMessage = 'Processed $processedCount of $totalCount images...';
-          });
-        }
+      if (uploadedFiles.contains(image.path)) {
+        Navigator.pop(context);
+        Fluttertoast.showToast(msg: 'Image already added');
+        setState(() => _loadingMessage = '');
+        FocusScope.of(context).unfocus();
+        return;
       }
 
-      if (newlyProcessed.isNotEmpty) {
+      bool isScreenshot = await isImageScreenshot(file);
+      if (isScreenshot) {
+        Navigator.pop(context);
+        Fluttertoast.showToast(msg: 'Screenshots are not allowed');
+        setState(() => _loadingMessage = '');
+        FocusScope.of(context).unfocus();
+        return;
+      }
+
+      final decodedImage = await decodeImageFromList(await file.readAsBytes());
+
+      if (decodedImage.width > 400) {
+        File watermarkedImage;
+        if (_watermarkedCache.containsKey(image.path)) {
+          watermarkedImage = _watermarkedCache[image.path]!;
+        } else {
+          watermarkedImage = await _addWatermarkToImages(file);
+          _watermarkedCache[image.path] = watermarkedImage;
+        }
+
+        _watermarkedToOriginal[watermarkedImage.path] = image.path;
+        uploadedFiles.add(image.path);
+
         setState(() {
-          _selectedImages.addAll(newlyProcessed);
+          _selectedImages.add(watermarkedImage);
+          _loadingMessage = '';
         });
+      } else {
+        Navigator.pop(context);
+        Fluttertoast.showToast(msg: 'Image too small (min 400px wide)');
+        setState(() => _loadingMessage = '');
+        FocusScope.of(context).unfocus();
+        return;
       }
     } catch (e) {
       print('Error in addImages: $e');
     } finally {
       Navigator.pop(context);
       setState(() => _loadingMessage = '');
-      // Dismiss keyboard after image selection
       FocusScope.of(context).unfocus();
     }
   }
@@ -1552,9 +1564,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     ],
                   ),
                   child: const Center(
-                    child: Text(
-                      'Select Images',
-                      style: TextStyle(
+                      child: Text(
+                        'Add Image',
+                        style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

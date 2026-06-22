@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -1520,7 +1519,7 @@ class _StoreDetailsCard extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: Colors.white,
               backgroundImage:
-              hasPhoto ? CachedNetworkImageProvider(storePhoto) : null,
+              hasPhoto ? NetworkImage(storePhoto) : null,
               child: hasPhoto
                   ? null
                   : const Icon(
@@ -1667,12 +1666,15 @@ class _GalleryViewState extends State<GalleryView> {
                 });
               },
               itemBuilder: (context, index) {
-                return CachedNetworkImage(
-                  imageUrl: widget.images[index],
+                return Image.network(
+                  widget.images[index],
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                  const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.error),
                 );
               },
             ),
@@ -1698,10 +1700,10 @@ class _GalleryViewState extends State<GalleryView> {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      image: CachedNetworkImageProvider(widget.images[index]),
-                      width: 80, // Adjust thumbnail width as needed
-                      height: 80, // Adjust thumbnail height as needed
+                    child: Image.network(
+                      widget.images[index],
+                      width: 80,
+                      height: 80,
                       fit: BoxFit.cover,
                     ),
                   ),
