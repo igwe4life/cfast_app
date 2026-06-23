@@ -357,94 +357,124 @@ class _AddListingScreenState extends State<AddListingScreen> {
   }
 
   Widget _buildImagePreview() {
-    return SizedBox(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _selectedImages.length,
-        itemBuilder: (context, index) {
-          if (_selectedImages[index] != null) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Stack(
-                children: [
-                   Container(
-                     width: 100,
-                     height: 100,
-                     decoration: BoxDecoration(
-                       borderRadius: BorderRadius.circular(8.0),
-                       image: DecorationImage(
-                         image: FileImage(_selectedImages[index]!),
-                         fit: BoxFit.cover,
-                       ),
-                     ),
-                   ),
-                   Positioned(
-                     right: 0,
-                     top: 0,
-                     child: GestureDetector(
-                       onTap: () {
-                          // Show a dialog to confirm deletion
-                         showDialog(
-                           context: context,
-                           builder: (BuildContext context) {
-                             return AlertDialog(
-                               title: const Text('Delete Image'),
-                               content: const Text(
-                                   'Are you sure you want to delete this image?'),
-                               actions: [
-                                 TextButton(
-                                   onPressed: () {
-                                     Navigator.of(context).pop(); // Close the dialog
-                                   },
-                                   child: const Text('Cancel'),
-                                 ),
-                                   TextButton(
-                                     onPressed: () {
-                                       final removed = _selectedImages[index];
-                                       setState(() {
-                                         _selectedImages.removeAt(index);
-                                       });
-                                       if (removed != null) {
-                                         final originalPath = _watermarkedToOriginal.remove(removed.path);
-                                         if (originalPath != null) {
-                                           uploadedFiles.remove(originalPath);
-                                           _watermarkedCache.remove(originalPath);
-                                         }
-                                         try {
-                                           File(removed.path).deleteSync();
-                                         } catch (_) {}
-                                       }
-                                       Navigator.of(context).pop();
-                                     },
-                                     child: const Text('Delete'),
-                                   ),
-                               ],
-                             );
-                           },
-                         );
-                       },
-                       child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle
+    if (_selectedImages.isEmpty) return const SizedBox.shrink();
+    return Column(
+      children: [
+        SizedBox(
+          height: 100,
+          child: ReorderableListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _selectedImages.length,
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) newIndex--;
+                final item = _selectedImages.removeAt(oldIndex);
+                _selectedImages.insert(newIndex, item);
+              });
+            },
+            proxyDecorator: (child, index, animation) => Material(
+              color: Colors.transparent,
+              shadowColor: Colors.transparent,
+              child: child,
+            ),
+            itemBuilder: (context, index) {
+              if (_selectedImages[index] != null) {
+                return Padding(
+                  key: ValueKey(_selectedImages[index]!.path),
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          image: DecorationImage(
+                            image: FileImage(_selectedImages[index]!),
+                            fit: BoxFit.cover,
                           ),
-                         child: const Icon(
-                           Icons.delete,
-                           size: 24,
-                           color: Colors.red,
-                         ),
-                       ),
-                     ),
-                   ),
-                ],
-              ),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Delete Image'),
+                                  content: const Text('Are you sure you want to delete this image?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        final removed = _selectedImages[index];
+                                        setState(() {
+                                          _selectedImages.removeAt(index);
+                                        });
+                                        if (removed != null) {
+                                          final originalPath = _watermarkedToOriginal.remove(removed.path);
+                                          if (originalPath != null) {
+                                            uploadedFiles.remove(originalPath);
+                                            _watermarkedCache.remove(originalPath);
+                                          }
+                                          try {
+                                            File(removed.path).deleteSync();
+                                          } catch (_) {}
+                                        }
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.delete,
+                              size: 24,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const SizedBox(
+                  key: ValueKey('empty'),
+                  width: 100,
+                  height: 100,
+                );
+              }
+            },
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(top: 6),
+          child: Text(
+            'Long press & drag to reorder',
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1005,11 +1035,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   Future<void> addImages() async {
     final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+    final List<XFile> images = await picker.pickMultiImage(imageQuality: 70);
 
-    if (image == null) return;
+    if (images.isEmpty) return;
 
-    setState(() => _loadingMessage = 'Preparing image...');
+    setState(() => _loadingMessage = 'Preparing images...');
 
     showDialog(
       context: context,
@@ -1035,50 +1065,45 @@ class _AddListingScreenState extends State<AddListingScreen> {
       ),
     );
 
+    int processedCount = 0;
+    int totalCount = images.length;
+    List<File> newlyProcessed = [];
+
     try {
-      File file = File(image.path);
+      for (final image in images) {
+        File file = File(image.path);
 
-      if (uploadedFiles.contains(image.path)) {
-        Navigator.pop(context);
-        Fluttertoast.showToast(msg: 'Image already added');
-        setState(() => _loadingMessage = '');
-        FocusScope.of(context).unfocus();
-        return;
-      }
+        if (uploadedFiles.contains(image.path)) continue;
 
-      bool isScreenshot = await isImageScreenshot(file);
-      if (isScreenshot) {
-        Navigator.pop(context);
-        Fluttertoast.showToast(msg: 'Screenshots are not allowed');
-        setState(() => _loadingMessage = '');
-        FocusScope.of(context).unfocus();
-        return;
-      }
+        bool isScreenshot = await isImageScreenshot(file);
+        if (isScreenshot) continue;
 
-      final decodedImage = await decodeImageFromList(await file.readAsBytes());
+        final decodedImage = await decodeImageFromList(await file.readAsBytes());
 
-      if (decodedImage.width > 400) {
-        File watermarkedImage;
-        if (_watermarkedCache.containsKey(image.path)) {
-          watermarkedImage = _watermarkedCache[image.path]!;
-        } else {
-          watermarkedImage = await _addWatermarkToImages(file);
-          _watermarkedCache[image.path] = watermarkedImage;
+        if (decodedImage.width > 400) {
+          File watermarkedImage;
+          if (_watermarkedCache.containsKey(image.path)) {
+            watermarkedImage = _watermarkedCache[image.path]!;
+          } else {
+            watermarkedImage = await _addWatermarkToImages(file);
+            _watermarkedCache[image.path] = watermarkedImage;
+          }
+
+          _watermarkedToOriginal[watermarkedImage.path] = image.path;
+          newlyProcessed.add(watermarkedImage);
+          uploadedFiles.add(image.path);
+
+          processedCount++;
+          setState(() {
+            _loadingMessage = 'Processed $processedCount of $totalCount images...';
+          });
         }
+      }
 
-        _watermarkedToOriginal[watermarkedImage.path] = image.path;
-        uploadedFiles.add(image.path);
-
+      if (newlyProcessed.isNotEmpty) {
         setState(() {
-          _selectedImages.add(watermarkedImage);
-          _loadingMessage = '';
+          _selectedImages.addAll(newlyProcessed);
         });
-      } else {
-        Navigator.pop(context);
-        Fluttertoast.showToast(msg: 'Image too small (min 400px wide)');
-        setState(() => _loadingMessage = '');
-        FocusScope.of(context).unfocus();
-        return;
       }
     } catch (e) {
       print('Error in addImages: $e');
@@ -1565,7 +1590,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   ),
                   child: const Center(
                       child: Text(
-                        'Add Image',
+                        'Select Images',
                         style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -1661,12 +1686,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-
             ],
           ),
         ),
       ),
     ),
   );
-}
+  }
 }

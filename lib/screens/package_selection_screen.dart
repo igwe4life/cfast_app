@@ -125,7 +125,8 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                        final package = _packages[index];
                        final isFree = double.parse(package.price) == 0;
                        // Disable free package if user already has active ads
-                       final bool isDisabled = isFree && _hasActiveAds;
+                       //final bool isDisabled = isFree && _hasActiveAds;
+                       final bool isDisabled = false; // Force all packages to be selectable
 
                        return Card(
                          elevation: 2,
